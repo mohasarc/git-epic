@@ -1,0 +1,17 @@
+{
+  "handle": "doubling-down",
+  "accountCreatedDate": "2021-11-02",
+  "firstPublicActivityDate": "2023-01-05",
+  "capturedAtDate": "2025-01-15",
+  "contributionDays": [
+    { "date": "2023-01-05", "count": 30 },
+    { "date": "2023-04-05", "count": 30 },
+    { "date": "2023-07-05", "count": 30 },
+    { "date": "2023-10-05", "count": 30 },
+    { "date": "2024-01-05", "count": 65 },
+    { "date": "2024-04-05", "count": 65 },
+    { "date": "2024-07-05", "count": 65 },
+    { "date": "2024-10-05", "count": 65 }
+  ],
+  "repositories": []
+}

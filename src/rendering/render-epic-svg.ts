@@ -87,7 +87,22 @@ function chapterSceneVisual(segment: ChapterSceneSegment): string {
   switch (segment.chapter.kind) {
     case 'origin':
       return originSpark();
+    case 'dark-age':
+      return placeholderSceneVisual();
+    case 'great-streak':
+      return placeholderSceneVisual();
+    case 'prolificacy':
+      return placeholderSceneVisual();
   }
+}
+
+/** Deliberately styleless stand-in until each chapter kind gets its own scene. */
+function placeholderSceneVisual(): string {
+  return (
+    glowCircle(SCENE_CENTER_Y, 46, 0.05) +
+    glowCircle(SCENE_CENTER_Y, 27, 0.1) +
+    glowCircle(SCENE_CENTER_Y, 13, 0.18)
+  );
 }
 
 function originSpark(): string {

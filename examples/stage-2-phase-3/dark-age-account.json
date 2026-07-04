@@ -1,0 +1,11 @@
+{
+  "handle": "gap-year-dev",
+  "accountCreatedDate": "2018-11-02",
+  "firstPublicActivityDate": "2019-03-20",
+  "capturedAtDate": "2019-10-01",
+  "contributionDays": [
+    { "date": "2019-03-20", "count": 3 },
+    { "date": "2019-09-17", "count": 1 }
+  ],
+  "repositories": []
+}

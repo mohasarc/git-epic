@@ -1,0 +1,10 @@
+{
+  "handle": "gone-quiet",
+  "accountCreatedDate": "2018-11-02",
+  "firstPublicActivityDate": "2025-12-15",
+  "capturedAtDate": "2026-07-04",
+  "contributionDays": [
+    { "date": "2025-12-15", "count": 4 }
+  ],
+  "repositories": []
+}
