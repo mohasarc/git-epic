@@ -6,15 +6,20 @@ import type {
   TimelineSegment,
   TitleCardSegment,
 } from '../timeline/timeline.js';
-import { escapeXmlText } from './escape-xml-text.js';
 import { formatSvgNumber } from './format-svg-number.js';
+import {
+  CANVAS_HEIGHT,
+  CANVAS_WIDTH,
+  CENTER_X,
+  SCENE_CENTER_Y,
+  centeredText,
+  fadingRule,
+  ornamentDot,
+  sparkGlow,
+} from './scene-primitives.js';
+import { originScene } from './scenes/origin-scene.js';
 import { createSeededRandom } from './seeded-random.js';
 import { PALETTE, STYLE_MOTION, TYPOGRAPHY } from './visual-vocabulary.js';
-
-const CANVAS_WIDTH = 830;
-const CANVAS_HEIGHT = 415;
-const CENTER_X = CANVAS_WIDTH / 2;
-const SCENE_CENTER_Y = 186;
 
 const BACKDROP_STAR_COUNT = 110;
 const TWINKLE_STAR_COUNT = 8;
@@ -132,18 +137,10 @@ function composedCaption(narration: string): string {
   );
 }
 
-function fadingRule(x: number, y: number, width: number): string {
-  return `<rect x="${formatSvgNumber(x)}" y="${formatSvgNumber(y)}" width="${formatSvgNumber(width)}" height="1" fill="url(#rule-fade)"/>`;
-}
-
-function ornamentDot(x: number, y: number): string {
-  return `<circle cx="${formatSvgNumber(x)}" cy="${formatSvgNumber(y)}" r="1.8" fill="${PALETTE.gildedDeep}" opacity="0.8"/>`;
-}
-
 function chapterSceneVisual(segment: ChapterSceneSegment): string {
   switch (segment.chapter.kind) {
     case 'origin':
-      return originSpark(segment.startSeconds);
+      return originScene(segment);
     case 'dark-age':
       return placeholderSceneVisual();
     case 'great-streak':
@@ -165,37 +162,6 @@ function placeholderSceneVisual(): string {
     sparkGlow(CENTER_X, SCENE_CENTER_Y, 40) +
     `<circle cx="${formatSvgNumber(CENTER_X)}" cy="${formatSvgNumber(SCENE_CENTER_Y)}" r="4" fill="${PALETTE.spark}" opacity="0.6"/>`
   );
-}
-
-function originSpark(startSeconds: number): string {
-  return (
-    expandingRing(startSeconds + 0.2, 14, 70, PALETTE.spark, 0.6, 0.5) +
-    expandingRing(startSeconds + 0.5, 20, 105, PALETTE.orbitIndigo, 0.5, 0.4) +
-    sparkGlow(CENTER_X, SCENE_CENTER_Y, 34) +
-    `<circle cx="${formatSvgNumber(CENTER_X)}" cy="${formatSvgNumber(SCENE_CENTER_Y)}" r="5" fill="${PALETTE.spark}"/>`
-  );
-}
-
-function expandingRing(
-  beginSeconds: number,
-  fromRadius: number,
-  toRadius: number,
-  strokeColor: string,
-  strokeWidth: number,
-  peakOpacity: number,
-): string {
-  const begin = `${formatSvgNumber(beginSeconds)}s`;
-  const duration = `${formatSvgNumber(STYLE_MOTION.ringExpansionSeconds)}s`;
-  return (
-    `<circle cx="${formatSvgNumber(CENTER_X)}" cy="${formatSvgNumber(SCENE_CENTER_Y)}" r="${formatSvgNumber(toRadius)}" fill="none" stroke="${strokeColor}" stroke-width="${formatSvgNumber(strokeWidth)}" opacity="0">` +
-    `<animate attributeName="r" begin="${begin}" dur="${duration}" values="${formatSvgNumber(fromRadius)};${formatSvgNumber(toRadius)}" fill="freeze"/>` +
-    `<animate attributeName="opacity" begin="${begin}" dur="${duration}" values="${formatSvgNumber(peakOpacity)};0.05" fill="freeze"/>` +
-    `</circle>`
-  );
-}
-
-function sparkGlow(x: number, y: number, radius: number): string {
-  return `<circle cx="${formatSvgNumber(x)}" cy="${formatSvgNumber(y)}" r="${formatSvgNumber(radius)}" fill="url(#spark-glow)"/>`;
 }
 
 function presentDayCardContent(segment: PresentDayCardSegment): string {
@@ -277,26 +243,4 @@ function renderTwinklingStars(begin: string, random: () => number): string {
       `</circle>`;
   }
   return stars;
-}
-
-type CenteredTextOptions = {
-  fontSize: number;
-  fill: string;
-  fontWeight?: string;
-  fontStyle?: string;
-  letterSpacing?: number;
-};
-
-function centeredText(content: string, x: number, y: number, options: CenteredTextOptions): string {
-  const fontWeight = options.fontWeight ? ` font-weight="${options.fontWeight}"` : '';
-  const fontStyle = options.fontStyle ? ` font-style="${options.fontStyle}"` : '';
-  const letterSpacing =
-    options.letterSpacing === undefined
-      ? ''
-      : ` letter-spacing="${formatSvgNumber(options.letterSpacing)}"`;
-  return (
-    `<text x="${formatSvgNumber(x)}" y="${formatSvgNumber(y)}" text-anchor="middle" font-family="${TYPOGRAPHY.fontStack}" font-size="${formatSvgNumber(options.fontSize)}" fill="${options.fill}"${fontWeight}${fontStyle}${letterSpacing}>` +
-    escapeXmlText(content) +
-    `</text>`
-  );
 }
