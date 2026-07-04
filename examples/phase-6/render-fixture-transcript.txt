@@ -1,0 +1,7 @@
+$ pnpm render-fixture test-fixtures/single-contribution-account.json
+temp/single-contribution-account.svg
+
+$ pnpm render-fixture test-fixtures/brand-new-account.json
+temp/brand-new-account.svg
+
+# outputs are byte-identical to examples/phase-5/*.svg (renderEpic composes the same pipeline)
