@@ -50,5 +50,11 @@ export type LanguageEraChapter = {
   toLanguage: string;
 };
 
-/** Discriminated union; the three repository kinds join in this phase's wiring commit. */
-export type Chapter = OriginChapter | DarkAgeChapter | GreatStreakChapter | ProlificacyChapter;
+export type Chapter =
+  | OriginChapter
+  | DarkAgeChapter
+  | GreatStreakChapter
+  | ProlificacyChapter
+  | FlagshipRiseChapter
+  | StarMilestoneChapter
+  | LanguageEraChapter;

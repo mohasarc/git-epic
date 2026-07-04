@@ -93,6 +93,12 @@ function chapterSceneVisual(segment: ChapterSceneSegment): string {
       return placeholderSceneVisual();
     case 'prolificacy':
       return placeholderSceneVisual();
+    case 'flagship-rise':
+      return placeholderSceneVisual();
+    case 'star-milestone':
+      return placeholderSceneVisual();
+    case 'language-era':
+      return placeholderSceneVisual();
   }
 }
 
