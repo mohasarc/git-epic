@@ -13,6 +13,7 @@ import {
   CENTER_X,
   SCENE_CENTER_Y,
   centeredText,
+  expandingRing,
   fadingRule,
   ornamentDot,
   sparkGlow,
@@ -165,28 +166,28 @@ function placeholderSceneVisual(): string {
 
 function originSpark(startSeconds: number): string {
   return (
-    expandingRing(startSeconds + 0.2, 14, 70, PALETTE.spark, 0.6, 0.5) +
-    expandingRing(startSeconds + 0.5, 20, 105, PALETTE.orbitIndigo, 0.5, 0.4) +
+    expandingRing({
+      cx: CENTER_X,
+      cy: SCENE_CENTER_Y,
+      beginSeconds: startSeconds + 0.2,
+      fromRadius: 14,
+      toRadius: 70,
+      strokeColor: PALETTE.spark,
+      strokeWidth: 0.6,
+      peakOpacity: 0.5,
+    }) +
+    expandingRing({
+      cx: CENTER_X,
+      cy: SCENE_CENTER_Y,
+      beginSeconds: startSeconds + 0.5,
+      fromRadius: 20,
+      toRadius: 105,
+      strokeColor: PALETTE.orbitIndigo,
+      strokeWidth: 0.5,
+      peakOpacity: 0.4,
+    }) +
     sparkGlow(CENTER_X, SCENE_CENTER_Y, 34) +
     `<circle cx="${formatSvgNumber(CENTER_X)}" cy="${formatSvgNumber(SCENE_CENTER_Y)}" r="5" fill="${PALETTE.spark}"/>`
-  );
-}
-
-function expandingRing(
-  beginSeconds: number,
-  fromRadius: number,
-  toRadius: number,
-  strokeColor: string,
-  strokeWidth: number,
-  peakOpacity: number,
-): string {
-  const begin = `${formatSvgNumber(beginSeconds)}s`;
-  const duration = `${formatSvgNumber(STYLE_MOTION.ringExpansionSeconds)}s`;
-  return (
-    `<circle cx="${formatSvgNumber(CENTER_X)}" cy="${formatSvgNumber(SCENE_CENTER_Y)}" r="${formatSvgNumber(toRadius)}" fill="none" stroke="${strokeColor}" stroke-width="${formatSvgNumber(strokeWidth)}" opacity="0">` +
-    `<animate attributeName="r" begin="${begin}" dur="${duration}" values="${formatSvgNumber(fromRadius)};${formatSvgNumber(toRadius)}" fill="freeze"/>` +
-    `<animate attributeName="opacity" begin="${begin}" dur="${duration}" values="${formatSvgNumber(peakOpacity)};0.05" fill="freeze"/>` +
-    `</circle>`
   );
 }
 
