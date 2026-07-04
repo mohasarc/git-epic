@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest';
+import { detectChapters } from '../chapters/detect-chapters.js';
 import type { HistorySnapshot } from '../history-snapshot.js';
+import { narrateChapter } from '../narration/narrate-chapter.js';
 import { expectEmbedSafeSvg } from '../test-support/expect-embed-safe-svg.js';
+import { loadHistorySnapshotFixture } from '../test-support/load-history-snapshot-fixture.js';
 import { buildTimeline } from '../timeline/build-timeline.js';
 import type { Timeline } from '../timeline/timeline.js';
 import { renderEpicSvg } from './render-epic-svg.js';
@@ -134,6 +137,72 @@ describe('renderEpicSvg', () => {
     const svg = renderEpicSvg(timeline);
     const bloomSparks = svg.match(/<circle[^>]*r="2" fill="#ffd27d" opacity="0">/g) ?? [];
     expect(bloomSparks.length).toBe(8);
+    expect(svg).not.toContain('r="40" fill="url(#spark-glow)"');
+  });
+
+  it('dispatches a great-streak chapter to its scene, not the placeholder', () => {
+    const timeline = buildTimeline(firstSparkSnapshot, [
+      {
+        chapter: { kind: 'great-streak', date: '2019-03-01', endDate: '2019-04-04', lengthDays: 35 },
+        narration: 'Then began the relentless campaign.',
+      },
+    ]);
+    const svg = renderEpicSvg(timeline);
+    expect(svg).toContain('to="440 -64" fill="freeze"');
+    expect(svg).not.toContain('r="40" fill="url(#spark-glow)"');
+  });
+
+  it('renders all seven distinct scenes for a rich history, with the placeholder gone', () => {
+    const snapshot = loadHistorySnapshotFixture('rich-history-account.json');
+    const narratedChapters = detectChapters(snapshot).map((chapter) => ({
+      chapter,
+      narration: narrateChapter(chapter),
+    }));
+    const svg = renderEpicSvg(buildTimeline(snapshot, narratedChapters));
+
+    const sceneMarkers = {
+      origin: 'values="14;70"',
+      'flagship-rise': 'to="0 -46"',
+      'star-milestone': 'r="1.8" fill="#ffd27d"',
+      prolificacy: 'r="2" fill="#ffd27d" opacity="0"',
+      'language-era': 'values="0.15;0.9"',
+      'dark-age': 'width="830" height="415" fill="#070b14" opacity="0.55"',
+      'great-streak': 'to="440 -64"',
+    };
+    for (const marker of Object.values(sceneMarkers)) {
+      expect(svg).toContain(marker);
+    }
+    expect(svg).not.toContain('r="40" fill="url(#spark-glow)"');
+  });
+
+  it('dispatches a dark-age chapter to its scene, not the placeholder', () => {
+    const timeline = buildTimeline(firstSparkSnapshot, [
+      {
+        chapter: { kind: 'dark-age', date: '2019-09-02', endDate: '2020-03-31', lengthDays: 212 },
+        narration: 'Then came the Dark Age.',
+      },
+    ]);
+    const svg = renderEpicSvg(timeline);
+    expect(svg).toContain('width="830" height="415" fill="#070b14" opacity="0.55"');
+    expect(svg).not.toContain('r="40" fill="url(#spark-glow)"');
+  });
+
+  it('dispatches a language-era chapter to its scene, not the placeholder', () => {
+    const timeline = buildTimeline(firstSparkSnapshot, [
+      {
+        chapter: {
+          kind: 'language-era',
+          date: '2022-01-01',
+          year: 2022,
+          fromLanguage: 'JavaScript',
+          toLanguage: 'TypeScript',
+        },
+        narration: 'In the year 2022, the developer forsook JavaScript.',
+      },
+    ]);
+    const svg = renderEpicSvg(timeline);
+    expect(svg).toContain('values="0.9;0.15"');
+    expect(svg).toContain('values="0.15;0.9"');
     expect(svg).not.toContain('r="40" fill="url(#spark-glow)"');
   });
 
