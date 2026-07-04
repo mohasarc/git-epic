@@ -70,10 +70,10 @@
       <circle cx="367" cy="129" r="1.7" fill="#f0c9ff"/>
       <animateTransform attributeName="transform" type="rotate" begin="3s" dur="9s" from="0 415 175" to="360 415 175" repeatCount="indefinite"/>
     </g>
-    <rect x="180" y="352" width="130" height="1" fill="url(#rule-fade)"/>
-    <rect x="520" y="352" width="130" height="1" fill="url(#rule-fade)"/>
-    <circle cx="167" cy="352.5" r="1.8" fill="#d9b45b" opacity="0.8"/>
-    <circle cx="663" cy="352.5" r="1.8" fill="#d9b45b" opacity="0.8"/>
+    <rect x="30" y="352" width="55" height="1" fill="url(#rule-fade)"/>
+    <rect x="745" y="352" width="55" height="1" fill="url(#rule-fade)"/>
+    <circle cx="95" cy="352.5" r="1.8" fill="#d9b45b" opacity="0.8"/>
+    <circle cx="735" cy="352.5" r="1.8" fill="#d9b45b" opacity="0.8"/>
     <text x="415" y="357" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="15.5" font-style="italic" fill="url(#gilded)" letter-spacing="0.5">In the year 2011, the developer first set foot upon the public forge, and the epic began.</text>
     <animate attributeName="opacity" begin="3s" dur="3.5s" values="0;1;1;0" keyTimes="0;0.12;0.88;1" fill="freeze"/>
   </g>
