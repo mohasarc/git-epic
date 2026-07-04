@@ -1,11 +1,18 @@
 import { describe, expect, it } from 'vitest';
+import { detectChapters } from './chapters/detect-chapters.js';
 import * as publicApi from './index.js';
-import type { HistorySnapshot } from './index.js';
+import type { Chapter, HistorySnapshot } from './index.js';
+import { narrateChapter } from './narration/narrate-chapter.js';
 import { renderEpic } from './render-epic.js';
 import { buildHistorySnapshot } from './test-support/build-history-snapshot.js';
 import { loadHistorySnapshotFixture } from './test-support/load-history-snapshot-fixture.js';
 
-const fixtureFileNames = ['single-contribution-account.json', 'brand-new-account.json'];
+const fixtureFileNames = [
+  'single-contribution-account.json',
+  'brand-new-account.json',
+  'rich-history-account.json',
+  'fifteen-year-overflow.json',
+];
 
 describe('renderEpic', () => {
   for (const fixtureFileName of fixtureFileNames) {
@@ -21,6 +28,15 @@ describe('renderEpic', () => {
       expect(first === second).toBe(true);
     });
   }
+
+  it('renders every surviving chapter narration for the rich history fixture', () => {
+    const snapshot = loadHistorySnapshotFixture('rich-history-account.json');
+    const svg = renderEpic(snapshot);
+
+    for (const chapter of detectChapters(snapshot)) {
+      expect(svg).toContain(narrateChapter(chapter));
+    }
+  });
 
   it('renders the dark age narration caption when the chapter fires', () => {
     const darkAgeSnapshot = () =>
@@ -40,11 +56,15 @@ describe('renderEpic', () => {
 });
 
 describe('entry point', () => {
-  it('exports exactly renderEpic at runtime', () => {
-    expect(Object.keys(publicApi).sort()).toEqual(['renderEpic']);
+  it('exports exactly renderEpic, detectChapters, and narrateChapter at runtime', () => {
+    expect(Object.keys(publicApi).sort()).toEqual([
+      'detectChapters',
+      'narrateChapter',
+      'renderEpic',
+    ]);
   });
 
-  it('exports the HistorySnapshot type', () => {
+  it('exports the HistorySnapshot and Chapter types', () => {
     const snapshot: HistorySnapshot = {
       handle: 'type-check',
       accountCreatedDate: '2020-01-01',
@@ -53,6 +73,10 @@ describe('entry point', () => {
       contributionDays: [],
       repositories: [],
     };
+    const chapters: Chapter[] = publicApi.detectChapters(snapshot);
+    expect(chapters.map((chapter) => publicApi.narrateChapter(chapter))).toEqual([
+      'The chronicle is yet unwritten, and the epic has just begun.',
+    ]);
     expect(publicApi.renderEpic(snapshot).startsWith('<svg')).toBe(true);
   });
 });

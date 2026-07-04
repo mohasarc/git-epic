@@ -1,0 +1,48 @@
+[
+  {
+    "kind": "origin",
+    "date": "2018-01-10"
+  },
+  {
+    "kind": "prolificacy",
+    "date": "2019-01-01",
+    "year": 2019,
+    "contributionCount": 40,
+    "priorYearContributionCount": 15
+  },
+  {
+    "kind": "great-streak",
+    "date": "2019-03-01",
+    "endDate": "2019-04-04",
+    "lengthDays": 35
+  },
+  {
+    "kind": "flagship-rise",
+    "date": "2019-05-01",
+    "repoName": "meridian",
+    "starCount": 950
+  },
+  {
+    "kind": "star-milestone",
+    "date": "2019-05-01",
+    "threshold": 100
+  },
+  {
+    "kind": "dark-age",
+    "date": "2019-09-02",
+    "endDate": "2020-03-31",
+    "lengthDays": 212
+  },
+  {
+    "kind": "language-era",
+    "date": "2022-01-01",
+    "year": 2022,
+    "fromLanguage": "JavaScript",
+    "toLanguage": "TypeScript"
+  },
+  {
+    "kind": "star-milestone",
+    "date": "2022-03-01",
+    "threshold": 1000
+  }
+]
