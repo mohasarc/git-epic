@@ -206,6 +206,86 @@ describe('renderEpicSvg', () => {
     expect(svg).not.toContain('r="40" fill="url(#spark-glow)"');
   });
 
+  it('renders the floor ambient — one orbiting body, eight twinkles — for a zero-history snapshot', () => {
+    const svg = renderEpicSvg(firstSparkTimeline());
+    const orbitingBodies = svg.match(/<circle[^>]*r="2\.2"/g) ?? [];
+    const twinkles = svg.match(/values="0\.2;0\.8;0\.2"/g) ?? [];
+    expect(orbitingBodies.length).toBe(1);
+    expect(twinkles.length).toBe(8);
+    expect(svg).toContain(`fill="#9ad2ff"`);
+  });
+
+  it('renders one orbiting body per derived count, varied by index in radius, period, and accent', () => {
+    const threeRepoSnapshot: HistorySnapshot = {
+      ...firstSparkSnapshot,
+      repositories: [
+        {
+          name: 'stellar-forge',
+          createdDate: '2020-01-01',
+          lastPushedDate: '2024-05-01',
+          starCount: 900,
+          primaryLanguage: 'TypeScript',
+        },
+        {
+          name: 'ember-chronicle',
+          createdDate: '2021-02-03',
+          lastPushedDate: '2024-04-01',
+          starCount: 140,
+          primaryLanguage: 'Rust',
+        },
+        {
+          name: 'quiet-archive',
+          createdDate: '2022-06-09',
+          lastPushedDate: null,
+          starCount: 0,
+          primaryLanguage: null,
+        },
+      ],
+    };
+    const timeline = buildTimeline(threeRepoSnapshot, [
+      { chapter: { kind: 'origin', date: '2019-03-20' }, narration: 'narration' },
+    ]);
+    const svg = renderEpicSvg(timeline);
+
+    const orbitingBodies = svg.match(/<circle[^>]*r="2\.2"[^>]*\/>/g) ?? [];
+    expect(orbitingBodies.length).toBe(3);
+    expect(orbitingBodies[0]).toContain('cx="503"');
+    expect(orbitingBodies[1]).toContain('cx="490"');
+    expect(orbitingBodies[2]).toContain('cx="477"');
+    expect(orbitingBodies[0]).toContain('fill="#9ad2ff"');
+    expect(orbitingBodies[1]).toContain('fill="#9aa8ff"');
+    expect(orbitingBodies[2]).toContain('fill="#9ad2ff"');
+    for (const duration of ['dur="14s"', 'dur="18s"', 'dur="22s"']) {
+      expect(svg).toContain(duration);
+    }
+  });
+
+  it('renders the banded twinkle count while core, halo, and attribution stay fixed', () => {
+    const starredSnapshot: HistorySnapshot = {
+      ...firstSparkSnapshot,
+      repositories: [
+        {
+          name: 'stellar-forge',
+          createdDate: '2020-01-01',
+          lastPushedDate: '2024-05-01',
+          starCount: 1040,
+          primaryLanguage: 'TypeScript',
+        },
+      ],
+    };
+    const timeline = buildTimeline(starredSnapshot, [
+      { chapter: { kind: 'origin', date: '2019-03-20' }, narration: 'narration' },
+    ]);
+    const svg = renderEpicSvg(timeline);
+
+    const twinkles = svg.match(/values="0\.2;0\.8;0\.2"/g) ?? [];
+    expect(twinkles.length).toBe(14);
+    expect(svg).toContain('r="88" fill="none" stroke="#9aa8ff"');
+    expect(svg).toContain('values="6;9;6"');
+    expect(svg).toContain('>The Epic of first-spark</text>');
+    expect(svg).toContain('>✦ forge yours at git-epic.dev</text>');
+  });
+
   it('escapes a handle containing XML metacharacters', () => {
     const hostileSnapshot: HistorySnapshot = { ...firstSparkSnapshot, handle: 'a&b<c>' };
     const timeline = buildTimeline(hostileSnapshot, [

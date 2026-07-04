@@ -28,7 +28,9 @@ import { createSeededRandom } from './seeded-random.js';
 import { PALETTE, STYLE_MOTION, TYPOGRAPHY } from './visual-vocabulary.js';
 
 const BACKDROP_STAR_COUNT = 110;
-const TWINKLE_STAR_COUNT = 8;
+const ORBIT_RADIUS_STEP = 13;
+const ORBIT_PERIOD_STEP_SECONDS = 4;
+const ORBIT_START_ANGLE_STEP_DEGREES = 72;
 
 export function renderEpicSvg(timeline: Timeline): string {
   const random = createSeededRandom(timeline.seed);
@@ -190,8 +192,8 @@ function renderAmbientLayer(
     `<ellipse cx="${formatSvgNumber(CENTER_X)}" cy="${formatSvgNumber(SCENE_CENTER_Y)}" rx="300" ry="135" fill="url(#nebula)" opacity="0.7"/>` +
     dashedHalo(begin) +
     pulsingCore(begin) +
-    orbitingBody(begin) +
-    renderTwinklingStars(begin, random) +
+    orbitingBodies(begin, ambient.orbitingBodyCount) +
+    renderTwinklingStars(begin, ambient.twinkleStarCount, random) +
     centeredText(ambient.epicOfLine, CENTER_X, 345, {
       fontSize: 20,
       fill: 'url(#gilded)',
@@ -220,18 +222,30 @@ function pulsingCore(begin: string): string {
   );
 }
 
-function orbitingBody(begin: string): string {
+function orbitingBodies(begin: string, bodyCount: number): string {
+  let bodies = '';
+  for (let bodyIndex = 0; bodyIndex < bodyCount; bodyIndex += 1) {
+    bodies += orbitingBody(begin, bodyIndex);
+  }
+  return bodies;
+}
+
+function orbitingBody(begin: string, bodyIndex: number): string {
+  const orbitRadius = 88 - ORBIT_RADIUS_STEP * bodyIndex;
+  const periodSeconds = STYLE_MOTION.ambientDriftSeconds + ORBIT_PERIOD_STEP_SECONDS * bodyIndex;
+  const startAngle = ORBIT_START_ANGLE_STEP_DEGREES * bodyIndex;
+  const accent = bodyIndex % 2 === 0 ? PALETTE.orbitBlue : PALETTE.orbitIndigo;
   return (
     `<g>` +
-    `<circle cx="${formatSvgNumber(CENTER_X + 88)}" cy="${formatSvgNumber(SCENE_CENTER_Y)}" r="2.2" fill="${PALETTE.orbitBlue}"/>` +
-    `<animateTransform attributeName="transform" type="rotate" begin="${begin}" dur="${formatSvgNumber(STYLE_MOTION.ambientDriftSeconds)}s" from="0 ${formatSvgNumber(CENTER_X)} ${formatSvgNumber(SCENE_CENTER_Y)}" to="360 ${formatSvgNumber(CENTER_X)} ${formatSvgNumber(SCENE_CENTER_Y)}" repeatCount="indefinite"/>` +
+    `<circle cx="${formatSvgNumber(CENTER_X + orbitRadius)}" cy="${formatSvgNumber(SCENE_CENTER_Y)}" r="2.2" fill="${accent}"/>` +
+    `<animateTransform attributeName="transform" type="rotate" begin="${begin}" dur="${formatSvgNumber(periodSeconds)}s" from="${formatSvgNumber(startAngle)} ${formatSvgNumber(CENTER_X)} ${formatSvgNumber(SCENE_CENTER_Y)}" to="${formatSvgNumber(startAngle + 360)} ${formatSvgNumber(CENTER_X)} ${formatSvgNumber(SCENE_CENTER_Y)}" repeatCount="indefinite"/>` +
     `</g>`
   );
 }
 
-function renderTwinklingStars(begin: string, random: () => number): string {
+function renderTwinklingStars(begin: string, twinkleStarCount: number, random: () => number): string {
   let stars = '';
-  for (let starIndex = 0; starIndex < TWINKLE_STAR_COUNT; starIndex += 1) {
+  for (let starIndex = 0; starIndex < twinkleStarCount; starIndex += 1) {
     const x = random() * CANVAS_WIDTH;
     const y = random() * CANVAS_HEIGHT;
     const duration = STYLE_MOTION.twinklePeriodSeconds + random() * 4;
