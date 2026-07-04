@@ -17,6 +17,7 @@ import {
   ornamentDot,
   sparkGlow,
 } from './scene-primitives.js';
+import { darkAgeScene } from './scenes/dark-age-scene.js';
 import { flagshipRiseScene } from './scenes/flagship-rise-scene.js';
 import { languageEraScene } from './scenes/language-era-scene.js';
 import { originScene } from './scenes/origin-scene.js';
@@ -146,7 +147,7 @@ function chapterSceneVisual(segment: ChapterSceneSegment): string {
     case 'origin':
       return originScene(segment);
     case 'dark-age':
-      return placeholderSceneVisual();
+      return darkAgeScene(segment);
     case 'great-streak':
       return placeholderSceneVisual();
     case 'prolificacy':

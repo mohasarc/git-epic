@@ -137,6 +137,18 @@ describe('renderEpicSvg', () => {
     expect(svg).not.toContain('r="40" fill="url(#spark-glow)"');
   });
 
+  it('dispatches a dark-age chapter to its scene, not the placeholder', () => {
+    const timeline = buildTimeline(firstSparkSnapshot, [
+      {
+        chapter: { kind: 'dark-age', date: '2019-09-02', endDate: '2020-03-31', lengthDays: 212 },
+        narration: 'Then came the Dark Age.',
+      },
+    ]);
+    const svg = renderEpicSvg(timeline);
+    expect(svg).toContain('width="830" height="415" fill="#070b14" opacity="0.55"');
+    expect(svg).not.toContain('r="40" fill="url(#spark-glow)"');
+  });
+
   it('dispatches a language-era chapter to its scene, not the placeholder', () => {
     const timeline = buildTimeline(firstSparkSnapshot, [
       {
