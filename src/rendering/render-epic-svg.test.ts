@@ -64,6 +64,35 @@ describe('renderEpicSvg', () => {
     expectEmbedSafeSvg(svg);
   });
 
+  it('declares the gradients the universe style paints with', () => {
+    const svg = renderEpicSvg(firstSparkTimeline());
+    for (const gradientId of ['nebula', 'spark-glow', 'gilded', 'rule-fade']) {
+      expect(svg).toContain(`id="${gradientId}"`);
+    }
+  });
+
+  it('sets all text in the serif stack with a gilded-gradient title', () => {
+    const svg = renderEpicSvg(firstSparkTimeline());
+    expect(svg).toContain("Georgia, 'Times New Roman', serif");
+    expect(svg).not.toContain('ui-sans-serif');
+    expect(svg).toMatch(/<text[^>]*fill="url\(#gilded\)"[^>]*>THE EPIC OF FIRST-SPARK<\/text>/);
+  });
+
+  it('composes the narration caption as a gilded italic flanked by fading rules', () => {
+    const timeline = firstSparkTimeline();
+    const svg = renderEpicSvg(timeline);
+    const narration = timeline.segments.find((segment) => segment.kind === 'chapter-scene');
+    if (narration?.kind !== 'chapter-scene') throw new Error('expected a chapter scene');
+    const literalNarration = narration.narration.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    expect(svg).toMatch(
+      new RegExp(
+        `<text[^>]*fill="url\\(#gilded\\)"[^>]*font-style="italic"[^>]*>${literalNarration}</text>`,
+      ),
+    );
+    expect(svg).toContain('fill="url(#rule-fade)"');
+    expect(svg).not.toMatch(/<text[^>]*fill="#e8ecf5"[^>]*>In the year/);
+  });
+
   it('escapes a handle containing XML metacharacters', () => {
     const hostileSnapshot: HistorySnapshot = { ...firstSparkSnapshot, handle: 'a&b<c>' };
     const timeline = buildTimeline(hostileSnapshot, [

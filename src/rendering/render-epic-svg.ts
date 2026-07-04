@@ -9,18 +9,12 @@ import type {
 import { escapeXmlText } from './escape-xml-text.js';
 import { formatSvgNumber } from './format-svg-number.js';
 import { createSeededRandom } from './seeded-random.js';
+import { PALETTE, STYLE_MOTION, TYPOGRAPHY } from './visual-vocabulary.js';
 
 const CANVAS_WIDTH = 830;
 const CANVAS_HEIGHT = 415;
 const CENTER_X = CANVAS_WIDTH / 2;
 const SCENE_CENTER_Y = 186;
-
-const BACKGROUND_COLOR = '#070b14';
-const STAR_COLOR = '#dbe6ff';
-const TEXT_COLOR = '#e8ecf5';
-const DIM_TEXT_COLOR = '#8b93a7';
-const SPARK_COLOR = '#ffd27d';
-const FONT_STACK = "ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif";
 
 const BACKDROP_STAR_COUNT = 110;
 const TWINKLE_STAR_COUNT = 8;
@@ -29,11 +23,38 @@ export function renderEpicSvg(timeline: Timeline): string {
   const random = createSeededRandom(timeline.seed);
   return (
     `<svg xmlns="http://www.w3.org/2000/svg" width="${formatSvgNumber(CANVAS_WIDTH)}" height="${formatSvgNumber(CANVAS_HEIGHT)}" viewBox="0 0 ${formatSvgNumber(CANVAS_WIDTH)} ${formatSvgNumber(CANVAS_HEIGHT)}" role="img">` +
-    `<rect width="${formatSvgNumber(CANVAS_WIDTH)}" height="${formatSvgNumber(CANVAS_HEIGHT)}" fill="${BACKGROUND_COLOR}"/>` +
+    renderGradientDefinitions() +
+    `<rect width="${formatSvgNumber(CANVAS_WIDTH)}" height="${formatSvgNumber(CANVAS_HEIGHT)}" fill="${PALETTE.background}"/>` +
     renderBackdropStarfield(random) +
     timeline.segments.map(renderSegment).join('') +
     renderAmbientLayer(timeline.ambient, timeline.replayEndSeconds, random) +
     `</svg>`
+  );
+}
+
+function renderGradientDefinitions(): string {
+  return (
+    `<defs>` +
+    `<radialGradient id="nebula" cx="50%" cy="45%" r="65%">` +
+    `<stop offset="0%" stop-color="${PALETTE.nebulaCore}" stop-opacity="0.85"/>` +
+    `<stop offset="45%" stop-color="${PALETTE.nebulaEdge}" stop-opacity="0.45"/>` +
+    `<stop offset="100%" stop-color="${PALETTE.background}" stop-opacity="0"/>` +
+    `</radialGradient>` +
+    `<radialGradient id="spark-glow" cx="50%" cy="50%" r="50%">` +
+    `<stop offset="0%" stop-color="${PALETTE.spark}" stop-opacity="0.9"/>` +
+    `<stop offset="40%" stop-color="${PALETTE.sparkWarm}" stop-opacity="0.35"/>` +
+    `<stop offset="100%" stop-color="${PALETTE.sparkWarm}" stop-opacity="0"/>` +
+    `</radialGradient>` +
+    `<linearGradient id="gilded" x1="0" y1="0" x2="0" y2="1">` +
+    `<stop offset="0%" stop-color="${PALETTE.gildedLight}"/>` +
+    `<stop offset="100%" stop-color="${PALETTE.gildedDeep}"/>` +
+    `</linearGradient>` +
+    `<linearGradient id="rule-fade" x1="0" y1="0" x2="1" y2="0">` +
+    `<stop offset="0%" stop-color="${PALETTE.gildedDeep}" stop-opacity="0"/>` +
+    `<stop offset="50%" stop-color="${PALETTE.gildedDeep}" stop-opacity="0.8"/>` +
+    `<stop offset="100%" stop-color="${PALETTE.gildedDeep}" stop-opacity="0"/>` +
+    `</linearGradient>` +
+    `</defs>`
   );
 }
 
@@ -44,7 +65,7 @@ function renderBackdropStarfield(random: () => number): string {
     const y = random() * CANVAS_HEIGHT;
     const radius = 0.4 + random() * 1.1;
     const opacity = 0.1 + random() * 0.45;
-    stars += `<circle cx="${formatSvgNumber(x)}" cy="${formatSvgNumber(y)}" r="${formatSvgNumber(radius)}" fill="${STAR_COLOR}" opacity="${formatSvgNumber(opacity)}"/>`;
+    stars += `<circle cx="${formatSvgNumber(x)}" cy="${formatSvgNumber(y)}" r="${formatSvgNumber(radius)}" fill="${PALETTE.starlight}" opacity="${formatSvgNumber(opacity)}"/>`;
   }
   return `<g>${stars}</g>`;
 }
@@ -71,22 +92,58 @@ function segmentRevealAnimation(segment: TimelineSegment): string {
 function titleCardContent(segment: TitleCardSegment): string {
   const title = `THE EPIC OF ${segment.handle.toUpperCase()}`;
   return (
-    centeredText(title, CENTER_X, 200, { fontSize: 36, fill: TEXT_COLOR, fontWeight: 'bold', letterSpacing: 5 }) +
-    centeredText(`· est. ${segment.originYear} ·`, CENTER_X, 240, { fontSize: 17, fill: DIM_TEXT_COLOR, letterSpacing: 3 })
+    sparkGlow(CENTER_X, 150, 26) +
+    `<circle cx="${formatSvgNumber(CENTER_X)}" cy="150" r="3.2" fill="${PALETTE.spark}"/>` +
+    centeredText(title, CENTER_X, 212, {
+      fontSize: 38,
+      fill: 'url(#gilded)',
+      fontWeight: 'bold',
+      letterSpacing: TYPOGRAPHY.titleLetterSpacing,
+    }) +
+    fadingRule(CENTER_X - 130, 232, 260) +
+    centeredText(`· est. ${segment.originYear} ·`, CENTER_X, 258, {
+      fontSize: 16,
+      fill: PALETTE.dimText,
+      letterSpacing: 4,
+    })
   );
 }
 
 function chapterSceneContent(segment: ChapterSceneSegment): string {
   return (
+    `<ellipse cx="${formatSvgNumber(CENTER_X)}" cy="${formatSvgNumber(SCENE_CENTER_Y)}" rx="330" ry="150" fill="url(#nebula)"/>` +
     chapterSceneVisual(segment) +
-    centeredText(segment.narration, CENTER_X, 372, { fontSize: 17, fill: TEXT_COLOR })
+    composedCaption(segment.narration)
   );
+}
+
+function composedCaption(narration: string): string {
+  return (
+    fadingRule(30, 352, 55) +
+    fadingRule(CANVAS_WIDTH - 85, 352, 55) +
+    ornamentDot(95, 352.5) +
+    ornamentDot(CANVAS_WIDTH - 95, 352.5) +
+    centeredText(narration, CENTER_X, 357, {
+      fontSize: 15.5,
+      fill: 'url(#gilded)',
+      fontStyle: 'italic',
+      letterSpacing: 0.5,
+    })
+  );
+}
+
+function fadingRule(x: number, y: number, width: number): string {
+  return `<rect x="${formatSvgNumber(x)}" y="${formatSvgNumber(y)}" width="${formatSvgNumber(width)}" height="1" fill="url(#rule-fade)"/>`;
+}
+
+function ornamentDot(x: number, y: number): string {
+  return `<circle cx="${formatSvgNumber(x)}" cy="${formatSvgNumber(y)}" r="1.8" fill="${PALETTE.gildedDeep}" opacity="0.8"/>`;
 }
 
 function chapterSceneVisual(segment: ChapterSceneSegment): string {
   switch (segment.chapter.kind) {
     case 'origin':
-      return originSpark();
+      return originSpark(segment.startSeconds);
     case 'dark-age':
       return placeholderSceneVisual();
     case 'great-streak':
@@ -102,32 +159,59 @@ function chapterSceneVisual(segment: ChapterSceneSegment): string {
   }
 }
 
-/** Deliberately styleless stand-in until each chapter kind gets its own scene. */
+/** Stand-in glow until each chapter kind gets its own scene. */
 function placeholderSceneVisual(): string {
   return (
-    glowCircle(SCENE_CENTER_Y, 46, 0.05) +
-    glowCircle(SCENE_CENTER_Y, 27, 0.1) +
-    glowCircle(SCENE_CENTER_Y, 13, 0.18)
+    sparkGlow(CENTER_X, SCENE_CENTER_Y, 40) +
+    `<circle cx="${formatSvgNumber(CENTER_X)}" cy="${formatSvgNumber(SCENE_CENTER_Y)}" r="4" fill="${PALETTE.spark}" opacity="0.6"/>`
   );
 }
 
-function originSpark(): string {
+function originSpark(startSeconds: number): string {
   return (
-    glowCircle(SCENE_CENTER_Y, 46, 0.08) +
-    glowCircle(SCENE_CENTER_Y, 27, 0.2) +
-    glowCircle(SCENE_CENTER_Y, 13, 0.55) +
-    `<circle cx="${formatSvgNumber(CENTER_X)}" cy="${formatSvgNumber(SCENE_CENTER_Y)}" r="${formatSvgNumber(5)}" fill="${SPARK_COLOR}"/>`
+    expandingRing(startSeconds + 0.2, 14, 70, PALETTE.spark, 0.6, 0.5) +
+    expandingRing(startSeconds + 0.5, 20, 105, PALETTE.orbitIndigo, 0.5, 0.4) +
+    sparkGlow(CENTER_X, SCENE_CENTER_Y, 34) +
+    `<circle cx="${formatSvgNumber(CENTER_X)}" cy="${formatSvgNumber(SCENE_CENTER_Y)}" r="5" fill="${PALETTE.spark}"/>`
   );
 }
 
-function glowCircle(centerY: number, radius: number, opacity: number): string {
-  return `<circle cx="${formatSvgNumber(CENTER_X)}" cy="${formatSvgNumber(centerY)}" r="${formatSvgNumber(radius)}" fill="${SPARK_COLOR}" opacity="${formatSvgNumber(opacity)}"/>`;
+function expandingRing(
+  beginSeconds: number,
+  fromRadius: number,
+  toRadius: number,
+  strokeColor: string,
+  strokeWidth: number,
+  peakOpacity: number,
+): string {
+  const begin = `${formatSvgNumber(beginSeconds)}s`;
+  const duration = `${formatSvgNumber(STYLE_MOTION.ringExpansionSeconds)}s`;
+  return (
+    `<circle cx="${formatSvgNumber(CENTER_X)}" cy="${formatSvgNumber(SCENE_CENTER_Y)}" r="${formatSvgNumber(toRadius)}" fill="none" stroke="${strokeColor}" stroke-width="${formatSvgNumber(strokeWidth)}" opacity="0">` +
+    `<animate attributeName="r" begin="${begin}" dur="${duration}" values="${formatSvgNumber(fromRadius)};${formatSvgNumber(toRadius)}" fill="freeze"/>` +
+    `<animate attributeName="opacity" begin="${begin}" dur="${duration}" values="${formatSvgNumber(peakOpacity)};0.05" fill="freeze"/>` +
+    `</circle>`
+  );
+}
+
+function sparkGlow(x: number, y: number, radius: number): string {
+  return `<circle cx="${formatSvgNumber(x)}" cy="${formatSvgNumber(y)}" r="${formatSvgNumber(radius)}" fill="url(#spark-glow)"/>`;
 }
 
 function presentDayCardContent(segment: PresentDayCardSegment): string {
   return (
-    centeredText('PRESENT DAY', CENTER_X, 200, { fontSize: 26, fill: TEXT_COLOR, fontWeight: 'bold', letterSpacing: 4 }) +
-    centeredText(segment.capturedAtDate, CENTER_X, 234, { fontSize: 15, fill: DIM_TEXT_COLOR, letterSpacing: 2 })
+    centeredText('PRESENT DAY', CENTER_X, 200, {
+      fontSize: 26,
+      fill: 'url(#gilded)',
+      fontWeight: 'bold',
+      letterSpacing: 4,
+    }) +
+    fadingRule(CENTER_X - 100, 220, 200) +
+    centeredText(segment.capturedAtDate, CENTER_X, 246, {
+      fontSize: 15,
+      fill: PALETTE.dimText,
+      letterSpacing: 2,
+    })
   );
 }
 
@@ -137,18 +221,46 @@ function renderAmbientLayer(
   random: () => number,
 ): string {
   const begin = `${formatSvgNumber(replayEndSeconds)}s`;
-  const pulsingSpark =
-    glowCircle(SCENE_CENTER_Y, 30, 0.16) +
-    `<circle cx="${formatSvgNumber(CENTER_X)}" cy="${formatSvgNumber(SCENE_CENTER_Y)}" r="${formatSvgNumber(6)}" fill="${SPARK_COLOR}">` +
-    `<animate attributeName="r" begin="${begin}" dur="7s" values="6;9;6" repeatCount="indefinite"/>` +
-    `</circle>`;
   return (
     `<g opacity="0">` +
-    pulsingSpark +
+    `<ellipse cx="${formatSvgNumber(CENTER_X)}" cy="${formatSvgNumber(SCENE_CENTER_Y)}" rx="300" ry="135" fill="url(#nebula)" opacity="0.7"/>` +
+    dashedHalo(begin) +
+    pulsingCore(begin) +
+    orbitingBody(begin) +
     renderTwinklingStars(begin, random) +
-    centeredText(ambient.epicOfLine, CENTER_X, 342, { fontSize: 20, fill: TEXT_COLOR, letterSpacing: 1 }) +
-    centeredText(ambient.creditLine, CENTER_X, 390, { fontSize: 13, fill: DIM_TEXT_COLOR }) +
+    centeredText(ambient.epicOfLine, CENTER_X, 345, {
+      fontSize: 20,
+      fill: 'url(#gilded)',
+      letterSpacing: 1.5,
+    }) +
+    centeredText(ambient.creditLine, CENTER_X, 391, { fontSize: 13, fill: PALETTE.dimText }) +
     `<animate attributeName="opacity" begin="${begin}" dur="1.2s" values="0;1" fill="freeze"/>` +
+    `</g>`
+  );
+}
+
+function dashedHalo(begin: string): string {
+  return (
+    `<circle cx="${formatSvgNumber(CENTER_X)}" cy="${formatSvgNumber(SCENE_CENTER_Y)}" r="88" fill="none" stroke="${PALETTE.orbitIndigo}" stroke-width="0.5" opacity="0.14" stroke-dasharray="2 7">` +
+    `<animateTransform attributeName="transform" type="rotate" begin="${begin}" dur="${formatSvgNumber(STYLE_MOTION.haloRotationSeconds)}s" from="0 ${formatSvgNumber(CENTER_X)} ${formatSvgNumber(SCENE_CENTER_Y)}" to="360 ${formatSvgNumber(CENTER_X)} ${formatSvgNumber(SCENE_CENTER_Y)}" repeatCount="indefinite"/>` +
+    `</circle>`
+  );
+}
+
+function pulsingCore(begin: string): string {
+  return (
+    sparkGlow(CENTER_X, SCENE_CENTER_Y, 30) +
+    `<circle cx="${formatSvgNumber(CENTER_X)}" cy="${formatSvgNumber(SCENE_CENTER_Y)}" r="6" fill="${PALETTE.spark}">` +
+    `<animate attributeName="r" begin="${begin}" dur="${formatSvgNumber(STYLE_MOTION.corePulseSeconds)}s" values="6;9;6" repeatCount="indefinite"/>` +
+    `</circle>`
+  );
+}
+
+function orbitingBody(begin: string): string {
+  return (
+    `<g>` +
+    `<circle cx="${formatSvgNumber(CENTER_X + 88)}" cy="${formatSvgNumber(SCENE_CENTER_Y)}" r="2.2" fill="${PALETTE.orbitBlue}"/>` +
+    `<animateTransform attributeName="transform" type="rotate" begin="${begin}" dur="${formatSvgNumber(STYLE_MOTION.ambientDriftSeconds)}s" from="0 ${formatSvgNumber(CENTER_X)} ${formatSvgNumber(SCENE_CENTER_Y)}" to="360 ${formatSvgNumber(CENTER_X)} ${formatSvgNumber(SCENE_CENTER_Y)}" repeatCount="indefinite"/>` +
     `</g>`
   );
 }
@@ -158,9 +270,9 @@ function renderTwinklingStars(begin: string, random: () => number): string {
   for (let starIndex = 0; starIndex < TWINKLE_STAR_COUNT; starIndex += 1) {
     const x = random() * CANVAS_WIDTH;
     const y = random() * CANVAS_HEIGHT;
-    const duration = 4 + random() * 4;
+    const duration = STYLE_MOTION.twinklePeriodSeconds + random() * 4;
     stars +=
-      `<circle cx="${formatSvgNumber(x)}" cy="${formatSvgNumber(y)}" r="${formatSvgNumber(1.4)}" fill="${STAR_COLOR}" opacity="0.2">` +
+      `<circle cx="${formatSvgNumber(x)}" cy="${formatSvgNumber(y)}" r="${formatSvgNumber(1.4)}" fill="${PALETTE.starlight}" opacity="0.2">` +
       `<animate attributeName="opacity" begin="${begin}" dur="${formatSvgNumber(duration)}s" values="0.2;0.8;0.2" repeatCount="indefinite"/>` +
       `</circle>`;
   }
@@ -171,17 +283,19 @@ type CenteredTextOptions = {
   fontSize: number;
   fill: string;
   fontWeight?: string;
+  fontStyle?: string;
   letterSpacing?: number;
 };
 
 function centeredText(content: string, x: number, y: number, options: CenteredTextOptions): string {
   const fontWeight = options.fontWeight ? ` font-weight="${options.fontWeight}"` : '';
+  const fontStyle = options.fontStyle ? ` font-style="${options.fontStyle}"` : '';
   const letterSpacing =
     options.letterSpacing === undefined
       ? ''
       : ` letter-spacing="${formatSvgNumber(options.letterSpacing)}"`;
   return (
-    `<text x="${formatSvgNumber(x)}" y="${formatSvgNumber(y)}" text-anchor="middle" font-family="${FONT_STACK}" font-size="${formatSvgNumber(options.fontSize)}" fill="${options.fill}"${fontWeight}${letterSpacing}>` +
+    `<text x="${formatSvgNumber(x)}" y="${formatSvgNumber(y)}" text-anchor="middle" font-family="${TYPOGRAPHY.fontStack}" font-size="${formatSvgNumber(options.fontSize)}" fill="${options.fill}"${fontWeight}${fontStyle}${letterSpacing}>` +
     escapeXmlText(content) +
     `</text>`
   );
