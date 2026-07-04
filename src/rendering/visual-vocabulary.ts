@@ -10,13 +10,13 @@ export const PALETTE = {
   dimText: '#8b93a7',
   orbitBlue: '#9ad2ff',
   orbitIndigo: '#9aa8ff',
-};
+} as const;
 
 export const TYPOGRAPHY = {
   fontStack: "Georgia, 'Times New Roman', serif",
   titleLetterSpacing: 7,
   captionTreatment: 'gilded italic flanked by fading rules and ornament dots',
-};
+} as const;
 
 export const STYLE_MOTION = {
   twinklePeriodSeconds: 4,
@@ -24,4 +24,4 @@ export const STYLE_MOTION = {
   ambientDriftSeconds: 14,
   haloRotationSeconds: 60,
   ringExpansionSeconds: 2.6,
-};
+} as const;

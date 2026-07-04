@@ -159,7 +159,7 @@ function chapterSceneVisual(segment: ChapterSceneSegment): string {
   }
 }
 
-/** Deliberately styleless stand-in until each chapter kind gets its own scene. */
+/** Stand-in glow until each chapter kind gets its own scene. */
 function placeholderSceneVisual(): string {
   return (
     sparkGlow(CENTER_X, SCENE_CENTER_Y, 40) +

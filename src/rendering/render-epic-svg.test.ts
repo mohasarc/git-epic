@@ -83,9 +83,10 @@ describe('renderEpicSvg', () => {
     const svg = renderEpicSvg(timeline);
     const narration = timeline.segments.find((segment) => segment.kind === 'chapter-scene');
     if (narration?.kind !== 'chapter-scene') throw new Error('expected a chapter scene');
+    const literalNarration = narration.narration.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     expect(svg).toMatch(
       new RegExp(
-        `<text[^>]*fill="url\\(#gilded\\)"[^>]*font-style="italic"[^>]*>${narration.narration}</text>`,
+        `<text[^>]*fill="url\\(#gilded\\)"[^>]*font-style="italic"[^>]*>${literalNarration}</text>`,
       ),
     );
     expect(svg).toContain('fill="url(#rule-fade)"');
