@@ -1,0 +1,48 @@
+[
+  {
+    "kind": "origin",
+    "date": "2019-03-20"
+  },
+  {
+    "kind": "flagship-rise",
+    "date": "2019-06-01",
+    "repoName": "lighthouse",
+    "starCount": 150
+  },
+  {
+    "kind": "star-milestone",
+    "date": "2019-06-01",
+    "threshold": 100
+  },
+  {
+    "kind": "flagship-rise",
+    "date": "2020-02-01",
+    "repoName": "forge",
+    "starCount": 900
+  },
+  {
+    "kind": "language-era",
+    "date": "2021-01-01",
+    "year": 2021,
+    "fromLanguage": "TypeScript",
+    "toLanguage": "Rust"
+  },
+  {
+    "kind": "flagship-rise",
+    "date": "2021-03-01",
+    "repoName": "obsidian",
+    "starCount": 9000
+  },
+  {
+    "kind": "dark-age",
+    "date": "2023-01-31",
+    "endDate": "2024-05-31",
+    "lengthDays": 487
+  },
+  {
+    "kind": "dark-age",
+    "date": "2024-06-02",
+    "endDate": "2026-06-29",
+    "lengthDays": 758
+  }
+]
