@@ -1,0 +1,20 @@
+{
+  "handle": "renown-gatherer",
+  "accountCreatedDate": "2019-06-01",
+  "firstPublicActivityDate": "2019-07-01",
+  "capturedAtDate": "2026-07-04",
+  "contributionDays": [{ "date": "2026-06-30", "count": 1 }],
+  "repositories": [
+    { "name": "spark-01", "createdDate": "2020-01-05", "lastPushedDate": "2024-01-01", "starCount": 91, "primaryLanguage": null },
+    { "name": "spark-02", "createdDate": "2020-05-11", "lastPushedDate": "2024-01-01", "starCount": 91, "primaryLanguage": null },
+    { "name": "spark-03", "createdDate": "2020-09-02", "lastPushedDate": "2024-01-01", "starCount": 91, "primaryLanguage": null },
+    { "name": "spark-04", "createdDate": "2021-01-20", "lastPushedDate": "2024-01-01", "starCount": 91, "primaryLanguage": null },
+    { "name": "spark-05", "createdDate": "2021-06-14", "lastPushedDate": "2024-01-01", "starCount": 91, "primaryLanguage": null },
+    { "name": "spark-06", "createdDate": "2021-11-30", "lastPushedDate": "2024-01-01", "starCount": 91, "primaryLanguage": null },
+    { "name": "spark-07", "createdDate": "2022-03-08", "lastPushedDate": "2024-01-01", "starCount": 91, "primaryLanguage": null },
+    { "name": "spark-08", "createdDate": "2022-08-19", "lastPushedDate": "2024-01-01", "starCount": 91, "primaryLanguage": null },
+    { "name": "spark-09", "createdDate": "2023-02-27", "lastPushedDate": "2024-01-01", "starCount": 91, "primaryLanguage": null },
+    { "name": "spark-10", "createdDate": "2023-07-04", "lastPushedDate": "2024-01-01", "starCount": 91, "primaryLanguage": null },
+    { "name": "spark-11", "createdDate": "2023-12-01", "lastPushedDate": "2024-01-01", "starCount": 90, "primaryLanguage": null }
+  ]
+}
