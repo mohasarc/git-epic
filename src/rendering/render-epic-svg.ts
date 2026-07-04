@@ -19,6 +19,7 @@ import {
 } from './scene-primitives.js';
 import { darkAgeScene } from './scenes/dark-age-scene.js';
 import { flagshipRiseScene } from './scenes/flagship-rise-scene.js';
+import { greatStreakScene } from './scenes/great-streak-scene.js';
 import { languageEraScene } from './scenes/language-era-scene.js';
 import { originScene } from './scenes/origin-scene.js';
 import { prolificacyScene } from './scenes/prolificacy-scene.js';
@@ -149,7 +150,7 @@ function chapterSceneVisual(segment: ChapterSceneSegment): string {
     case 'dark-age':
       return darkAgeScene(segment);
     case 'great-streak':
-      return placeholderSceneVisual();
+      return greatStreakScene(segment);
     case 'prolificacy':
       return prolificacyScene(segment);
     case 'flagship-rise':
@@ -161,13 +162,6 @@ function chapterSceneVisual(segment: ChapterSceneSegment): string {
   }
 }
 
-/** Stand-in glow until each chapter kind gets its own scene. */
-function placeholderSceneVisual(): string {
-  return (
-    sparkGlow(CENTER_X, SCENE_CENTER_Y, 40) +
-    `<circle cx="${formatSvgNumber(CENTER_X)}" cy="${formatSvgNumber(SCENE_CENTER_Y)}" r="4" fill="${PALETTE.spark}" opacity="0.6"/>`
-  );
-}
 
 function presentDayCardContent(segment: PresentDayCardSegment): string {
   return (
