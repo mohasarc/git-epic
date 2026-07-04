@@ -42,7 +42,7 @@ function radiatingStars(beginSeconds: number, starCount: number): string {
       `<circle cx="${formatSvgNumber(CENTER_X)}" cy="${formatSvgNumber(SCENE_CENTER_Y)}" r="1.8" fill="${PALETTE.spark}" opacity="0">` +
       `<animate attributeName="cx" begin="${begin}" dur="${duration}" values="${formatSvgNumber(CENTER_X)};${formatSvgNumber(toX)}" fill="freeze"/>` +
       `<animate attributeName="cy" begin="${begin}" dur="${duration}" values="${formatSvgNumber(SCENE_CENTER_Y)};${formatSvgNumber(toY)}" fill="freeze"/>` +
-      `<animate attributeName="opacity" begin="${begin}" dur="${duration}" values="0.9;0.35" fill="freeze"/>` +
+      `<animate attributeName="opacity" begin="${begin}" dur="${duration}" values="0.9;0.55" fill="freeze"/>` +
       `</circle>`;
   }
   return stars;
