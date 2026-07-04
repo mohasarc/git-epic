@@ -24,6 +24,22 @@ describe('loadHistorySnapshotFixture', () => {
     expect(snapshot.repositories).toEqual([]);
   });
 
+  it('loads the rich history account fixture', () => {
+    const snapshot = loadHistorySnapshotFixture('rich-history-account.json');
+
+    expect(snapshot.handle).toBe('saga-weaver');
+    expect(snapshot.contributionDays.length).toBe(58);
+    expect(snapshot.repositories.length).toBe(2);
+  });
+
+  it('loads the fifteen-year overflow fixture', () => {
+    const snapshot = loadHistorySnapshotFixture('fifteen-year-overflow.json');
+
+    expect(snapshot.handle).toBe('long-march');
+    expect(snapshot.contributionDays.length).toBe(71);
+    expect(snapshot.repositories.length).toBe(4);
+  });
+
   it('throws with the attempted path for a nonexistent fixture', () => {
     expect(() => loadHistorySnapshotFixture('no-such-fixture.json')).toThrow(
       /test-fixtures[\\/]no-such-fixture\.json/,
