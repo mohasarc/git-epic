@@ -17,6 +17,7 @@ import {
   ornamentDot,
   sparkGlow,
 } from './scene-primitives.js';
+import { flagshipRiseScene } from './scenes/flagship-rise-scene.js';
 import { originScene } from './scenes/origin-scene.js';
 import { createSeededRandom } from './seeded-random.js';
 import { PALETTE, STYLE_MOTION, TYPOGRAPHY } from './visual-vocabulary.js';
@@ -148,7 +149,7 @@ function chapterSceneVisual(segment: ChapterSceneSegment): string {
     case 'prolificacy':
       return placeholderSceneVisual();
     case 'flagship-rise':
-      return placeholderSceneVisual();
+      return flagshipRiseScene(segment);
     case 'star-milestone':
       return placeholderSceneVisual();
     case 'language-era':

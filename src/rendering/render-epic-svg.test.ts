@@ -93,6 +93,18 @@ describe('renderEpicSvg', () => {
     expect(svg).not.toMatch(/<text[^>]*fill="#e8ecf5"[^>]*>In the year/);
   });
 
+  it('dispatches a flagship-rise chapter to its scene, not the placeholder', () => {
+    const timeline = buildTimeline(firstSparkSnapshot, [
+      {
+        chapter: { kind: 'flagship-rise', date: '2021-06-01', repoName: 'stellar-forge', starCount: 4200 },
+        narration: 'And lo, stellar-forge rose among the constellations.',
+      },
+    ]);
+    const svg = renderEpicSvg(timeline);
+    expect(svg).toContain('<animateTransform attributeName="transform" type="translate"');
+    expect(svg).not.toContain('r="40" fill="url(#spark-glow)"');
+  });
+
   it('escapes a handle containing XML metacharacters', () => {
     const hostileSnapshot: HistorySnapshot = { ...firstSparkSnapshot, handle: 'a&b<c>' };
     const timeline = buildTimeline(hostileSnapshot, [
