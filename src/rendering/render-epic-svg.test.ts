@@ -137,6 +137,25 @@ describe('renderEpicSvg', () => {
     expect(svg).not.toContain('r="40" fill="url(#spark-glow)"');
   });
 
+  it('dispatches a language-era chapter to its scene, not the placeholder', () => {
+    const timeline = buildTimeline(firstSparkSnapshot, [
+      {
+        chapter: {
+          kind: 'language-era',
+          date: '2022-01-01',
+          year: 2022,
+          fromLanguage: 'JavaScript',
+          toLanguage: 'TypeScript',
+        },
+        narration: 'In the year 2022, the developer forsook JavaScript.',
+      },
+    ]);
+    const svg = renderEpicSvg(timeline);
+    expect(svg).toContain('values="0.9;0.15"');
+    expect(svg).toContain('values="0.15;0.9"');
+    expect(svg).not.toContain('r="40" fill="url(#spark-glow)"');
+  });
+
   it('escapes a handle containing XML metacharacters', () => {
     const hostileSnapshot: HistorySnapshot = { ...firstSparkSnapshot, handle: 'a&b<c>' };
     const timeline = buildTimeline(hostileSnapshot, [

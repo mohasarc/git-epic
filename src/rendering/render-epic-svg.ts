@@ -18,6 +18,7 @@ import {
   sparkGlow,
 } from './scene-primitives.js';
 import { flagshipRiseScene } from './scenes/flagship-rise-scene.js';
+import { languageEraScene } from './scenes/language-era-scene.js';
 import { originScene } from './scenes/origin-scene.js';
 import { prolificacyScene } from './scenes/prolificacy-scene.js';
 import { starMilestoneScene } from './scenes/star-milestone-scene.js';
@@ -155,7 +156,7 @@ function chapterSceneVisual(segment: ChapterSceneSegment): string {
     case 'star-milestone':
       return starMilestoneScene(segment);
     case 'language-era':
-      return placeholderSceneVisual();
+      return languageEraScene(segment);
   }
 }
 
