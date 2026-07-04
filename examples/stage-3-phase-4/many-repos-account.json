@@ -1,0 +1,28 @@
+{
+  "handle": "constellation-smith",
+  "accountCreatedDate": "2015-06-01",
+  "firstPublicActivityDate": "2015-07-04",
+  "capturedAtDate": "2026-07-04",
+  "contributionDays": [
+    { "date": "2015-07-04", "count": 3 },
+    { "date": "2016-03-10", "count": 5 },
+    { "date": "2017-01-15", "count": 4 },
+    { "date": "2018-05-20", "count": 6 },
+    { "date": "2019-09-01", "count": 4 },
+    { "date": "2020-04-11", "count": 7 },
+    { "date": "2021-08-23", "count": 5 },
+    { "date": "2022-02-14", "count": 6 },
+    { "date": "2023-06-30", "count": 4 },
+    { "date": "2024-10-05", "count": 8 },
+    { "date": "2025-03-17", "count": 5 },
+    { "date": "2026-06-28", "count": 6 }
+  ],
+  "repositories": [
+    { "name": "nova-anvil", "createdDate": "2015-08-01", "lastPushedDate": "2026-06-01", "starCount": 8200, "primaryLanguage": "TypeScript" },
+    { "name": "ember-atlas", "createdDate": "2017-02-01", "lastPushedDate": "2025-11-01", "starCount": 2400, "primaryLanguage": "Rust" },
+    { "name": "comet-ledger", "createdDate": "2018-09-01", "lastPushedDate": "2024-08-01", "starCount": 900, "primaryLanguage": "Go" },
+    { "name": "quiet-orrery", "createdDate": "2020-01-01", "lastPushedDate": "2023-05-01", "starCount": 310, "primaryLanguage": "Python" },
+    { "name": "drifting-archive", "createdDate": "2021-07-01", "lastPushedDate": "2022-12-01", "starCount": 45, "primaryLanguage": null },
+    { "name": "spark-notes", "createdDate": "2023-03-01", "lastPushedDate": null, "starCount": 5, "primaryLanguage": null }
+  ]
+}

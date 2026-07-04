@@ -25,7 +25,15 @@ export type PresentDayCardSegment = {
 
 export type TimelineSegment = TitleCardSegment | ChapterSceneSegment | PresentDayCardSegment;
 
-export type AmbientScene = { handle: string; epicOfLine: string; creditLine: string };
+export type AmbientScene = {
+  handle: string;
+  epicOfLine: string;
+  creditLine: string;
+  /** 1..5, from repository count. */
+  orbitingBodyCount: number;
+  /** Floor 8, banded from total star count. */
+  twinkleStarCount: number;
+};
 
 export type Timeline = {
   handle: string;
