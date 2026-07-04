@@ -7,10 +7,10 @@ import { detectLanguageEraChapters } from './language-era-chapter.js';
 import { detectOriginChapter } from './origin-chapter.js';
 import { detectProlificacyChapters } from './prolificacy-chapter.js';
 import { detectStarMilestoneChapters } from './star-milestone-chapter.js';
+import { capChaptersByDrama, sortChaptersForDisplay } from './order-chapters.js';
 
-/** Stage 2 adds ordering, precedence tie-breaking, and the 8-chapter cap here. */
 export function detectChapters(snapshot: HistorySnapshot): Chapter[] {
-  return [
+  const firedChapters = [
     detectOriginChapter(snapshot),
     ...detectDarkAgeChapters(snapshot),
     ...detectGreatStreakChapters(snapshot),
@@ -19,4 +19,5 @@ export function detectChapters(snapshot: HistorySnapshot): Chapter[] {
     ...detectStarMilestoneChapters(snapshot),
     ...detectLanguageEraChapters(snapshot),
   ];
+  return sortChaptersForDisplay(capChaptersByDrama(firedChapters));
 }
