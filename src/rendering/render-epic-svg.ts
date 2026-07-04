@@ -13,11 +13,11 @@ import {
   CENTER_X,
   SCENE_CENTER_Y,
   centeredText,
-  expandingRing,
   fadingRule,
   ornamentDot,
   sparkGlow,
 } from './scene-primitives.js';
+import { originScene } from './scenes/origin-scene.js';
 import { createSeededRandom } from './seeded-random.js';
 import { PALETTE, STYLE_MOTION, TYPOGRAPHY } from './visual-vocabulary.js';
 
@@ -140,7 +140,7 @@ function composedCaption(narration: string): string {
 function chapterSceneVisual(segment: ChapterSceneSegment): string {
   switch (segment.chapter.kind) {
     case 'origin':
-      return originSpark(segment.startSeconds);
+      return originScene(segment);
     case 'dark-age':
       return placeholderSceneVisual();
     case 'great-streak':
@@ -161,33 +161,6 @@ function placeholderSceneVisual(): string {
   return (
     sparkGlow(CENTER_X, SCENE_CENTER_Y, 40) +
     `<circle cx="${formatSvgNumber(CENTER_X)}" cy="${formatSvgNumber(SCENE_CENTER_Y)}" r="4" fill="${PALETTE.spark}" opacity="0.6"/>`
-  );
-}
-
-function originSpark(startSeconds: number): string {
-  return (
-    expandingRing({
-      cx: CENTER_X,
-      cy: SCENE_CENTER_Y,
-      beginSeconds: startSeconds + 0.2,
-      fromRadius: 14,
-      toRadius: 70,
-      strokeColor: PALETTE.spark,
-      strokeWidth: 0.6,
-      peakOpacity: 0.5,
-    }) +
-    expandingRing({
-      cx: CENTER_X,
-      cy: SCENE_CENTER_Y,
-      beginSeconds: startSeconds + 0.5,
-      fromRadius: 20,
-      toRadius: 105,
-      strokeColor: PALETTE.orbitIndigo,
-      strokeWidth: 0.5,
-      peakOpacity: 0.4,
-    }) +
-    sparkGlow(CENTER_X, SCENE_CENTER_Y, 34) +
-    `<circle cx="${formatSvgNumber(CENTER_X)}" cy="${formatSvgNumber(SCENE_CENTER_Y)}" r="5" fill="${PALETTE.spark}"/>`
   );
 }
 
