@@ -16,25 +16,6 @@ When scope and a principle conflict, the principle wins.
 
 Repo is a freshly scaffolded TypeScript package: tooling, lint, vitest, no source yet. The spec fixes the visual grammar structure (830×415 dark canvas, replay ≤ 35s, ambient loop, permanent attribution) but leaves the art style to be selected from rendered prototypes and documented as a spec amendment. The core of the product is a pure function from public GitHub data to an animated SVG; the service around it adds fetching, caching, and two unauthenticated GET endpoints. Working name and domain are pending.
 
-## Stage 0 — Art style selection
-
-**What we deliver.** A chosen art style, decided from hand-built rendered prototypes, documented as an amendment to the functional spec. After this stage every rendering decision has a visual target.
-
-**Why this stage.** The spec's structure is style-independent but every scene, the title card, and the ambient state need a style to be drawn in. Prototypes need no pipeline — standalone SVG sketches suffice — so this decision costs nothing to make first and avoids restyling rework in every later stage.
-
-**In scope.**
-
-- Two or three prototype SVGs of the leading candidates (universe-from-first-commit among them), each showing a title card, one chapter scene, and an ambient frame.
-- Verify prototypes animate inside a GitHub README (SMIL survives GitHub's image proxy).
-- Pick one; record the choice and its visual vocabulary as a spec amendment.
-
-**Out of scope.**
-
-- Any pipeline or library code (Stage 1).
-- Scenes for every chapter type (Stage 3).
-
-**Done when.** A prototype embedded in a real README on github.com plays its animation, and the spec carries an amendment naming the chosen style.
-
 ## Stage 1 — Grace-floor epic, end to end
 
 **What we deliver.** The smallest complete epic: given a snapshot of a user's public data, the library produces a deterministic animated SVG — title card, Origin chapter with templated narration, present-day card, ambient state with permanent attribution. This is the spec's grace-floor epic (3.6), and it is a real, embeddable artifact.
@@ -45,7 +26,7 @@ Repo is a freshly scaffolded TypeScript package: tooling, lint, vitest, no sourc
 
 - Data snapshot shape the whole pipeline consumes, built from fixtures.
 - Origin chapter detection and its narration template.
-- Rendering: title card, one chapter scene, present-day card, ambient loop with "The Epic of &lt;handle&gt;" and the forge-yours credit line, in the Stage 0 style, on the 830×415 dark canvas.
+- Rendering: title card, one chapter scene, present-day card, ambient loop with "The Epic of &lt;handle&gt;" and the forge-yours credit line, in a placeholder style, on the 830×415 dark canvas. Final style comes from Stage 0, which now runs after Stage 2 and restyles these surfaces.
 - Byte-for-byte determinism test: same fixture twice → identical document.
 - A way to run the pipeline locally against a fixture and eyeball the output.
 
@@ -77,6 +58,30 @@ Repo is a freshly scaffolded TypeScript package: tooling, lint, vitest, no sourc
 - Live data (Stage 4).
 
 **Done when.** Every catalog rule has boundary tests, a rich fixture produces exactly the spec's precedence-ordered capped chapter list with narration, and the same fixture always yields the identical list.
+
+## Stage 0 — Art style selection
+
+Planned as the first stage, skipped in practice — Stages 1 and 2 shipped without it. Moved here, ahead of the heavy visual work, and adapted: it now also covers restyling what Stage 1 already renders. Keeps its number; references elsewhere stay valid.
+
+**What we deliver.** A chosen art style, decided from rendered prototypes, documented as an amendment to the functional spec, with Stage 1's grace-floor rendering restyled to match. After this stage every rendering decision has a visual target.
+
+**Why this stage.** Stage 3 draws a scene per chapter type; starting that without a locked style means restyling all of it later. The skip was cheap so far: Stage 2 is data-only, and Stage 1's visual surface is small — title card, Origin scene, present-day card, ambient frame. That surface is the whole repair bill.
+
+**In scope.**
+
+- Two or three prototype SVGs of the leading candidates (universe-from-first-commit among them), each showing a title card, one chapter scene, and an ambient frame. Standalone sketches or renders through the existing pipeline — both work now that a pipeline exists.
+- Style ideation may use image-generation tools; committed prototypes are hand-built SVG.
+- Storytelling is visual: minimal text, and any text is a styled element of the composition, not a subtitle under a scene. This constraint goes into the amendment.
+- Verify prototypes animate inside a GitHub README (SMIL survives GitHub's image proxy).
+- Pick one; record the choice and its visual vocabulary as a spec amendment.
+- Restyle Stage 1's rendered surfaces to the chosen style; determinism tests keep passing.
+
+**Out of scope.**
+
+- Scenes for the full chapter catalog (Stage 3).
+- Detection, narration, and data changes — Stages 1–2 logic stays untouched; only rendering changes.
+
+**Done when.** A prototype embedded in a real README on github.com plays its animation, the spec carries an amendment naming the chosen style and its text-minimal storytelling rules, and the grace-floor epic renders in that style.
 
 ## Stage 3 — Full replay and ambient rendering
 
@@ -192,9 +197,9 @@ Per the spec's v1 exclusions — catalogued so they don't leak into stages:
 
 | Stage | Delivers | Primary new capability |
 | --- | --- | --- |
-| 0 | Chosen art style, spec amendment | Visual target verified inside GitHub |
 | 1 | Grace-floor epic from fixtures | End-to-end pipeline shape, determinism |
 | 2 | All seven chapter rules + narration | Any history → capped narrated chapter list |
+| 0 | Chosen art style, spec amendment, grace-floor restyle | Visual target verified inside GitHub |
 | 3 | Full replay + ambient | Any history → complete rendered saga |
 | 4 | Live GitHub data | Real handles, real epics, locally |
 | 5 | Image endpoint | Live embeddable URL, freshness, failure cards |
