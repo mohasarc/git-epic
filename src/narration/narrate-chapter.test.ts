@@ -38,6 +38,50 @@ describe('narrateChapter', () => {
     ).toBe('Then began the relentless campaign: thirty days of unbroken toil.');
   });
 
+  it('narrates a flagship rise with a dramatic star quantity', () => {
+    expect(
+      narrateChapter({
+        kind: 'flagship-rise',
+        date: '2021-04-10',
+        repoName: 'symnav',
+        starCount: 100,
+      }),
+    ).toBe('And lo, symnav rose from nothing, and a hundred stars gathered to witness it.');
+  });
+
+  it('rounds the flagship star count dramatically', () => {
+    expect(
+      narrateChapter({
+        kind: 'flagship-rise',
+        date: '2021-04-10',
+        repoName: 'symnav',
+        starCount: 350,
+      }),
+    ).toBe('And lo, symnav rose from nothing, and three hundred stars gathered to witness it.');
+  });
+
+  it.each([
+    [100, 'a hundred'] as const,
+    [1000, 'a thousand'] as const,
+    [10000, 'ten thousand'] as const,
+  ])('narrates the %i-star milestone with its fixed threshold string', (threshold, spelled) => {
+    expect(narrateChapter({ kind: 'star-milestone', date: '2022-06-15', threshold })).toBe(
+      `And renown gathered upon the developer: ${spelled} stars in all.`,
+    );
+  });
+
+  it('narrates a language era change naming only the forsaken language', () => {
+    expect(
+      narrateChapter({
+        kind: 'language-era',
+        date: '2021-01-01',
+        year: 2021,
+        fromLanguage: 'JavaScript',
+        toLanguage: 'Rust',
+      }),
+    ).toBe('In the year 2021, the developer forsook JavaScript, and there was much refactoring.');
+  });
+
   it('narrates prolificacy with the year as a numeral', () => {
     expect(
       narrateChapter({

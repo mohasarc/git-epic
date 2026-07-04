@@ -26,5 +26,35 @@ export type ProlificacyChapter = {
   priorYearContributionCount: number;
 };
 
-/** Discriminated union; three more chapter kinds arrive across Stage 2. */
-export type Chapter = OriginChapter | DarkAgeChapter | GreatStreakChapter | ProlificacyChapter;
+export type FlagshipRiseChapter = {
+  kind: 'flagship-rise';
+  /** Degraded dating: the repo's createdDate (star-event timestamps unfetchable logged-out). */
+  date: string;
+  repoName: string;
+  starCount: number;
+};
+
+export type StarMilestoneChapter = {
+  kind: 'star-milestone';
+  /** createdDate of the repo whose addition crossed the threshold. */
+  date: string;
+  threshold: 100 | 1000 | 10000;
+};
+
+export type LanguageEraChapter = {
+  kind: 'language-era';
+  /** Y-01-01. */
+  date: string;
+  year: number;
+  fromLanguage: string;
+  toLanguage: string;
+};
+
+export type Chapter =
+  | OriginChapter
+  | DarkAgeChapter
+  | GreatStreakChapter
+  | ProlificacyChapter
+  | FlagshipRiseChapter
+  | StarMilestoneChapter
+  | LanguageEraChapter;

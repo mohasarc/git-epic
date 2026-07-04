@@ -1,0 +1,30 @@
+{
+  "handle": "polyglot",
+  "accountCreatedDate": "2019-01-01",
+  "firstPublicActivityDate": "2019-04-01",
+  "capturedAtDate": "2026-07-04",
+  "contributionDays": [{ "date": "2026-06-30", "count": 1 }],
+  "repositories": [
+    {
+      "name": "old-guard",
+      "createdDate": "2019-05-01",
+      "lastPushedDate": "2020-12-01",
+      "starCount": 12,
+      "primaryLanguage": "TypeScript"
+    },
+    {
+      "name": "ferrous",
+      "createdDate": "2021-02-01",
+      "lastPushedDate": "2022-03-01",
+      "starCount": 40,
+      "primaryLanguage": "Rust"
+    },
+    {
+      "name": "oxide",
+      "createdDate": "2021-05-01",
+      "lastPushedDate": "2021-08-01",
+      "starCount": 8,
+      "primaryLanguage": "Rust"
+    }
+  ]
+}
