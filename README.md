@@ -2,6 +2,10 @@
 
 Your GitHub history replayed as an animated cinematic SVG — "The Epic of `<handle>`" — living in your profile README.
 
+![The Epic of saga-weaver](examples/stage-0-phase-5/rich-history-account.svg)
+
+Rendered from [`test-fixtures/rich-history-account.json`](test-fixtures/rich-history-account.json) — title card, chapter replay, then a living ambient state. Animation is baked in (SMIL); it plays right here on github.com.
+
 Spec: [`plans/000/git-epic-functional-spec.md`](plans/000/git-epic-functional-spec.md)
 
 ## Usage
