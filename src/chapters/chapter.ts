@@ -26,5 +26,5 @@ export type ProlificacyChapter = {
   priorYearContributionCount: number;
 };
 
-/** Discriminated union; five more chapter kinds arrive across Stage 2. */
-export type Chapter = OriginChapter;
+/** Discriminated union; three more chapter kinds arrive across Stage 2. */
+export type Chapter = OriginChapter | DarkAgeChapter | GreatStreakChapter | ProlificacyChapter;
