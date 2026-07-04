@@ -8,16 +8,16 @@ Working pick: **universe-from-first-commit**. Override by naming another candida
 
 Rich end of the SMIL-weight spectrum: nebula gradients, expanding rings, orbiting bodies, twinkling stars.
 
-![universe-from-first-commit](https://raw.githubusercontent.com/mohasarc/git-epic/f68f4858d4ef4f26fe8fdf020c23a4557ff88c66/examples/stage-0-prototypes/universe-from-first-commit.svg)
+![universe-from-first-commit](https://raw.githubusercontent.com/mohasarc/git-epic/3636c2bb77aa69aa9ce7737d9e937e10d124b997/examples/stage-0-prototypes/universe-from-first-commit.svg)
 
 ## illuminated-manuscript
 
 Text-minimal stress test: gold-leaf frame, drop-cap panel, caption set as a manuscript line between rules.
 
-![illuminated-manuscript](https://raw.githubusercontent.com/mohasarc/git-epic/f68f4858d4ef4f26fe8fdf020c23a4557ff88c66/examples/stage-0-prototypes/illuminated-manuscript.svg)
+![illuminated-manuscript](https://raw.githubusercontent.com/mohasarc/git-epic/3636c2bb77aa69aa9ce7737d9e937e10d124b997/examples/stage-0-prototypes/illuminated-manuscript.svg)
 
 ## constellation-cartography
 
 Cheap end of the SMIL-weight spectrum: thin chart lines, one dash-march loop, one pulse.
 
-![constellation-cartography](https://raw.githubusercontent.com/mohasarc/git-epic/f68f4858d4ef4f26fe8fdf020c23a4557ff88c66/examples/stage-0-prototypes/constellation-cartography.svg)
+![constellation-cartography](https://raw.githubusercontent.com/mohasarc/git-epic/3636c2bb77aa69aa9ce7737d9e937e10d124b997/examples/stage-0-prototypes/constellation-cartography.svg)
