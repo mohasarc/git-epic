@@ -33,6 +33,8 @@ describe('entry point', () => {
       accountCreatedDate: '2020-01-01',
       firstPublicActivityDate: null,
       capturedAtDate: '2026-07-04',
+      contributionDays: [],
+      repositories: [],
     };
     expect(publicApi.renderEpic(snapshot).startsWith('<svg')).toBe(true);
   });

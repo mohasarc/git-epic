@@ -9,6 +9,8 @@ const firstSparkSnapshot: HistorySnapshot = {
   accountCreatedDate: '2019-03-18',
   firstPublicActivityDate: '2019-03-20',
   capturedAtDate: '2026-07-04',
+  contributionDays: [],
+  repositories: [],
 };
 
 function firstSparkTimeline(): Timeline {

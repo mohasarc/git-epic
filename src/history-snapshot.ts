@@ -1,10 +1,29 @@
 /** Dates are date-only ISO strings (YYYY-MM-DD), UTC. */
+export type ContributionDay = { date: string; count: number };
+
+export type RepositorySummary = {
+  name: string;
+  createdDate: string;
+  /** null = never pushed (empty repo). */
+  lastPushedDate: string | null;
+  starCount: number;
+  primaryLanguage: string | null;
+};
+
 export type HistorySnapshot = {
   /** GitHub login, canonical casing (canonicalization is the Stage 4 fetch layer's job). */
   handle: string;
   accountCreatedDate: string;
-  /** null for an account with zero public activity. No ordering guarantee vs accountCreatedDate. */
+  /**
+   * null for an account with zero public activity — implies contributionDays and
+   * repositories are empty (a public repo is public activity). Fetch layer contract.
+   * No ordering guarantee vs accountCreatedDate.
+   */
   firstPublicActivityDate: string | null;
   /** The "now" the present-day card marks. In the snapshot so rendering stays pure. */
   capturedAtDate: string;
+  /** Days with ≥1 public contribution only, ascending by date. */
+  contributionDays: ContributionDay[];
+  /** Public repos, ascending by createdDate. */
+  repositories: RepositorySummary[];
 };
