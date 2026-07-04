@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import * as publicApi from './index.js';
 import type { HistorySnapshot } from './index.js';
 import { renderEpic } from './render-epic.js';
+import { buildHistorySnapshot } from './test-support/build-history-snapshot.js';
 import { loadHistorySnapshotFixture } from './test-support/load-history-snapshot-fixture.js';
 
 const fixtureFileNames = ['single-contribution-account.json', 'brand-new-account.json'];
@@ -20,6 +21,22 @@ describe('renderEpic', () => {
       expect(first === second).toBe(true);
     });
   }
+
+  it('renders the dark age narration caption when the chapter fires', () => {
+    const darkAgeSnapshot = () =>
+      buildHistorySnapshot({
+        contributionDays: [
+          { date: '2019-03-20', count: 1 },
+          { date: '2019-09-17', count: 1 },
+        ],
+        capturedAtDate: '2019-09-20',
+      });
+    const svg = renderEpic(darkAgeSnapshot());
+    expect(svg).toContain(
+      'Then came the Dark Age: one hundred and eighty days, and not a single commit.',
+    );
+    expect(renderEpic(darkAgeSnapshot()) === svg).toBe(true);
+  });
 });
 
 describe('entry point', () => {
