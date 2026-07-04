@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { detectChapters } from './chapters/detect-chapters.js';
 import * as publicApi from './index.js';
-import type { HistorySnapshot } from './index.js';
+import type { Chapter, HistorySnapshot } from './index.js';
 import { narrateChapter } from './narration/narrate-chapter.js';
 import { renderEpic } from './render-epic.js';
 import { buildHistorySnapshot } from './test-support/build-history-snapshot.js';
@@ -56,11 +56,15 @@ describe('renderEpic', () => {
 });
 
 describe('entry point', () => {
-  it('exports exactly renderEpic at runtime', () => {
-    expect(Object.keys(publicApi).sort()).toEqual(['renderEpic']);
+  it('exports exactly renderEpic, detectChapters, and narrateChapter at runtime', () => {
+    expect(Object.keys(publicApi).sort()).toEqual([
+      'detectChapters',
+      'narrateChapter',
+      'renderEpic',
+    ]);
   });
 
-  it('exports the HistorySnapshot type', () => {
+  it('exports the HistorySnapshot and Chapter types', () => {
     const snapshot: HistorySnapshot = {
       handle: 'type-check',
       accountCreatedDate: '2020-01-01',
@@ -69,6 +73,10 @@ describe('entry point', () => {
       contributionDays: [],
       repositories: [],
     };
+    const chapters: Chapter[] = publicApi.detectChapters(snapshot);
+    expect(chapters.map((chapter) => publicApi.narrateChapter(chapter))).toEqual([
+      'The chronicle is yet unwritten, and the epic has just begun.',
+    ]);
     expect(publicApi.renderEpic(snapshot).startsWith('<svg')).toBe(true);
   });
 });
