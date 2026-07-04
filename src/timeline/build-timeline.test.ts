@@ -102,6 +102,20 @@ describe('buildTimeline', () => {
     expect(timeline.ambient).toMatchObject({ orbitingBodyCount: 3, twinkleStarCount: 14 });
   });
 
+  it('keeps the rich-history replay within the 35-second budget', () => {
+    const snapshot = loadHistorySnapshotFixture('rich-history-account.json');
+    const narratedChapters: NarratedChapter[] = detectChapters(snapshot).map((chapter) => ({
+      chapter,
+      narration: narrateChapter(chapter),
+    }));
+
+    const timeline = buildTimeline(snapshot, narratedChapters);
+
+    const chapterScenes = timeline.segments.filter((segment) => segment.kind === 'chapter-scene');
+    expect(chapterScenes).toHaveLength(8);
+    expect(timeline.replayEndSeconds).toBeLessThanOrEqual(35);
+  });
+
   it('derives the seed from the handle', () => {
     expect(singleContributionTimeline().seed).toBe(3131498761);
   });

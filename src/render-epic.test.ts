@@ -4,6 +4,15 @@ import * as publicApi from './index.js';
 import type { Chapter, HistorySnapshot } from './index.js';
 import { narrateChapter } from './narration/narrate-chapter.js';
 import { renderEpic } from './render-epic.js';
+import { darkAgeScene } from './rendering/scenes/dark-age-scene.js';
+import { flagshipRiseScene } from './rendering/scenes/flagship-rise-scene.js';
+import { greatStreakScene } from './rendering/scenes/great-streak-scene.js';
+import { languageEraScene } from './rendering/scenes/language-era-scene.js';
+import { originScene } from './rendering/scenes/origin-scene.js';
+import { prolificacyScene } from './rendering/scenes/prolificacy-scene.js';
+import { starMilestoneScene } from './rendering/scenes/star-milestone-scene.js';
+import { buildTimeline } from './timeline/build-timeline.js';
+import type { ChapterSceneSegment } from './timeline/timeline.js';
 import { buildHistorySnapshot } from './test-support/build-history-snapshot.js';
 import { loadHistorySnapshotFixture } from './test-support/load-history-snapshot-fixture.js';
 
@@ -35,6 +44,35 @@ describe('renderEpic', () => {
 
     for (const chapter of detectChapters(snapshot)) {
       expect(svg).toContain(narrateChapter(chapter));
+    }
+  });
+
+  it('renders every scene kind for the rich history fixture', () => {
+    const sceneVisualByKind = {
+      origin: originScene,
+      'dark-age': darkAgeScene,
+      'great-streak': greatStreakScene,
+      prolificacy: prolificacyScene,
+      'flagship-rise': flagshipRiseScene,
+      'star-milestone': starMilestoneScene,
+      'language-era': languageEraScene,
+    };
+    const snapshot = loadHistorySnapshotFixture('rich-history-account.json');
+    const narratedChapters = detectChapters(snapshot).map((chapter) => ({
+      chapter,
+      narration: narrateChapter(chapter),
+    }));
+    const sceneSegments = buildTimeline(snapshot, narratedChapters).segments.filter(
+      (segment): segment is ChapterSceneSegment => segment.kind === 'chapter-scene',
+    );
+
+    const svg = renderEpic(snapshot);
+
+    expect(new Set(sceneSegments.map((segment) => segment.chapter.kind))).toEqual(
+      new Set(Object.keys(sceneVisualByKind)),
+    );
+    for (const segment of sceneSegments) {
+      expect(svg).toContain(sceneVisualByKind[segment.chapter.kind](segment));
     }
   });
 
