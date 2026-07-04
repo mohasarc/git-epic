@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="830" height="415" viewBox="0 0 830 415" role="img">
+  <defs>
+    <radialGradient id="nebula" cx="50%" cy="45%" r="65%">
+      <stop offset="0%" stop-color="#2b2a5e" stop-opacity="0.85"/>
+      <stop offset="45%" stop-color="#1a1c3f" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#070b14" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="spark-glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffd27d" stop-opacity="0.9"/>
+      <stop offset="40%" stop-color="#ffb45e" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#ffb45e" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="gilded" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f7ecd0"/>
+      <stop offset="100%" stop-color="#d9b45b"/>
+    </linearGradient>
+    <linearGradient id="rule-fade" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#d9b45b" stop-opacity="0"/>
+      <stop offset="50%" stop-color="#d9b45b" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#d9b45b" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="830" height="415" fill="#070b14"/>
+
+  <g>
+    <circle cx="62" cy="47" r="1.1" fill="#dbe6ff" opacity="0.35"/>
+    <circle cx="141" cy="322" r="0.8" fill="#dbe6ff" opacity="0.25"/>
+    <circle cx="204" cy="88" r="1.3" fill="#dbe6ff" opacity="0.4"/>
+    <circle cx="273" cy="251" r="0.7" fill="#dbe6ff" opacity="0.2"/>
+    <circle cx="335" cy="41" r="1" fill="#dbe6ff" opacity="0.3"/>
+    <circle cx="398" cy="301" r="0.9" fill="#dbe6ff" opacity="0.25"/>
+    <circle cx="472" cy="66" r="1.2" fill="#dbe6ff" opacity="0.45"/>
+    <circle cx="529" cy="215" r="0.7" fill="#dbe6ff" opacity="0.2"/>
+    <circle cx="596" cy="128" r="1" fill="#dbe6ff" opacity="0.35"/>
+    <circle cx="655" cy="338" r="1.2" fill="#dbe6ff" opacity="0.3"/>
+    <circle cx="716" cy="74" r="0.8" fill="#dbe6ff" opacity="0.25"/>
+    <circle cx="781" cy="256" r="1.1" fill="#dbe6ff" opacity="0.4"/>
+    <circle cx="97" cy="180" r="0.9" fill="#dbe6ff" opacity="0.3"/>
+    <circle cx="758" cy="157" r="0.9" fill="#dbe6ff" opacity="0.3"/>
+    <circle cx="437" cy="373" r="0.8" fill="#dbe6ff" opacity="0.2"/>
+    <circle cx="308" cy="142" r="0.6" fill="#dbe6ff" opacity="0.2"/>
+    <circle cx="519" cy="356" r="0.9" fill="#dbe6ff" opacity="0.25"/>
+    <circle cx="176" cy="391" r="0.7" fill="#dbe6ff" opacity="0.2"/>
+  </g>
+
+  <g opacity="0">
+    <circle cx="415" cy="150" r="26" fill="url(#spark-glow)"/>
+    <circle cx="415" cy="150" r="3.2" fill="#ffd27d"/>
+    <text x="415" y="212" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="38" fill="url(#gilded)" font-weight="bold" letter-spacing="7">THE EPIC OF OCTOCAT</text>
+    <rect x="285" y="232" width="260" height="1" fill="url(#rule-fade)"/>
+    <text x="415" y="258" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="16" fill="#8b93a7" letter-spacing="4">· est. 2011 ·</text>
+    <animate attributeName="opacity" begin="0s" dur="3s" values="0;1;1;0" keyTimes="0;0.12;0.88;1" fill="freeze"/>
+  </g>
+
+  <g opacity="0">
+    <ellipse cx="415" cy="175" rx="330" ry="150" fill="url(#nebula)"/>
+    <circle cx="415" cy="175" r="70" fill="none" stroke="#ffd27d" stroke-width="0.6" opacity="0.25">
+      <animate attributeName="r" begin="3.2s" dur="2.6s" values="14;70" fill="freeze"/>
+      <animate attributeName="opacity" begin="3.2s" dur="2.6s" values="0.5;0.08" fill="freeze"/>
+    </circle>
+    <circle cx="415" cy="175" r="105" fill="none" stroke="#9aa8ff" stroke-width="0.5" opacity="0.18">
+      <animate attributeName="r" begin="3.5s" dur="2.6s" values="20;105" fill="freeze"/>
+      <animate attributeName="opacity" begin="3.5s" dur="2.6s" values="0.4;0.05" fill="freeze"/>
+    </circle>
+    <circle cx="415" cy="175" r="34" fill="url(#spark-glow)"/>
+    <circle cx="415" cy="175" r="5" fill="#ffd27d"/>
+    <g>
+      <circle cx="493" cy="175" r="2.4" fill="#9ad2ff"/>
+      <circle cx="367" cy="129" r="1.7" fill="#f0c9ff"/>
+      <animateTransform attributeName="transform" type="rotate" begin="3s" dur="9s" from="0 415 175" to="360 415 175" repeatCount="indefinite"/>
+    </g>
+    <rect x="30" y="352" width="55" height="1" fill="url(#rule-fade)"/>
+    <rect x="745" y="352" width="55" height="1" fill="url(#rule-fade)"/>
+    <circle cx="95" cy="352.5" r="1.8" fill="#d9b45b" opacity="0.8"/>
+    <circle cx="735" cy="352.5" r="1.8" fill="#d9b45b" opacity="0.8"/>
+    <text x="415" y="357" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="15.5" font-style="italic" fill="url(#gilded)" letter-spacing="0.5">In the year 2011, the developer first set foot upon the public forge, and the epic began.</text>
+    <animate attributeName="opacity" begin="3s" dur="3.5s" values="0;1;1;0" keyTimes="0;0.12;0.88;1" fill="freeze"/>
+  </g>
+
+  <g opacity="0">
+    <ellipse cx="415" cy="180" rx="300" ry="135" fill="url(#nebula)" opacity="0.7"/>
+    <circle cx="415" cy="180" r="88" fill="none" stroke="#9aa8ff" stroke-width="0.5" opacity="0.14" stroke-dasharray="2 7">
+      <animateTransform attributeName="transform" type="rotate" begin="6.5s" dur="60s" from="0 415 180" to="360 415 180" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="415" cy="180" r="30" fill="url(#spark-glow)"/>
+    <circle cx="415" cy="180" r="6" fill="#ffd27d">
+      <animate attributeName="r" begin="6.5s" dur="7s" values="6;9;6" repeatCount="indefinite"/>
+    </circle>
+    <g>
+      <circle cx="503" cy="180" r="2.2" fill="#9ad2ff"/>
+      <animateTransform attributeName="transform" type="rotate" begin="6.5s" dur="14s" from="0 415 180" to="360 415 180" repeatCount="indefinite"/>
+    </g>
+    <circle cx="150" cy="90" r="1.4" fill="#dbe6ff" opacity="0.2">
+      <animate attributeName="opacity" begin="6.5s" dur="5s" values="0.2;0.8;0.2" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="700" cy="120" r="1.4" fill="#dbe6ff" opacity="0.2">
+      <animate attributeName="opacity" begin="7.3s" dur="6s" values="0.2;0.75;0.2" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="250" cy="330" r="1.4" fill="#dbe6ff" opacity="0.2">
+      <animate attributeName="opacity" begin="8.1s" dur="4.5s" values="0.2;0.7;0.2" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="620" cy="310" r="1.4" fill="#dbe6ff" opacity="0.2">
+      <animate attributeName="opacity" begin="6.9s" dur="5.5s" values="0.2;0.8;0.2" repeatCount="indefinite"/>
+    </circle>
+    <text x="415" y="345" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="20" fill="url(#gilded)" letter-spacing="1.5">The Epic of octocat</text>
+    <text x="415" y="391" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="13" fill="#8b93a7">✦ forge yours at git-epic.dev</text>
+    <animate attributeName="opacity" begin="6.5s" dur="1.2s" values="0;1" fill="freeze"/>
+  </g>
+</svg>
