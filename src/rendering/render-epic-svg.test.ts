@@ -105,6 +105,19 @@ describe('renderEpicSvg', () => {
     expect(svg).not.toContain('r="40" fill="url(#spark-glow)"');
   });
 
+  it('dispatches a star-milestone chapter to its scene, not the placeholder', () => {
+    const timeline = buildTimeline(firstSparkSnapshot, [
+      {
+        chapter: { kind: 'star-milestone', date: '2022-01-05', threshold: 1000 },
+        narration: 'A thousand stars now sang the name.',
+      },
+    ]);
+    const svg = renderEpicSvg(timeline);
+    const burstStars = svg.match(/<circle[^>]*r="1\.8" fill="#ffd27d"/g) ?? [];
+    expect(burstStars.length).toBe(10);
+    expect(svg).not.toContain('r="40" fill="url(#spark-glow)"');
+  });
+
   it('escapes a handle containing XML metacharacters', () => {
     const hostileSnapshot: HistorySnapshot = { ...firstSparkSnapshot, handle: 'a&b<c>' };
     const timeline = buildTimeline(hostileSnapshot, [
