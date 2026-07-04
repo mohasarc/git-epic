@@ -1,0 +1,35 @@
+{
+  "handle": "unwritten-legend",
+  "seed": 2190956661,
+  "segments": [
+    {
+      "kind": "title-card",
+      "startSeconds": 0,
+      "durationSeconds": 3,
+      "handle": "unwritten-legend",
+      "originYear": 2026
+    },
+    {
+      "kind": "chapter-scene",
+      "startSeconds": 3,
+      "durationSeconds": 3.5,
+      "chapter": {
+        "kind": "origin",
+        "date": null
+      },
+      "narration": "The chronicle is yet unwritten, and the epic has just begun."
+    },
+    {
+      "kind": "present-day-card",
+      "startSeconds": 6.5,
+      "durationSeconds": 3,
+      "capturedAtDate": "2026-07-04"
+    }
+  ],
+  "replayEndSeconds": 9.5,
+  "ambient": {
+    "handle": "unwritten-legend",
+    "epicOfLine": "The Epic of unwritten-legend",
+    "creditLine": "✦ forge yours at git-epic.dev"
+  }
+}
