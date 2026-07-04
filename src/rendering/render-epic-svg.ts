@@ -19,6 +19,7 @@ import {
 } from './scene-primitives.js';
 import { flagshipRiseScene } from './scenes/flagship-rise-scene.js';
 import { originScene } from './scenes/origin-scene.js';
+import { prolificacyScene } from './scenes/prolificacy-scene.js';
 import { starMilestoneScene } from './scenes/star-milestone-scene.js';
 import { createSeededRandom } from './seeded-random.js';
 import { PALETTE, STYLE_MOTION, TYPOGRAPHY } from './visual-vocabulary.js';
@@ -148,7 +149,7 @@ function chapterSceneVisual(segment: ChapterSceneSegment): string {
     case 'great-streak':
       return placeholderSceneVisual();
     case 'prolificacy':
-      return placeholderSceneVisual();
+      return prolificacyScene(segment);
     case 'flagship-rise':
       return flagshipRiseScene(segment);
     case 'star-milestone':
