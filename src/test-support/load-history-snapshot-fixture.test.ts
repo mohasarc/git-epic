@@ -11,6 +11,8 @@ describe('loadHistorySnapshotFixture', () => {
       accountCreatedDate: '2019-03-14',
       firstPublicActivityDate: '2019-03-20',
       capturedAtDate: '2026-07-04',
+      contributionDays: [],
+      repositories: [],
     });
   });
 
@@ -18,6 +20,8 @@ describe('loadHistorySnapshotFixture', () => {
     const snapshot = loadHistorySnapshotFixture('brand-new-account.json');
 
     expect(snapshot.firstPublicActivityDate).toBeNull();
+    expect(snapshot.contributionDays).toEqual([]);
+    expect(snapshot.repositories).toEqual([]);
   });
 
   it('throws with the attempted path for a nonexistent fixture', () => {
