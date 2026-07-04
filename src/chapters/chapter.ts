@@ -58,3 +58,14 @@ export type Chapter =
   | FlagshipRiseChapter
   | StarMilestoneChapter
   | LanguageEraChapter;
+
+/** Spec §8.1 drama order; also the §7 same-date tie-break. */
+export const CHAPTER_TYPE_PRECEDENCE: readonly Chapter['kind'][] = [
+  'origin',
+  'flagship-rise',
+  'dark-age',
+  'language-era',
+  'star-milestone',
+  'great-streak',
+  'prolificacy',
+];
