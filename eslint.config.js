@@ -12,6 +12,14 @@ export default [
     },
     rules: {
       ...tsPlugin.configs['recommended'].rules,
+      'no-restricted-properties': [
+        'error',
+        {
+          object: 'Math',
+          property: 'random',
+          message: 'Use createSeededRandom — rendering must be deterministic.',
+        },
+      ],
     },
   },
 ];
