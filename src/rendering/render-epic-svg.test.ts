@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { HistorySnapshot } from '../history-snapshot.js';
+import { expectEmbedSafeSvg } from '../test-support/expect-embed-safe-svg.js';
 import { buildTimeline } from '../timeline/build-timeline.js';
 import type { Timeline } from '../timeline/timeline.js';
 import { renderEpicSvg } from './render-epic-svg.js';
@@ -60,12 +61,7 @@ describe('renderEpicSvg', () => {
 
   it('contains no scripts, external references, or event attributes', () => {
     const svg = renderEpicSvg(firstSparkTimeline());
-    expect(svg).not.toContain('<script');
-    expect(svg).not.toContain('@import');
-    expect(svg).not.toMatch(/\son\w+=/i);
-    const withoutSvgNamespace = svg.replace('xmlns="http://www.w3.org/2000/svg"', '');
-    expect(withoutSvgNamespace).not.toContain('http://');
-    expect(withoutSvgNamespace).not.toContain('https://');
+    expectEmbedSafeSvg(svg);
   });
 
   it('escapes a handle containing XML metacharacters', () => {
