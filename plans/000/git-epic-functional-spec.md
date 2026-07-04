@@ -150,7 +150,7 @@ Not accepted: POST requests, handle lists, org handles, repo paths (`owner/repo`
 
 ## 6. Visual Grammar
 
-The art style (leading candidate: a universe forming from the first commit) is selected from rendered prototypes and documented as an amendment here; the structure below is style-independent and fixed.
+The art style (leading candidate: a universe forming from the first commit) is selected from rendered prototypes and documented as an amendment here; the structure below is style-independent and fixed. The chosen style is recorded in [Amendment 1](#amendment-1--art-style-provisional-until-the-prototypes-pr-is-approved).
 
 **Canvas**: 830 × 415, dark background. Scales down proportionally when the README column is narrower.
 
@@ -250,3 +250,20 @@ Then came the Dark Age: one hundred and forty days, and not a single commit.
 | Epic image | Animated SVG replaying a user's public GitHub history as a parody saga, settling into a living ambient scene |
 | Generator page | Type a handle, watch the epic render, copy the embed snippet |
 | Embed behavior | Replay per profile visit, permanent attribution, click-through that seeds the viral loop |
+
+## 10. Amendments
+
+### Amendment 1 — Art style (provisional until the prototypes PR is approved)
+
+**Style**: universe-from-first-commit. The epic is a universe forming from the first commit: the origin renders as a golden spark whose expanding rings, orbiting bodies, and nebula glow accumulate into the present-day cosmos.
+
+**Visual vocabulary**:
+
+- **Palette**: near-black space background `#070b14`; indigo nebula depths `#2b2a5e` → `#1a1c3f`; gold origin spark `#ffd27d` warming to `#ffb45e`; gilded text gradient `#f7ecd0` → `#d9b45b`; starlight `#dbe6ff`; cool accent bodies `#9ad2ff`, `#9aa8ff`, `#f0c9ff`; muted metadata `#8b93a7`.
+- **Motifs**: static starfield of sub-1.5px stars; radial nebula glow centered on the scene; a glowing core (spark-glow halo around a solid gold nucleus); expanding rings that fade as they grow; orbiting bodies on rotate transforms; thin gold rules with fade-out ends flanking ornament dots.
+- **Typography**: Georgia / Times New Roman serif throughout. Title in gilded-gradient bold caps with wide letter-spacing; narration in gilded italic; metadata (est. year, attribution) small in muted `#8b93a7`.
+- **Style motion**: replay beats are one-shot `fill="freeze"` animations (ring expansion, scene cross-fades); ambient state loops slow indefinite motion — multi-second star twinkle, ~7 s core pulse, 14 s+ orbit periods, a 60 s dashed halo rotation. Motion reads as drift, never as a spinner.
+
+**Text-minimal rule**: minimal text; any text is a styled element of the composition — gilded, letter-spaced, flanked by rules — never a subtitle under a scene.
+
+**Provenance**: three candidates — universe-from-first-commit, illuminated-manuscript, constellation-cartography — prototyped in [`examples/stage-0-prototypes/`](../../examples/stage-0-prototypes/) and verified to animate through GitHub's camo proxy. Ratifying PR: [#18](https://github.com/mohasarc/git-epic/pull/18); reviewer silence ratifies the default, an override there reruns the style-dependent phases.
