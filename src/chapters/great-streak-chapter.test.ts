@@ -1,15 +1,14 @@
 import { describe, expect, it } from 'vitest';
 
+import { addDays } from '../dates/add-days.js';
 import type { ContributionDay } from '../history-snapshot.js';
 import { buildHistorySnapshot } from '../test-support/build-history-snapshot.js';
 import { detectGreatStreakChapters } from './great-streak-chapter.js';
 
 function consecutiveDays(startDate: string, lengthDays: number): ContributionDay[] {
-  const [year, month, day] = startDate.split('-').map(Number);
   const days: ContributionDay[] = [];
   for (let offset = 0; offset < lengthDays; offset += 1) {
-    const date = new Date(Date.UTC(year, month - 1, day + offset)).toISOString().slice(0, 10);
-    days.push({ date, count: 1 });
+    days.push({ date: addDays(startDate, offset), count: 1 });
   }
   return days;
 }
