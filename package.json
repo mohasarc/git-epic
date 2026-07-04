@@ -1,0 +1,49 @@
+{
+  "name": "git-epic",
+  "version": "0.0.1",
+  "description": "Your GitHub history replayed as an animated cinematic SVG for profile READMEs.",
+  "license": "MIT",
+  "author": "Mohammed S. Yaseen <moha.98.1900@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mohasarc/git-epic.git"
+  },
+  "homepage": "https://github.com/mohasarc/git-epic#readme",
+  "bugs": "https://github.com/mohasarc/git-epic/issues",
+  "keywords": [
+    "svg",
+    "github",
+    "readme",
+    "profile",
+    "animation"
+  ],
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "test": "vitest run",
+    "lint": "eslint src",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^26.0.1",
+    "@typescript-eslint/eslint-plugin": "^8.0.0",
+    "@typescript-eslint/parser": "^8.0.0",
+    "eslint": "^9.0.0",
+    "typescript": "^5.5.0",
+    "vitest": "^2.0.0"
+  }
+}
