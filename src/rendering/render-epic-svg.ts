@@ -162,7 +162,6 @@ function chapterSceneVisual(segment: ChapterSceneSegment): string {
   }
 }
 
-
 function presentDayCardContent(segment: PresentDayCardSegment): string {
   return (
     centeredText('PRESENT DAY', CENTER_X, 200, {

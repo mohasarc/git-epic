@@ -1,7 +1,7 @@
+import type { ChapterSceneSegment } from '../../timeline/timeline.js';
 import { formatSvgNumber } from '../format-svg-number.js';
 import { CENTER_X, SCENE_CENTER_Y, sparkGlow } from '../scene-primitives.js';
 import { PALETTE } from '../visual-vocabulary.js';
-import type { ChapterSceneSegment } from '../../timeline/timeline.js';
 
 const BODY_OFFSET_X = 58;
 const RISE_DISTANCE = 34;
