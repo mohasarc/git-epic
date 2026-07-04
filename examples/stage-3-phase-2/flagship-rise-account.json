@@ -1,0 +1,16 @@
+{
+  "handle": "shipwright",
+  "accountCreatedDate": "2020-01-01",
+  "firstPublicActivityDate": "2020-02-01",
+  "capturedAtDate": "2026-07-04",
+  "contributionDays": [{ "date": "2026-06-30", "count": 1 }],
+  "repositories": [
+    {
+      "name": "lodestar",
+      "createdDate": "2021-04-10",
+      "lastPushedDate": "2026-06-01",
+      "starCount": 350,
+      "primaryLanguage": "TypeScript"
+    }
+  ]
+}

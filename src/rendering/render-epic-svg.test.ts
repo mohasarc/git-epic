@@ -93,6 +93,50 @@ describe('renderEpicSvg', () => {
     expect(svg).not.toMatch(/<text[^>]*fill="#e8ecf5"[^>]*>In the year/);
   });
 
+  it('dispatches a flagship-rise chapter to its scene, not the placeholder', () => {
+    const timeline = buildTimeline(firstSparkSnapshot, [
+      {
+        chapter: { kind: 'flagship-rise', date: '2021-06-01', repoName: 'stellar-forge', starCount: 4200 },
+        narration: 'And lo, stellar-forge rose among the constellations.',
+      },
+    ]);
+    const svg = renderEpicSvg(timeline);
+    expect(svg).toContain('<animateTransform attributeName="transform" type="translate"');
+    expect(svg).not.toContain('r="40" fill="url(#spark-glow)"');
+  });
+
+  it('dispatches a star-milestone chapter to its scene, not the placeholder', () => {
+    const timeline = buildTimeline(firstSparkSnapshot, [
+      {
+        chapter: { kind: 'star-milestone', date: '2022-01-05', threshold: 1000 },
+        narration: 'A thousand stars now sang the name.',
+      },
+    ]);
+    const svg = renderEpicSvg(timeline);
+    const burstStars = svg.match(/<circle[^>]*r="1\.8" fill="#ffd27d"/g) ?? [];
+    expect(burstStars.length).toBe(10);
+    expect(svg).not.toContain('r="40" fill="url(#spark-glow)"');
+  });
+
+  it('dispatches a prolificacy chapter to its scene, not the placeholder', () => {
+    const timeline = buildTimeline(firstSparkSnapshot, [
+      {
+        chapter: {
+          kind: 'prolificacy',
+          date: '2023-01-01',
+          year: 2023,
+          contributionCount: 1900,
+          priorYearContributionCount: 400,
+        },
+        narration: 'In 2023 the forge never cooled.',
+      },
+    ]);
+    const svg = renderEpicSvg(timeline);
+    const bloomSparks = svg.match(/<circle[^>]*r="2" fill="#ffd27d" opacity="0">/g) ?? [];
+    expect(bloomSparks.length).toBe(8);
+    expect(svg).not.toContain('r="40" fill="url(#spark-glow)"');
+  });
+
   it('escapes a handle containing XML metacharacters', () => {
     const hostileSnapshot: HistorySnapshot = { ...firstSparkSnapshot, handle: 'a&b<c>' };
     const timeline = buildTimeline(hostileSnapshot, [
