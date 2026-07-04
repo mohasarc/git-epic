@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { buildHistorySnapshot } from '../test-support/build-history-snapshot.js';
+import { buildRepositorySummary } from '../test-support/build-repository-summary.js';
 import { loadHistorySnapshotFixture } from '../test-support/load-history-snapshot-fixture.js';
 import { detectChapters } from './detect-chapters.js';
 
@@ -42,6 +43,51 @@ describe('detectChapters', () => {
         year: 2024,
         contributionCount: 60,
         priorYearContributionCount: 30,
+      },
+    ]);
+  });
+
+  it('concatenates flagship rise, star milestone, and language era chapters', () => {
+    const snapshot = buildHistorySnapshot({
+      contributionDays: [{ date: '2026-06-30', count: 1 }],
+      capturedAtDate: '2026-07-04',
+      repositories: [
+        buildRepositorySummary({
+          name: 'old-guard',
+          createdDate: '2019-06-01',
+          lastPushedDate: '2020-11-01',
+          starCount: 150,
+          primaryLanguage: 'TypeScript',
+        }),
+        buildRepositorySummary({
+          name: 'ferrous',
+          createdDate: '2021-02-01',
+          lastPushedDate: '2022-03-01',
+          starCount: 900,
+          primaryLanguage: 'Rust',
+        }),
+        buildRepositorySummary({
+          name: 'oxide',
+          createdDate: '2021-05-01',
+          lastPushedDate: '2021-08-01',
+          starCount: 0,
+          primaryLanguage: 'Rust',
+        }),
+      ],
+    });
+
+    expect(detectChapters(snapshot)).toEqual([
+      { kind: 'origin', date: '2019-03-20' },
+      { kind: 'flagship-rise', date: '2019-06-01', repoName: 'old-guard', starCount: 150 },
+      { kind: 'flagship-rise', date: '2021-02-01', repoName: 'ferrous', starCount: 900 },
+      { kind: 'star-milestone', date: '2019-06-01', threshold: 100 },
+      { kind: 'star-milestone', date: '2021-02-01', threshold: 1000 },
+      {
+        kind: 'language-era',
+        date: '2021-01-01',
+        year: 2021,
+        fromLanguage: 'TypeScript',
+        toLanguage: 'Rust',
       },
     ]);
   });
