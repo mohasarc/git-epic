@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { detectChapters } from '../chapters/detect-chapters.js';
 import { narrateChapter } from '../narration/narrate-chapter.js';
+import { buildHistorySnapshot } from '../test-support/build-history-snapshot.js';
 import { loadHistorySnapshotFixture } from '../test-support/load-history-snapshot-fixture.js';
 import { buildTimeline } from './build-timeline.js';
 import type { NarratedChapter } from './build-timeline.js';
@@ -55,14 +56,50 @@ describe('buildTimeline', () => {
     });
   });
 
-  it('builds the ambient scene with attribution lines', () => {
+  it('builds the ambient scene with attribution lines and floor visual drivers', () => {
     const timeline = singleContributionTimeline();
 
     expect(timeline.ambient).toEqual({
       handle: 'first-spark',
       epicOfLine: 'The Epic of first-spark',
       creditLine: '✦ forge yours at git-epic.dev',
+      orbitingBodyCount: 1,
+      twinkleStarCount: 8,
     });
+  });
+
+  it('derives the ambient visual drivers from repositories and stars', () => {
+    const snapshot = buildHistorySnapshot({
+      repositories: [
+        {
+          name: 'stellar-forge',
+          createdDate: '2020-01-01',
+          lastPushedDate: '2024-05-01',
+          starCount: 900,
+          primaryLanguage: 'TypeScript',
+        },
+        {
+          name: 'ember-chronicle',
+          createdDate: '2021-02-03',
+          lastPushedDate: '2024-04-01',
+          starCount: 140,
+          primaryLanguage: 'Rust',
+        },
+        {
+          name: 'quiet-archive',
+          createdDate: '2022-06-09',
+          lastPushedDate: null,
+          starCount: 0,
+          primaryLanguage: null,
+        },
+      ],
+    });
+
+    const timeline = buildTimeline(snapshot, [
+      { chapter: { kind: 'origin', date: '2019-03-20' }, narration: 'narration' },
+    ]);
+
+    expect(timeline.ambient).toMatchObject({ orbitingBodyCount: 3, twinkleStarCount: 14 });
   });
 
   it('derives the seed from the handle', () => {

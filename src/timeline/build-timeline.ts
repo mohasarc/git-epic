@@ -2,6 +2,7 @@ import type { HistorySnapshot } from '../history-snapshot.js';
 import type { Chapter } from '../chapters/chapter.js';
 import type { ChapterSceneSegment, Timeline, TimelineSegment } from './timeline.js';
 import { CREDIT_LINE, epicOfLine } from './attribution.js';
+import { deriveAmbientScene } from './derive-ambient-scene.js';
 import { deriveSeedFromHandle } from './derive-seed-from-handle.js';
 import {
   CHAPTER_SCENE_SECONDS,
@@ -56,6 +57,7 @@ export function buildTimeline(
       handle: snapshot.handle,
       epicOfLine: epicOfLine(snapshot.handle),
       creditLine: CREDIT_LINE,
+      ...deriveAmbientScene(snapshot),
     },
   };
 }
