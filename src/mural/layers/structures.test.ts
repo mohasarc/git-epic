@@ -29,6 +29,18 @@ const campScene = scene(
     contributionDays: [{ date: '2019-03-20', count: 1 }],
   }),
 );
+const recentCampScene = scene(
+  buildHistorySnapshot({
+    handle: 'fresh-camp',
+    accountCreatedDate: '2026-05-01',
+    firstPublicActivityDate: '2026-05-04',
+    contributionDays: [
+      { date: '2026-05-04', count: 2 },
+      { date: '2026-06-10', count: 1 },
+      { date: '2026-06-28', count: 3 },
+    ],
+  }),
+);
 
 function moduleGroups(svg: string): string[] {
   return svg.match(/<g transform="translate\([^)]*\) scale\([^)]*\)">/g) ?? [];
@@ -96,9 +108,10 @@ describe('renderStructures grace floor', () => {
 
 describe('renderStructures no small-account decay', () => {
   it('emits only palette fills for a low-scale scene without a dark-age chapter', () => {
-    expect(campScene.eras.every((era) => era.chapter?.kind !== 'dark-age')).toBe(true);
-    const svg = renderStructures(campScene.eras, campScene.worldScale);
-    const tiers = new Set(campScene.eras.map((era) => era.tier));
+    expect(recentCampScene.worldScale).toBe('camp');
+    expect(recentCampScene.eras.every((era) => era.chapter?.kind !== 'dark-age')).toBe(true);
+    const svg = renderStructures(recentCampScene.eras, recentCampScene.worldScale);
+    const tiers = new Set(recentCampScene.eras.map((era) => era.tier));
     const allowed = new Set<string>();
     for (const tier of tiers) {
       allowed.add(STRUCTURE_FILL[tier].body);

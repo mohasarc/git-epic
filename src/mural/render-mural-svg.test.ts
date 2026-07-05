@@ -97,12 +97,12 @@ describe('renderMuralSvg seams and local origins', () => {
     }
   });
 
-  it('places every era under translate(era.x, …), no absolute center', () => {
+  it('places every era ground under translate(era.x, 0), no absolute center', () => {
     const svg = renderMuralSvg(richScene);
-    const translates = svg.match(/translate\(/g) ?? [];
-    expect(translates).toHaveLength(richScene.eras.length);
+    const groundTranslates = svg.match(/translate\((-?[\d.]+),0\)/g) ?? [];
+    expect(groundTranslates).toHaveLength(richScene.eras.length);
     for (const era of richScene.eras) {
-      expect(svg).toContain(`translate(${formatSvgNumber(era.x)},`);
+      expect(svg).toContain(`translate(${formatSvgNumber(era.x)},0)`);
     }
     expect(svg).not.toContain('CENTER_X');
   });
