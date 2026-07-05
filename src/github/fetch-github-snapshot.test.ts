@@ -1,0 +1,170 @@
+import { describe, expect, it } from 'vitest';
+import type { HttpResponse, HttpTransport } from './http-transport.js';
+import { fetchGitHubSnapshot } from './fetch-github-snapshot.js';
+import { stableHistorySnapshotJson } from './stable-history-snapshot-json.js';
+
+class FakeTransport implements HttpTransport {
+  private readonly responses: HttpResponse[];
+
+  constructor(responses: HttpResponse[]) {
+    this.responses = [...responses];
+  }
+
+  async get(): Promise<HttpResponse> {
+    const response = this.responses.shift();
+    if (!response) {
+      throw new Error('Unexpected request');
+    }
+    return response;
+  }
+}
+
+function jsonResponse(value: unknown): HttpResponse {
+  return {
+    status: 200,
+    headers: new Map(),
+    body: JSON.stringify(value),
+  };
+}
+
+function htmlResponse(body: string): HttpResponse {
+  return {
+    status: 200,
+    headers: new Map(),
+    body,
+  };
+}
+
+describe('fetchGitHubSnapshot', () => {
+  it('assembles a canonical history snapshot with injected capture date', async () => {
+    const transport = new FakeTransport([
+      jsonResponse({
+        login: 'OctoCat',
+        type: 'User',
+        created_at: '2011-01-25T18:44:36Z',
+      }),
+      jsonResponse([
+        {
+          name: 'hello-world',
+          created_at: '2012-02-01T00:00:00Z',
+          pushed_at: '2019-04-01T00:00:00Z',
+          stargazers_count: 80,
+          language: 'TypeScript',
+        },
+      ]),
+      htmlResponse('<td data-date="2011-03-04" data-count="5"></td>'),
+    ]);
+
+    await expect(
+      fetchGitHubSnapshot('octocat', { transport, capturedAtDate: '2026-07-05' }),
+    ).resolves.toEqual({
+      kind: 'success',
+      snapshot: {
+        handle: 'OctoCat',
+        accountCreatedDate: '2011-01-25',
+        firstPublicActivityDate: '2011-03-04',
+        capturedAtDate: '2026-07-05',
+        contributionDays: [{ date: '2011-03-04', count: 5 }],
+        repositories: [
+          {
+            name: 'hello-world',
+            createdDate: '2012-02-01',
+            lastPushedDate: '2019-04-01',
+            starCount: 80,
+            primaryLanguage: 'TypeScript',
+          },
+        ],
+      },
+    });
+  });
+
+  it('uses repository creation as first activity when contributions are empty', async () => {
+    const transport = new FakeTransport([
+      jsonResponse({
+        login: 'OctoCat',
+        type: 'User',
+        created_at: '2011-01-25T18:44:36Z',
+      }),
+      jsonResponse([
+        {
+          name: 'empty-start',
+          created_at: '2012-02-01T00:00:00Z',
+          pushed_at: null,
+          stargazers_count: 0,
+          language: null,
+        },
+      ]),
+      htmlResponse('<td data-date="2012-03-04" data-count="0"></td>'),
+    ]);
+
+    const result = await fetchGitHubSnapshot('octocat', { transport, capturedAtDate: '2026-07-05' });
+
+    expect(result).toMatchObject({
+      kind: 'success',
+      snapshot: { firstPublicActivityDate: '2012-02-01' },
+    });
+  });
+
+  it('uses null first activity for accounts with no public activity', async () => {
+    const transport = new FakeTransport([
+      jsonResponse({
+        login: 'OctoCat',
+        type: 'User',
+        created_at: '2011-01-25T18:44:36Z',
+      }),
+      jsonResponse([]),
+      htmlResponse('<td data-date="2012-03-04" data-count="0"></td>'),
+    ]);
+
+    const result = await fetchGitHubSnapshot('octocat', { transport, capturedAtDate: '2026-07-05' });
+
+    expect(result).toMatchObject({
+      kind: 'success',
+      snapshot: { firstPublicActivityDate: null },
+    });
+  });
+});
+
+describe('stableHistorySnapshotJson', () => {
+  it('serializes snapshots with stable field order', () => {
+    const json = stableHistorySnapshotJson({
+      handle: 'OctoCat',
+      accountCreatedDate: '2011-01-25',
+      firstPublicActivityDate: '2011-03-04',
+      capturedAtDate: '2026-07-05',
+      contributionDays: [{ date: '2011-03-04', count: 5 }],
+      repositories: [
+        {
+          name: 'hello-world',
+          createdDate: '2012-02-01',
+          lastPushedDate: '2019-04-01',
+          starCount: 80,
+          primaryLanguage: 'TypeScript',
+        },
+      ],
+    });
+
+    expect(json).toBe(`{
+  "handle": "OctoCat",
+  "accountCreatedDate": "2011-01-25",
+  "firstPublicActivityDate": "2011-03-04",
+  "capturedAtDate": "2026-07-05",
+  "contributionDays": [
+    {
+      "date": "2011-03-04",
+      "count": 5
+    }
+  ],
+  "repositories": [
+    {
+      "name": "hello-world",
+      "createdDate": "2012-02-01",
+      "lastPushedDate": "2019-04-01",
+      "starCount": 80,
+      "primaryLanguage": "TypeScript"
+    }
+  ]
+}
+`);
+  });
+});
