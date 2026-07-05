@@ -25,9 +25,10 @@ import { originScene } from './scenes/origin-scene.js';
 import { prolificacyScene } from './scenes/prolificacy-scene.js';
 import { starMilestoneScene } from './scenes/star-milestone-scene.js';
 import { createSeededRandom } from './seeded-random.js';
+import { renderBackdropStarfield, renderTwinklingStars } from './starfield.js';
+import { renderUniverseGradients } from './svg-gradients.js';
 import { PALETTE, STYLE_MOTION, TYPOGRAPHY } from './visual-vocabulary.js';
 
-const BACKDROP_STAR_COUNT = 110;
 const ORBIT_RADIUS_STEP = 13;
 const ORBIT_PERIOD_STEP_SECONDS = 4;
 const ORBIT_START_ANGLE_STEP_DEGREES = 72;
@@ -36,51 +37,13 @@ export function renderEpicSvg(timeline: Timeline): string {
   const random = createSeededRandom(timeline.seed);
   return (
     `<svg xmlns="http://www.w3.org/2000/svg" width="${formatSvgNumber(CANVAS_WIDTH)}" height="${formatSvgNumber(CANVAS_HEIGHT)}" viewBox="0 0 ${formatSvgNumber(CANVAS_WIDTH)} ${formatSvgNumber(CANVAS_HEIGHT)}" role="img">` +
-    renderGradientDefinitions() +
+    renderUniverseGradients() +
     `<rect width="${formatSvgNumber(CANVAS_WIDTH)}" height="${formatSvgNumber(CANVAS_HEIGHT)}" fill="${PALETTE.background}"/>` +
     renderBackdropStarfield(random) +
     timeline.segments.map(renderSegment).join('') +
     renderAmbientLayer(timeline.ambient, timeline.replayEndSeconds, random) +
     `</svg>`
   );
-}
-
-function renderGradientDefinitions(): string {
-  return (
-    `<defs>` +
-    `<radialGradient id="nebula" cx="50%" cy="45%" r="65%">` +
-    `<stop offset="0%" stop-color="${PALETTE.nebulaCore}" stop-opacity="0.85"/>` +
-    `<stop offset="45%" stop-color="${PALETTE.nebulaEdge}" stop-opacity="0.45"/>` +
-    `<stop offset="100%" stop-color="${PALETTE.background}" stop-opacity="0"/>` +
-    `</radialGradient>` +
-    `<radialGradient id="spark-glow" cx="50%" cy="50%" r="50%">` +
-    `<stop offset="0%" stop-color="${PALETTE.spark}" stop-opacity="0.9"/>` +
-    `<stop offset="40%" stop-color="${PALETTE.sparkWarm}" stop-opacity="0.35"/>` +
-    `<stop offset="100%" stop-color="${PALETTE.sparkWarm}" stop-opacity="0"/>` +
-    `</radialGradient>` +
-    `<linearGradient id="gilded" x1="0" y1="0" x2="0" y2="1">` +
-    `<stop offset="0%" stop-color="${PALETTE.gildedLight}"/>` +
-    `<stop offset="100%" stop-color="${PALETTE.gildedDeep}"/>` +
-    `</linearGradient>` +
-    `<linearGradient id="rule-fade" x1="0" y1="0" x2="1" y2="0">` +
-    `<stop offset="0%" stop-color="${PALETTE.gildedDeep}" stop-opacity="0"/>` +
-    `<stop offset="50%" stop-color="${PALETTE.gildedDeep}" stop-opacity="0.8"/>` +
-    `<stop offset="100%" stop-color="${PALETTE.gildedDeep}" stop-opacity="0"/>` +
-    `</linearGradient>` +
-    `</defs>`
-  );
-}
-
-function renderBackdropStarfield(random: () => number): string {
-  let stars = '';
-  for (let starIndex = 0; starIndex < BACKDROP_STAR_COUNT; starIndex += 1) {
-    const x = random() * CANVAS_WIDTH;
-    const y = random() * CANVAS_HEIGHT;
-    const radius = 0.4 + random() * 1.1;
-    const opacity = 0.1 + random() * 0.45;
-    stars += `<circle cx="${formatSvgNumber(x)}" cy="${formatSvgNumber(y)}" r="${formatSvgNumber(radius)}" fill="${PALETTE.starlight}" opacity="${formatSvgNumber(opacity)}"/>`;
-  }
-  return `<g>${stars}</g>`;
 }
 
 function renderSegment(segment: TimelineSegment): string {
@@ -243,16 +206,3 @@ function orbitingBody(begin: string, bodyIndex: number): string {
   );
 }
 
-function renderTwinklingStars(begin: string, twinkleStarCount: number, random: () => number): string {
-  let stars = '';
-  for (let starIndex = 0; starIndex < twinkleStarCount; starIndex += 1) {
-    const x = random() * CANVAS_WIDTH;
-    const y = random() * CANVAS_HEIGHT;
-    const duration = STYLE_MOTION.twinklePeriodSeconds + random() * 4;
-    stars +=
-      `<circle cx="${formatSvgNumber(x)}" cy="${formatSvgNumber(y)}" r="${formatSvgNumber(1.4)}" fill="${PALETTE.starlight}" opacity="0.2">` +
-      `<animate attributeName="opacity" begin="${begin}" dur="${formatSvgNumber(duration)}s" values="0.2;0.8;0.2" repeatCount="indefinite"/>` +
-      `</circle>`;
-  }
-  return stars;
-}
