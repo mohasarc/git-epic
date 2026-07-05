@@ -54,6 +54,17 @@ describe('parseContributionCalendarHtml', () => {
       { date: '2020-02-02', count: 12 },
     ]);
   });
+
+  it('reads current GitHub tool-tip labels keyed by contribution cell id', () => {
+    const html = `
+      <td data-date="2025-07-06" id="contribution-day-component-0-0"></td>
+      <tool-tip for="contribution-day-component-0-0">7 contributions on July 6th.</tool-tip>
+      <td data-date="2025-07-07" id="contribution-day-component-0-1"></td>
+      <tool-tip for="contribution-day-component-0-1">No contributions on July 7th.</tool-tip>
+    `;
+
+    expect(parseContributionCalendarHtml(html)).toEqual([{ date: '2025-07-06', count: 7 }]);
+  });
 });
 
 describe('fetchContributionCalendar', () => {
@@ -77,7 +88,7 @@ describe('fetchContributionCalendar', () => {
       { date: '2024-01-01', count: 1 },
     ]);
     expect(transport.requestedUrls).toEqual([
-      'https://github.com/octocat',
+      'https://github.com/users/octocat/contributions',
       'https://github.com/users/octocat/contributions?from=2023-12-01&to=2023-12-31',
       'https://github.com/users/octocat/contributions?from=2022-12-01&to=2022-12-31',
     ]);

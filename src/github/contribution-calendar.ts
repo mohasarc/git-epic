@@ -19,7 +19,7 @@ export async function fetchContributionCalendar(
   handle: ParsedGitHubHandle,
   options: ContributionCalendarFetchOptions,
 ): Promise<ContributionDay[]> {
-  const profileUrl = `https://github.com/${handle.lookup}`;
+  const profileUrl = `https://github.com/users/${handle.lookup}/contributions`;
   const profileResponse = await options.transport.get(profileUrl);
   assertNotRateLimited(profileResponse);
   const contributionDaysByDate = new Map<string, ContributionDay>();
@@ -46,7 +46,7 @@ export function parseContributionCalendarHtml(html: string): ContributionDay[] {
       continue;
     }
 
-    const count = parseContributionCount(element);
+    const count = parseContributionCount(element) || parseTooltipContributionCount(html, element);
     if (count > 0) {
       contributionDays.push({ date, count });
     }
@@ -68,6 +68,23 @@ function parseContributionCount(element: string): number {
   }
 
   const countMatch = ariaLabel.match(/^(?<count>\d+) contributions?/);
+  return countMatch?.groups?.count ? Number(countMatch.groups.count) : 0;
+}
+
+function parseTooltipContributionCount(html: string, element: string): number {
+  const idMatch = element.match(/\bid="(?<id>[^"]+)"/);
+  const id = idMatch?.groups?.id;
+  if (!id) {
+    return 0;
+  }
+
+  const tooltipPattern = new RegExp(`<tool-tip[^>]*\\bfor="${escapeRegExp(id)}"[^>]*>(?<label>.*?)</tool-tip>`, 's');
+  const label = html.match(tooltipPattern)?.groups?.label?.trim();
+  if (!label || label.startsWith('No contributions')) {
+    return 0;
+  }
+
+  const countMatch = label.match(/^(?<count>\d+) contributions?/);
   return countMatch?.groups?.count ? Number(countMatch.groups.count) : 0;
 }
 
@@ -113,4 +130,8 @@ function parseRetryAfter(value: string | undefined): number | null {
 
   const seconds = Number(value);
   return Number.isInteger(seconds) && seconds >= 0 ? seconds : null;
+}
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }

@@ -27,6 +27,7 @@ const fixtureFileNames = [
   'brand-new-account.json',
   'rich-history-account.json',
   'fifteen-year-overflow.json',
+  'mohasarc-captured.json',
 ];
 
 describe('renderEpic', () => {

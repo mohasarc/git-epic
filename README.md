@@ -57,3 +57,12 @@ pnpm render-fixture test-fixtures/rich-history-account.json
 ```
 
 Optional second arg sets the output path.
+
+### Capture a live GitHub handle locally
+
+```sh
+pnpm capture-github-snapshot mohasarc test-fixtures/mohasarc-captured.json --force
+pnpm render-github-handle mohasarc examples/stage-4-live/mohasarc.svg
+```
+
+Live capture uses public logged-out GitHub data. Expected outcomes are distinct: missing user, organization account, and rate limit.
