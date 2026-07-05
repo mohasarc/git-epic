@@ -116,6 +116,7 @@ describe('entry point', () => {
       firstPublicActivityDate: null,
       capturedAtDate: '2026-07-04',
       contributionDays: [],
+      followerCount: 0,
       repositories: [],
     };
     const chapters: Chapter[] = publicApi.detectChapters(snapshot);
@@ -135,6 +136,7 @@ describe('entry point', () => {
         firstPublicActivityDate: null,
         capturedAtDate: '2026-07-04',
         contributionDays: [],
+        followerCount: 0,
         repositories: [],
       },
     };
