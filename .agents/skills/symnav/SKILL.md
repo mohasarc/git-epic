@@ -1,6 +1,6 @@
 ---
 name: symnav
-description: Navigate a TypeScript codebase by symbol from the CLI — a file's symbol tree (overview), find a symbol by name (resolve), where it's defined (def), every reference to it (refs), and the full picture around it (context — definition + callers + callees + reference counts + git history in one block). Each call returns only what you asked for, structured, at a fraction of the tokens Read/grep burn. One `context` call replaces a dozen Read/grep round-trips and hands you a symbol's blast radius instantly. Read this skill once and every `.ts`/`.tsx` question you face afterward gets cheaper and sharper; skip it and you'll burn thousands of tokens doing by hand what one command does. Reach for it first, before any Read or grep on TypeScript.
+description: Navigate a TypeScript codebase by symbol from the CLI — a file's symbol tree (overview), find a symbol by name (resolve), where it's defined (def), every reference to it (refs), direct context (context), and multi-hop call paths (graph). Each call returns only what you asked for, structured, at a fraction of the tokens Read/grep burn. One `context` call replaces a dozen Read/grep round-trips and hands you a symbol's blast radius instantly; `graph` expands that blast radius across call paths. Read this skill once and every `.ts`/`.tsx` question you face afterward gets cheaper and sharper; skip it and you'll burn thousands of tokens doing by hand what one command does. Reach for it first, before any Read or grep on TypeScript.
 ---
 
 **Stop opening files to find things.** `Read` dumps whole files into your context — most of it noise you'll never use. `grep` floods you with line matches and no structure. Both rot your context and burn tokens. `symnav` answers the actual question — "what's in this file", "where is this defined", "who calls it" — and returns _only that_, structured. Use it first; fall back to Read/grep only when symnav can't answer.
@@ -16,8 +16,9 @@ Run from inside a git workspace. `--cwd <dir>` to point elsewhere; `--json` on a
 | `Read` + scrolling to find a declaration  | `def <symbol-id>`  | Exact file, line range, and signature where it's defined.                      |
 | `grep`-ing a name to find call sites      | `refs <symbol-id>` | Every reference workspace-wide, grouped by file, tagged by kind, paginated.    |
 | Stitching `def` + `refs` + blame by hand  | `context <symbol-id>` | One block: definition, direct callers, direct callees, reference summary, recent git history. |
+| Tracing call paths across multiple hops   | `graph <symbol-id>` | Incoming and outgoing call paths with depth, direction, pagination, and possible-edge labels. |
 
-`context` is workspace-only and certain-edges-only: callers/callees count just statically-resolved calls to non-ignored workspace files, capped at 20 per direction. Possible/dynamic edges and multi-hop traversal are out of scope here — reach for `graph` when it lands. An ambiguous target (interface method with multiple implementations) is refused; query one implementation directly.
+`context` is workspace-only and certain-edges-only: callers/callees count just statically-resolved calls to non-ignored workspace files, capped at 20 per direction. Use `graph` when possible/dynamic edges or multi-hop traversal matter. An ambiguous target (interface method with multiple implementations) is refused; query one implementation directly.
 
 ## Exploring with `context`
 
@@ -86,4 +87,5 @@ Tree glyphs show nesting; `start-end: QualifiedName` then the signature line:
 
 - `resolve` — `--fuzzy` (subsequence match, not exact)
 - `refs` — `--page <n>`, `--page-size <n>`, `--all` (one page), `--full-lines` (untrimmed source)
+- `graph` — `--incoming`, `--outgoing`, `--depth <n>`, `--page <n>`, `--page-size <n>`, `--all`
 - all — `--json`
