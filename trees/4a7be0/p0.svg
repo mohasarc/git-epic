@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="324" viewBox="0 0 240 323.68"><style>
+    :root {
+      --ct-fill: rgba(246,248,250,0.85);
+      --ct-path: #24292f;
+      --ct-muted: #57606a;
+      --ct-added: #1a7f37;
+      --ct-changed: #9a6700;
+      --ct-moved: #8250df;
+      --ct-removed: #cf222e;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --ct-fill: rgba(22,27,34,0.85);
+        --ct-path: #e6edf3;
+        --ct-muted: #8b949e;
+        --ct-added: #3fb950;
+        --ct-changed: #d29922;
+        --ct-moved: #bc8cff;
+        --ct-removed: #f85149;
+      }
+    }
+    text { font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace; font-size: 13.6px; }
+  </style>
+  <text x="-1" y="23.799999999999997" xml:space="preserve"><tspan fill="var(--ct-path)">.</tspan></text>
+  <text x="-1" y="43.519999999999996" xml:space="preserve"><tspan fill="var(--ct-muted)">├── </tspan><tspan fill="var(--ct-path)">src/</tspan></text>
+  <text x="-1" y="63.239999999999995" xml:space="preserve"><tspan fill="var(--ct-muted)">│   └── </tspan><tspan fill="var(--ct-path)">mural/</tspan></text>
+  <text x="-1" y="82.96" xml:space="preserve"><tspan fill="var(--ct-muted)">│       ├── </tspan><tspan fill="var(--ct-added)">++</tspan><tspan fill="var(--ct-path)"> render-mural-svg.ts</tspan><tspan fill="var(--ct-muted)" x="333.56"># strip frame: svg + layers</tspan></text>
+  <text x="-1" y="102.67999999999999" xml:space="preserve"><tspan fill="var(--ct-muted)">│       ├── </tspan><tspan fill="var(--ct-added)">++</tspan><tspan fill="var(--ct-path)"> render-mural-svg.test.ts</tspan><tspan fill="var(--ct-muted)" x="333.56"># viewBox, single-gradient, road, seams, embed-safe</tspan></text>
+  <text x="-1" y="122.39999999999999" xml:space="preserve"><tspan fill="var(--ct-muted)">│       └── </tspan><tspan fill="var(--ct-path)">layers/</tspan></text>
+  <text x="-1" y="142.12" xml:space="preserve"><tspan fill="var(--ct-muted)">│           ├── </tspan><tspan fill="var(--ct-added)">++</tspan><tspan fill="var(--ct-path)"> sky.ts</tspan><tspan fill="var(--ct-muted)" x="333.56"># the only gradient (sky) + sky rect</tspan></text>
+  <text x="-1" y="161.84" xml:space="preserve"><tspan fill="var(--ct-muted)">│           ├── </tspan><tspan fill="var(--ct-added)">++</tspan><tspan fill="var(--ct-path)"> terrain.ts</tspan><tspan fill="var(--ct-muted)" x="333.56"># distant band + per-era ground tints, 0→W</tspan></text>
+  <text x="-1" y="181.56" xml:space="preserve"><tspan fill="var(--ct-muted)">│           └── </tspan><tspan fill="var(--ct-added)">++</tspan><tspan fill="var(--ct-path)"> road.ts</tspan><tspan fill="var(--ct-muted)" x="333.56"># one continuous road polyline at baseline</tspan></text>
+  <text x="-1" y="201.28" xml:space="preserve"><tspan fill="var(--ct-muted)">└── </tspan><tspan fill="var(--ct-path)">examples/</tspan></text>
+  <text x="-1" y="221" xml:space="preserve"><tspan fill="var(--ct-muted)">    └── </tspan><tspan fill="var(--ct-path)">stage-1-phase-4/</tspan></text>
+  <text x="-1" y="240.72" xml:space="preserve"><tspan fill="var(--ct-muted)">        ├── </tspan><tspan fill="var(--ct-added)">++</tspan><tspan fill="var(--ct-path)"> rich-history-account.svg</tspan><tspan fill="var(--ct-muted)" x="333.56"># backdrop-only strip, real fixture</tspan></text>
+  <text x="-1" y="260.44" xml:space="preserve"><tspan fill="var(--ct-muted)">        └── </tspan><tspan fill="var(--ct-added)">++</tspan><tspan fill="var(--ct-path)"> rich-history-account.png</tspan><tspan fill="var(--ct-muted)" x="333.56"># rendered preview</tspan></text>
+  <text x="-1" y="280.15999999999997" xml:space="preserve"></text>
+  <text x="-1" y="309.73999999999995"><tspan fill="var(--ct-added)">++</tspan><tspan fill="var(--ct-muted)"> added   </tspan><tspan fill="var(--ct-changed)">**</tspan><tspan fill="var(--ct-muted)"> changed   </tspan><tspan fill="var(--ct-moved)">~~</tspan><tspan fill="var(--ct-muted)"> moved   </tspan><tspan fill="var(--ct-removed)">--</tspan><tspan fill="var(--ct-muted)"> removed</tspan></text></svg>
