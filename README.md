@@ -66,3 +66,43 @@ pnpm render-github-handle mohasarc examples/stage-4-live/mohasarc.svg
 ```
 
 Live capture uses public logged-out GitHub data. Expected outcomes are distinct: missing user, organization account, and rate limit.
+
+## Image endpoint
+
+`GET /<handle>.svg` returns HTTP 200 with an animated SVG for any input — no auth, embed it straight in a README. Response is byte-identical for every viewer inside the freshness window, so the camo proxy can cache it.
+
+Four served states:
+
+| Input | Served |
+| --- | --- |
+| Fresh cached epic (< 24h) | stored epic, no upstream fetch |
+| Stale or uncached handle | live fetch → rendered epic, cached |
+| Missing user, org account, or bad handle | "no such legend" card |
+| Upstream down or rate-limited | last-good epic if cached, else "still being written" placeholder |
+
+A `.svg` request never returns a broken image: any unexpected error falls back to the placeholder at 200. `Cache-Control` carries `max-age` down to the epic's 24h freshness boundary (min 300s); cards and placeholders use `max-age=300`.
+
+The two fallback cards:
+
+![No such legend](examples/stage-5/no-such-legend.svg)
+
+![The epic is still being written](examples/stage-5/still-being-written.svg)
+
+### Run the server
+
+```sh
+pnpm start          # listens on http://localhost:8080
+PORT=3000 pnpm start
+```
+
+`http.createServer` binds `routeServiceRequest` and computes `nowIso` per request. Non-`.svg` paths → 404; non-GET (except HEAD) → 405.
+
+### Deploy
+
+Single Node origin. The epic cache lives in process memory, so it must run as one instance — two machines would serve divergent documents. `fly.toml` pins `min_machines_running = 1` with `auto_stop_machines = false` and no autoscale; `Dockerfile` runs `pnpm start`.
+
+```sh
+fly deploy
+```
+
+Actual deploy and the placeholder domain are not provisioned yet — they need a Fly account and credentials outside this repo. The config is committed and ready.
