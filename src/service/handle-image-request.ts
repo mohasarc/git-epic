@@ -2,6 +2,7 @@ import { fetchGitHubSnapshot } from '../github/fetch-github-snapshot.js';
 import { parseGitHubHandleInput } from '../github/github-handle.js';
 import type { HttpTransport } from '../github/http-transport.js';
 import { renderEpic } from '../render-epic.js';
+import { renderMural } from '../render-mural.js';
 import { renderNoSuchLegendCard } from '../rendering/cards/no-such-legend-card.js';
 import { renderStillBeingWrittenCard } from '../rendering/cards/still-being-written-card.js';
 import type { EpicCache, EpicCacheEntry } from './epic-cache.js';
@@ -14,18 +15,22 @@ export type ImageRequestDependencies = {
   nowIso: string;
 };
 
+export type EpicVariant = 'cosmic' | 'mural';
+
 const CARD_MAX_AGE_SECONDS = 300;
 
 export async function handleImageRequest(
   requestedHandle: string,
   { transport, cache, nowIso }: ImageRequestDependencies,
+  variant: EpicVariant = 'cosmic',
 ): Promise<ImageResponse> {
   const parsedHandle = parseGitHubHandleInput(requestedHandle);
   if (parsedHandle.kind === 'invalid') {
     return cardResponse(renderNoSuchLegendCard(requestedHandle));
   }
 
-  const cacheKey = parsedHandle.handle.lookup.toLowerCase();
+  const handleKey = parsedHandle.handle.lookup.toLowerCase();
+  const cacheKey = variant === 'mural' ? `${handleKey}:mural` : handleKey;
   const cachedEntry = await cache.get(cacheKey);
   if (cachedEntry && isEpicFresh(nowIso, cachedEntry.renderedAtIso)) {
     return epicResponse(cachedEntry, nowIso);
@@ -43,8 +48,9 @@ export async function handleImageRequest(
 
   switch (fetchResult.kind) {
     case 'success': {
+      const render = variant === 'mural' ? renderMural : renderEpic;
       const entry: EpicCacheEntry = {
-        document: renderEpic(fetchResult.snapshot),
+        document: render(fetchResult.snapshot),
         renderedAtIso: nowIso,
       };
       await cache.set(cacheKey, entry);
