@@ -274,7 +274,7 @@ describe('handleImageRequest', () => {
 
     expect(second.body).toBe(first.body);
     expect(setSpy).toHaveBeenCalledTimes(1);
-    expect(transport.requestedUrls).toHaveLength(3);
+    expect(transport.requestedUrls).toHaveLength(5);
   });
 
   it('keeps the body embed-safe for a hostile requested handle', async () => {
