@@ -8,6 +8,8 @@ export function buildRepositorySummary(
     createdDate: '2021-04-10',
     lastPushedDate: '2026-06-01',
     starCount: 0,
+    forkCount: 0,
+    isFork: false,
     primaryLanguage: 'TypeScript',
     ...overrides,
   };

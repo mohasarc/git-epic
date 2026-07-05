@@ -40,6 +40,7 @@ export async function fetchGitHubSnapshot(
     ),
     capturedAtDate: options?.capturedAtDate ?? todayUtcDate(),
     contributionDays: contributionDaysResult,
+    followerCount: profileResult.profile.followerCount,
     repositories: profileResult.profile.repositories,
   };
 

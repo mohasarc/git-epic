@@ -6,6 +6,7 @@ import type { HttpResponse, HttpTransport } from './http-transport.js';
 export type GitHubPublicProfile = {
   login: string;
   accountCreatedDate: string;
+  followerCount: number;
   repositories: RepositorySummary[];
 };
 
@@ -21,6 +22,7 @@ type GitHubUserResponse = {
   login: string;
   type: string;
   created_at: string;
+  followers: number;
 };
 
 export async function fetchGitHubPublicProfile(
@@ -52,6 +54,7 @@ export async function fetchGitHubPublicProfile(
     profile: {
       login: user.login,
       accountCreatedDate: toUtcDate(user.created_at),
+      followerCount: user.followers,
       repositories,
     },
   };
@@ -84,6 +87,8 @@ type GitHubRepositoryResponse = {
   created_at: string;
   pushed_at: string | null;
   stargazers_count: number;
+  forks_count: number;
+  fork: boolean;
   language: string | null;
 };
 
@@ -93,6 +98,8 @@ function toRepositorySummary(repository: GitHubRepositoryResponse): RepositorySu
     createdDate: toUtcDate(repository.created_at),
     lastPushedDate: repository.pushed_at ? toUtcDate(repository.pushed_at) : null,
     starCount: repository.stargazers_count,
+    forkCount: repository.forks_count,
+    isFork: repository.fork,
     primaryLanguage: repository.language,
   };
 }

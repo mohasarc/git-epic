@@ -14,11 +14,14 @@ function stableHistorySnapshot(snapshot: HistorySnapshot): HistorySnapshot {
       date: contributionDay.date,
       count: contributionDay.count,
     })),
+    followerCount: snapshot.followerCount,
     repositories: snapshot.repositories.map((repository) => ({
       name: repository.name,
       createdDate: repository.createdDate,
       lastPushedDate: repository.lastPushedDate,
       starCount: repository.starCount,
+      forkCount: repository.forkCount,
+      isFork: repository.isFork,
       primaryLanguage: repository.primaryLanguage,
     })),
   };

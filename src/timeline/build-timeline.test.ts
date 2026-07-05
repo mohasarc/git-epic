@@ -76,6 +76,8 @@ describe('buildTimeline', () => {
           createdDate: '2020-01-01',
           lastPushedDate: '2024-05-01',
           starCount: 900,
+          forkCount: 0,
+          isFork: false,
           primaryLanguage: 'TypeScript',
         },
         {
@@ -83,6 +85,8 @@ describe('buildTimeline', () => {
           createdDate: '2021-02-03',
           lastPushedDate: '2024-04-01',
           starCount: 140,
+          forkCount: 0,
+          isFork: false,
           primaryLanguage: 'Rust',
         },
         {
@@ -90,6 +94,8 @@ describe('buildTimeline', () => {
           createdDate: '2022-06-09',
           lastPushedDate: null,
           starCount: 0,
+          forkCount: 0,
+          isFork: false,
           primaryLanguage: null,
         },
       ],
