@@ -106,6 +106,7 @@ describe('entry point', () => {
       'detectChapters',
       'narrateChapter',
       'renderEpic',
+      'renderMural',
       'scoreStrengths',
     ]);
   });
@@ -161,6 +162,7 @@ describe('entry point', () => {
       'detectChapters',
       'narrateChapter',
       'renderEpic',
+      'renderMural',
       'scoreStrengths',
     ]);
   });
