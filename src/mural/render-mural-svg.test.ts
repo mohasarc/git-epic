@@ -76,6 +76,27 @@ describe('renderMuralSvg seams and local origins', () => {
     expect(svg).not.toContain('gradientTransform');
   });
 
+  it('covers the ground band across the full strip, both margins included', () => {
+    const svg = renderMuralSvg(richScene);
+    const y = formatSvgNumber(Y_BANDS.horizonBottom);
+    const pattern = new RegExp(
+      `<g transform="translate\\((-?[\\d.]+),0\\)"><rect x="(-?[\\d.]+)" y="${y}" width="([\\d.]+)"`,
+      'g',
+    );
+    const spans = [...svg.matchAll(pattern)]
+      .map((m) => {
+        const start = Number(m[1]) + Number(m[2]);
+        return { start, end: start + Number(m[3]) };
+      })
+      .sort((a, b) => a.start - b.start);
+    expect(spans).toHaveLength(richScene.eras.length);
+    expect(spans[0].start).toBe(0);
+    expect(spans[spans.length - 1].end).toBe(richScene.width);
+    for (let i = 0; i + 1 < spans.length; i++) {
+      expect(spans[i].end).toBeGreaterThanOrEqual(spans[i + 1].start);
+    }
+  });
+
   it('places every era under translate(era.x, …), no absolute center', () => {
     const svg = renderMuralSvg(richScene);
     const translates = svg.match(/translate\(/g) ?? [];
