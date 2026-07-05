@@ -118,6 +118,8 @@ describe('entry point', () => {
       contributionDays: [],
       followerCount: 0,
       repositories: [],
+      pullRequestsOpenedCount: 0,
+      issuesOpenedCount: 0,
     };
     const chapters: Chapter[] = publicApi.detectChapters(snapshot);
     expect(chapters.map((chapter) => publicApi.narrateChapter(chapter))).toEqual([
@@ -138,6 +140,8 @@ describe('entry point', () => {
         contributionDays: [],
         followerCount: 0,
         repositories: [],
+        pullRequestsOpenedCount: 0,
+        issuesOpenedCount: 0,
       },
     };
     const transport: HttpTransport = {

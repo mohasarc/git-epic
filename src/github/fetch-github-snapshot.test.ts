@@ -89,7 +89,51 @@ describe('fetchGitHubSnapshot', () => {
             primaryLanguage: 'TypeScript',
           },
         ],
+        pullRequestsOpenedCount: null,
+        issuesOpenedCount: null,
       },
+    });
+  });
+
+  it('enriches the snapshot with opened PR and issue counts from search', async () => {
+    const transport = new FakeTransport([
+      jsonResponse({
+        login: 'OctoCat',
+        type: 'User',
+        created_at: '2011-01-25T18:44:36Z',
+        followers: 42,
+      }),
+      jsonResponse([]),
+      htmlResponse('<td data-date="2011-03-04" data-count="5"></td>'),
+      jsonResponse({ total_count: 128 }),
+      jsonResponse({ total_count: 44 }),
+    ]);
+
+    const result = await fetchGitHubSnapshot('octocat', { transport, capturedAtDate: '2026-07-05' });
+
+    expect(result).toMatchObject({
+      kind: 'success',
+      snapshot: { pullRequestsOpenedCount: 128, issuesOpenedCount: 44 },
+    });
+  });
+
+  it('stays successful with null opened counts when search is unavailable', async () => {
+    const transport = new FakeTransport([
+      jsonResponse({
+        login: 'OctoCat',
+        type: 'User',
+        created_at: '2011-01-25T18:44:36Z',
+        followers: 42,
+      }),
+      jsonResponse([]),
+      htmlResponse('<td data-date="2011-03-04" data-count="5"></td>'),
+    ]);
+
+    const result = await fetchGitHubSnapshot('octocat', { transport, capturedAtDate: '2026-07-05' });
+
+    expect(result).toMatchObject({
+      kind: 'success',
+      snapshot: { pullRequestsOpenedCount: null, issuesOpenedCount: null },
     });
   });
 
@@ -177,6 +221,8 @@ describe('stableHistorySnapshotJson', () => {
         primaryLanguage: 'TypeScript',
       },
     ],
+    pullRequestsOpenedCount: 128,
+    issuesOpenedCount: 44,
   };
 
   it('serializes snapshots with stable field order', () => {
@@ -202,7 +248,9 @@ describe('stableHistorySnapshotJson', () => {
       "isFork": false,
       "primaryLanguage": "TypeScript"
     }
-  ]
+  ],
+  "pullRequestsOpenedCount": 128,
+  "issuesOpenedCount": 44
 }
 `);
   });
