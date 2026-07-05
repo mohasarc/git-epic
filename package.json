@@ -38,6 +38,7 @@
     "test": "vitest run",
     "lint": "eslint src",
     "render-fixture": "tsx scripts/render-fixture-to-svg.ts",
+    "render-github-handle": "tsx scripts/render-github-handle-to-svg.ts",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
