@@ -1,0 +1,18 @@
+# Single instance only. The epic cache lives in process memory, so two machines
+# would serve divergent documents and break the determinism invariant. Keep one
+# machine running and never stop it.
+app = "git-epic"
+primary_region = "iad"
+
+[build]
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_start_machines = true
+  auto_stop_machines = false
+  min_machines_running = 1
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "256mb"
