@@ -12,6 +12,7 @@ describe('buildHistorySnapshot', () => {
       firstPublicActivityDate: '2019-03-20',
       capturedAtDate: '2026-07-04',
       contributionDays: [],
+      followerCount: 0,
       repositories: [],
     });
   });

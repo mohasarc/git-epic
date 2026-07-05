@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import type { HistorySnapshot } from '../history-snapshot.js';
 import type { HttpResponse, HttpTransport } from './http-transport.js';
 import { fetchGitHubSnapshot } from './fetch-github-snapshot.js';
 import { stableHistorySnapshotJson } from './stable-history-snapshot-json.js';
@@ -50,6 +51,7 @@ describe('fetchGitHubSnapshot', () => {
         login: 'OctoCat',
         type: 'User',
         created_at: '2011-01-25T18:44:36Z',
+        followers: 42,
       }),
       jsonResponse([
         {
@@ -57,6 +59,8 @@ describe('fetchGitHubSnapshot', () => {
           created_at: '2012-02-01T00:00:00Z',
           pushed_at: '2019-04-01T00:00:00Z',
           stargazers_count: 80,
+          forks_count: 12,
+          fork: false,
           language: 'TypeScript',
         },
       ]),
@@ -73,12 +77,15 @@ describe('fetchGitHubSnapshot', () => {
         firstPublicActivityDate: '2011-03-04',
         capturedAtDate: '2026-07-05',
         contributionDays: [{ date: '2011-03-04', count: 5 }],
+        followerCount: 42,
         repositories: [
           {
             name: 'hello-world',
             createdDate: '2012-02-01',
             lastPushedDate: '2019-04-01',
             starCount: 80,
+            forkCount: 12,
+            isFork: false,
             primaryLanguage: 'TypeScript',
           },
         ],
@@ -152,25 +159,28 @@ describe('fetchGitHubSnapshot', () => {
 });
 
 describe('stableHistorySnapshotJson', () => {
-  it('serializes snapshots with stable field order', () => {
-    const json = stableHistorySnapshotJson({
-      handle: 'OctoCat',
-      accountCreatedDate: '2011-01-25',
-      firstPublicActivityDate: '2011-03-04',
-      capturedAtDate: '2026-07-05',
-      contributionDays: [{ date: '2011-03-04', count: 5 }],
-      repositories: [
-        {
-          name: 'hello-world',
-          createdDate: '2012-02-01',
-          lastPushedDate: '2019-04-01',
-          starCount: 80,
-          primaryLanguage: 'TypeScript',
-        },
-      ],
-    });
+  const snapshot: HistorySnapshot = {
+    handle: 'OctoCat',
+    accountCreatedDate: '2011-01-25',
+    firstPublicActivityDate: '2011-03-04',
+    capturedAtDate: '2026-07-05',
+    contributionDays: [{ date: '2011-03-04', count: 5 }],
+    followerCount: 42,
+    repositories: [
+      {
+        name: 'hello-world',
+        createdDate: '2012-02-01',
+        lastPushedDate: '2019-04-01',
+        starCount: 80,
+        forkCount: 12,
+        isFork: false,
+        primaryLanguage: 'TypeScript',
+      },
+    ],
+  };
 
-    expect(json).toBe(`{
+  it('serializes snapshots with stable field order', () => {
+    expect(stableHistorySnapshotJson(snapshot)).toBe(`{
   "handle": "OctoCat",
   "accountCreatedDate": "2011-01-25",
   "firstPublicActivityDate": "2011-03-04",
@@ -181,16 +191,26 @@ describe('stableHistorySnapshotJson', () => {
       "count": 5
     }
   ],
+  "followerCount": 42,
   "repositories": [
     {
       "name": "hello-world",
       "createdDate": "2012-02-01",
       "lastPushedDate": "2019-04-01",
       "starCount": 80,
+      "forkCount": 12,
+      "isFork": false,
       "primaryLanguage": "TypeScript"
     }
   ]
 }
 `);
+  });
+
+  it('round-trips the snapshot key-for-key through parse and re-serialize', () => {
+    const parsed = JSON.parse(stableHistorySnapshotJson(snapshot)) as HistorySnapshot;
+
+    expect(parsed).toEqual(snapshot);
+    expect(stableHistorySnapshotJson(parsed)).toBe(stableHistorySnapshotJson(snapshot));
   });
 });
