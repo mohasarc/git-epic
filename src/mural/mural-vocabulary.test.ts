@@ -1,12 +1,15 @@
 import { describe, expect, it } from 'vitest';
 import {
+  GOLD_ACCENT,
   GROUND_TINT,
+  LANGUAGE_ACCENT,
   MODULE_PATH_BUDGET,
   MURAL_HEIGHT,
   MURAL_OUTLINE,
   MURAL_OUTLINE_WIDTH,
   MURAL_PALETTE,
   MURAL_TYPOGRAPHY,
+  RIBBON_RAMP,
   SEAM_FEATHER_WIDTH,
   SKY_GRADIENT_STOPS,
   STRUCTURE_FILL,
@@ -14,6 +17,25 @@ import {
 } from './mural-vocabulary.js';
 
 const HEX_COLOR_PATTERN = /^#[0-9a-f]{6}$/;
+
+const EXPECTED_LANGUAGE_ACCENT_KEYS = [
+  'TypeScript',
+  'JavaScript',
+  'Python',
+  'Go',
+  'Rust',
+  'Java',
+  'Ruby',
+  'C',
+  'C++',
+  'C#',
+  'PHP',
+  'Swift',
+  'Kotlin',
+  'Shell',
+  'HTML',
+  'CSS',
+];
 
 describe('mural vocabulary', () => {
   it('pins the warm desert palette as stable constants', () => {
@@ -45,9 +67,28 @@ describe('mural vocabulary', () => {
       MURAL_OUTLINE,
       ...Object.values(STRUCTURE_FILL).flatMap((fill) => [fill.body, fill.accent]),
       ...SKY_GRADIENT_STOPS.map((stop) => stop.color),
+      GOLD_ACCENT,
+      ...Object.values(LANGUAGE_ACCENT),
     ].filter((value): value is string => value !== undefined);
     for (const color of colors) {
       expect(color).toMatch(HEX_COLOR_PATTERN);
+    }
+  });
+
+  it('adds a gold accent lifted above the structure body and distinct from the ribbon ramp', () => {
+    expect(GOLD_ACCENT).toMatch(HEX_COLOR_PATTERN);
+    expect(GOLD_ACCENT).not.toBe(MURAL_PALETTE.structureBody);
+    expect(RIBBON_RAMP).not.toContain(GOLD_ACCENT);
+  });
+
+  it('maps common languages to muted accents, defaulting to the neutral structure accent', () => {
+    expect(Object.keys(LANGUAGE_ACCENT).sort()).toEqual([...EXPECTED_LANGUAGE_ACCENT_KEYS].sort());
+    const accents = Object.values(LANGUAGE_ACCENT);
+    expect(accents.length).toBeGreaterThan(0);
+    // Distinct hues, and none collapses onto the neutral default used for unknown languages.
+    expect(new Set(accents).size).toBe(accents.length);
+    for (const accent of accents) {
+      expect(accent).not.toBe(MURAL_PALETTE.structureAccent);
     }
   });
 
