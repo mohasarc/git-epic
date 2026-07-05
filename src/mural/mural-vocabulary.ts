@@ -51,6 +51,9 @@ export const Y_BANDS = {
 /** Flat-fill overlap width where adjacent era ground tints meet (§6, no seam gradient). */
 export const SEAM_FEATHER_WIDTH = 12;
 
+/** Target column pixel pitch for the ribbon; per-era column count = round(eraWidth / RIBBON_PITCH). */
+export const RIBBON_PITCH = 4;
+
 /** Literal §6.9 per-module element cap (path/rect/circle/polygon). */
 export const MODULE_PATH_BUDGET = {
   structure: 5,

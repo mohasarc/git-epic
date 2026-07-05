@@ -13,3 +13,36 @@ export type MuralEra = {
   endDate: string;
   tier: MuralTier;
 };
+
+/** One left-to-right allocated placement for a structure, marker, or prop. */
+export type MuralSlot = {
+  x: number;
+  width: number;
+  baselineY: number;
+  type: 'structure' | 'marker' | 'prop';
+};
+
+/** One fixed-pitch column of the contribution ribbon; density is 0..1 (never 0). */
+export type RibbonColumn = { x: number; width: number; density: number };
+
+/** An era placed on the strip with its geometry, ribbon, and title filled in. */
+export type PlacedEra = MuralEra & {
+  x: number;
+  width: number;
+  slots: MuralSlot[];
+  ribbon: RibbonColumn[];
+  title: string;
+};
+
+/** The complete pure model of one desert mural, ready for the render layer. */
+export type MuralScene = {
+  handle: string;
+  width: number;
+  height: number;
+  worldScale: WorldScale;
+  eras: PlacedEra[];
+  subtitle: string;
+  presentDayLabel: string;
+  accessibleTitle: string;
+  accessibleDescription: string;
+};
