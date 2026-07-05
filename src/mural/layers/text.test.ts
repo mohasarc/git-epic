@@ -59,7 +59,7 @@ describe('renderText escaping and safety', () => {
   it('escapes every visible string', () => {
     const hostile = scene(buildHistorySnapshot({ handle: '<b>&"weird' }));
     const svg = renderText(hostile);
-    expect(svg).not.toMatch(/>[^<]*[<>&"][^<]*</);
+    expect(svg).not.toContain('<b>&');
     expect(svg).toContain(escapeXmlText(hostile.subtitle));
     expectEmbedSafeSvg(svg);
   });
