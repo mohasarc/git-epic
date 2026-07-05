@@ -1,0 +1,222 @@
+{
+  "handle": "many-tongues",
+  "accountCreatedDate": "2019-02-01",
+  "firstPublicActivityDate": "2019-03-01",
+  "capturedAtDate": "2026-07-04",
+  "contributionDays": [
+    {
+      "date": "2019-02-12",
+      "count": 8
+    },
+    {
+      "date": "2019-05-12",
+      "count": 8
+    },
+    {
+      "date": "2019-08-12",
+      "count": 8
+    },
+    {
+      "date": "2019-11-12",
+      "count": 8
+    },
+    {
+      "date": "2020-02-12",
+      "count": 8
+    },
+    {
+      "date": "2020-05-12",
+      "count": 8
+    },
+    {
+      "date": "2020-08-12",
+      "count": 8
+    },
+    {
+      "date": "2020-11-12",
+      "count": 8
+    },
+    {
+      "date": "2021-02-12",
+      "count": 8
+    },
+    {
+      "date": "2021-05-12",
+      "count": 8
+    },
+    {
+      "date": "2021-08-12",
+      "count": 8
+    },
+    {
+      "date": "2021-11-12",
+      "count": 8
+    },
+    {
+      "date": "2022-02-12",
+      "count": 8
+    },
+    {
+      "date": "2022-05-12",
+      "count": 8
+    },
+    {
+      "date": "2022-08-12",
+      "count": 8
+    },
+    {
+      "date": "2022-11-12",
+      "count": 8
+    },
+    {
+      "date": "2023-02-12",
+      "count": 8
+    },
+    {
+      "date": "2023-05-12",
+      "count": 8
+    },
+    {
+      "date": "2023-08-12",
+      "count": 8
+    },
+    {
+      "date": "2023-11-12",
+      "count": 8
+    },
+    {
+      "date": "2024-02-12",
+      "count": 8
+    },
+    {
+      "date": "2024-05-12",
+      "count": 8
+    },
+    {
+      "date": "2024-08-12",
+      "count": 8
+    },
+    {
+      "date": "2024-11-12",
+      "count": 8
+    },
+    {
+      "date": "2025-02-12",
+      "count": 8
+    },
+    {
+      "date": "2025-05-12",
+      "count": 8
+    },
+    {
+      "date": "2025-08-12",
+      "count": 8
+    },
+    {
+      "date": "2025-11-12",
+      "count": 8
+    },
+    {
+      "date": "2026-02-12",
+      "count": 8
+    },
+    {
+      "date": "2026-05-12",
+      "count": 8
+    },
+    {
+      "date": "2026-08-12",
+      "count": 8
+    },
+    {
+      "date": "2026-11-12",
+      "count": 8
+    }
+  ],
+  "followerCount": 20,
+  "repositories": [
+    {
+      "createdDate": "2021-01-01",
+      "lastPushedDate": "2025-06-01",
+      "starCount": 6,
+      "forkCount": 1,
+      "isFork": false,
+      "primaryLanguage": "TypeScript",
+      "name": "a"
+    },
+    {
+      "createdDate": "2021-01-01",
+      "lastPushedDate": "2025-06-01",
+      "starCount": 5,
+      "forkCount": 1,
+      "isFork": false,
+      "primaryLanguage": "Python",
+      "name": "b"
+    },
+    {
+      "createdDate": "2021-01-01",
+      "lastPushedDate": "2025-06-01",
+      "starCount": 4,
+      "forkCount": 1,
+      "isFork": false,
+      "primaryLanguage": "Go",
+      "name": "c"
+    },
+    {
+      "createdDate": "2021-01-01",
+      "lastPushedDate": "2025-06-01",
+      "starCount": 4,
+      "forkCount": 1,
+      "isFork": false,
+      "primaryLanguage": "Rust",
+      "name": "d"
+    },
+    {
+      "createdDate": "2021-01-01",
+      "lastPushedDate": "2025-06-01",
+      "starCount": 3,
+      "forkCount": 1,
+      "isFork": false,
+      "primaryLanguage": "Ruby",
+      "name": "e"
+    },
+    {
+      "createdDate": "2021-01-01",
+      "lastPushedDate": "2025-06-01",
+      "starCount": 3,
+      "forkCount": 1,
+      "isFork": false,
+      "primaryLanguage": "Java",
+      "name": "f"
+    },
+    {
+      "createdDate": "2021-01-01",
+      "lastPushedDate": "2025-06-01",
+      "starCount": 2,
+      "forkCount": 1,
+      "isFork": false,
+      "primaryLanguage": "C",
+      "name": "g"
+    },
+    {
+      "createdDate": "2021-01-01",
+      "lastPushedDate": "2025-06-01",
+      "starCount": 2,
+      "forkCount": 1,
+      "isFork": false,
+      "primaryLanguage": "Elixir",
+      "name": "h"
+    },
+    {
+      "createdDate": "2021-01-01",
+      "lastPushedDate": "2025-06-01",
+      "starCount": 2,
+      "forkCount": 0,
+      "isFork": false,
+      "primaryLanguage": "Haskell",
+      "name": "i"
+    }
+  ],
+  "pullRequestsOpenedCount": 15,
+  "issuesOpenedCount": 8
+}

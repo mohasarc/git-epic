@@ -1,0 +1,193 @@
+{
+  "handle": "one-bright-star",
+  "accountCreatedDate": "2018-05-01",
+  "firstPublicActivityDate": "2018-06-01",
+  "capturedAtDate": "2026-07-04",
+  "contributionDays": [
+    {
+      "date": "2018-02-12",
+      "count": 8
+    },
+    {
+      "date": "2018-05-12",
+      "count": 8
+    },
+    {
+      "date": "2018-08-12",
+      "count": 8
+    },
+    {
+      "date": "2018-11-12",
+      "count": 8
+    },
+    {
+      "date": "2019-02-12",
+      "count": 8
+    },
+    {
+      "date": "2019-05-12",
+      "count": 8
+    },
+    {
+      "date": "2019-08-12",
+      "count": 8
+    },
+    {
+      "date": "2019-11-12",
+      "count": 8
+    },
+    {
+      "date": "2020-02-12",
+      "count": 8
+    },
+    {
+      "date": "2020-05-12",
+      "count": 8
+    },
+    {
+      "date": "2020-08-12",
+      "count": 8
+    },
+    {
+      "date": "2020-11-12",
+      "count": 8
+    },
+    {
+      "date": "2021-02-12",
+      "count": 8
+    },
+    {
+      "date": "2021-05-12",
+      "count": 8
+    },
+    {
+      "date": "2021-08-12",
+      "count": 8
+    },
+    {
+      "date": "2021-11-12",
+      "count": 8
+    },
+    {
+      "date": "2022-02-12",
+      "count": 8
+    },
+    {
+      "date": "2022-05-12",
+      "count": 8
+    },
+    {
+      "date": "2022-08-12",
+      "count": 8
+    },
+    {
+      "date": "2022-11-12",
+      "count": 8
+    },
+    {
+      "date": "2023-02-12",
+      "count": 8
+    },
+    {
+      "date": "2023-05-12",
+      "count": 8
+    },
+    {
+      "date": "2023-08-12",
+      "count": 8
+    },
+    {
+      "date": "2023-11-12",
+      "count": 8
+    },
+    {
+      "date": "2024-02-12",
+      "count": 8
+    },
+    {
+      "date": "2024-05-12",
+      "count": 8
+    },
+    {
+      "date": "2024-08-12",
+      "count": 8
+    },
+    {
+      "date": "2024-11-12",
+      "count": 8
+    },
+    {
+      "date": "2025-02-12",
+      "count": 8
+    },
+    {
+      "date": "2025-05-12",
+      "count": 8
+    },
+    {
+      "date": "2025-08-12",
+      "count": 8
+    },
+    {
+      "date": "2025-11-12",
+      "count": 8
+    },
+    {
+      "date": "2026-02-12",
+      "count": 8
+    },
+    {
+      "date": "2026-05-12",
+      "count": 8
+    },
+    {
+      "date": "2026-08-12",
+      "count": 8
+    },
+    {
+      "date": "2026-11-12",
+      "count": 8
+    }
+  ],
+  "followerCount": 40,
+  "repositories": [
+    {
+      "createdDate": "2021-01-01",
+      "lastPushedDate": "2025-06-01",
+      "starCount": 14000,
+      "forkCount": 6,
+      "isFork": false,
+      "primaryLanguage": "TypeScript",
+      "name": "flagship"
+    },
+    {
+      "createdDate": "2021-01-01",
+      "lastPushedDate": "2025-06-01",
+      "starCount": 300,
+      "forkCount": 3,
+      "isFork": false,
+      "primaryLanguage": "TypeScript",
+      "name": "helper"
+    },
+    {
+      "createdDate": "2021-01-01",
+      "lastPushedDate": "2025-06-01",
+      "starCount": 120,
+      "forkCount": 2,
+      "isFork": false,
+      "primaryLanguage": "TypeScript",
+      "name": "docs"
+    },
+    {
+      "createdDate": "2021-01-01",
+      "lastPushedDate": "2025-06-01",
+      "starCount": 80,
+      "forkCount": 1,
+      "isFork": false,
+      "primaryLanguage": "Go",
+      "name": "sidequest"
+    }
+  ],
+  "pullRequestsOpenedCount": 20,
+  "issuesOpenedCount": 10
+}
