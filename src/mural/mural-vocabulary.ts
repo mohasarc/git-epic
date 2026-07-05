@@ -57,6 +57,33 @@ export const RIBBON_PITCH = 4;
 /** Warm desert density ramp, pale-but-present → saturated terracotta; never GitHub green (§6.6). */
 export const RIBBON_RAMP: readonly string[] = ['#f0d5a8', '#e3b877', '#d18f4b', '#b3672f', '#8a4a22'];
 
+/** Standout accent for the spike monument and star gates: warmer and brighter than structureBody. */
+export const GOLD_ACCENT = '#f2c14e';
+
+/**
+ * Per-language banner accents: each keeps its language's hue identity but pulled toward the warm
+ * desert palette (muted, not linguist-literal). Unknown languages fall back to the neutral
+ * MURAL_PALETTE.structureAccent in the render layer.
+ */
+export const LANGUAGE_ACCENT: Record<string, string> = {
+  TypeScript: '#4e6a8f',
+  JavaScript: '#c9a84e',
+  Python: '#5a7fa0',
+  Go: '#4f97a3',
+  Rust: '#a8593a',
+  Java: '#9c6b3f',
+  Ruby: '#a5433a',
+  C: '#6f7a8a',
+  'C++': '#7a5a86',
+  'C#': '#5f7a55',
+  PHP: '#6b6a9a',
+  Swift: '#c07145',
+  Kotlin: '#8a6aa0',
+  Shell: '#6f8a5a',
+  HTML: '#bd6440',
+  CSS: '#6a6f9a',
+};
+
 /**
  * Whole-strip byte ceiling, calibrated just above the measured dense static render
  * (rich / fifteen-year mural with the ribbon). Catches bloat now while leaving Stage-3
