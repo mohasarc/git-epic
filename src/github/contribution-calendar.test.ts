@@ -1,32 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import type { HttpResponse, HttpTransport } from './http-transport.js';
-import { fetchContributionCalendar, parseContributionCalendarHtml } from './contribution-calendar.js';
-
-class FakeTransport implements HttpTransport {
-  readonly requestedUrls: string[] = [];
-  private readonly responses: HttpResponse[];
-
-  constructor(responses: HttpResponse[]) {
-    this.responses = [...responses];
-  }
-
-  async get(url: string): Promise<HttpResponse> {
-    this.requestedUrls.push(url);
-    const response = this.responses.shift();
-    if (!response) {
-      throw new Error(`Unexpected request: ${url}`);
-    }
-    return response;
-  }
-}
-
-function htmlResponse(body: string): HttpResponse {
-  return {
-    status: 200,
-    headers: new Map(),
-    body,
-  };
-}
+import { parseContributionCalendarHtml } from './contribution-calendar.js';
 
 describe('parseContributionCalendarHtml', () => {
   it('extracts non-zero contribution days sorted by date', () => {
