@@ -257,5 +257,7 @@
       "isFork": false,
       "primaryLanguage": "TypeScript"
     }
-  ]
+  ],
+  "pullRequestsOpenedCount": 640,
+  "issuesOpenedCount": 210
 }
