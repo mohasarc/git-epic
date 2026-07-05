@@ -1,7 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import { detectChapters } from './chapters/detect-chapters.js';
 import * as publicApi from './index.js';
-import type { Chapter, HistorySnapshot } from './index.js';
+import type {
+  Chapter,
+  FetchGitHubSnapshotResult,
+  HistorySnapshot,
+  HttpTransport,
+  ParsedGitHubHandle,
+} from './index.js';
 import { narrateChapter } from './narration/narrate-chapter.js';
 import { renderEpic } from './render-epic.js';
 import { darkAgeScene } from './rendering/scenes/dark-age-scene.js';
@@ -116,5 +122,37 @@ describe('entry point', () => {
       'The chronicle is yet unwritten, and the epic has just begun.',
     ]);
     expect(publicApi.renderEpic(snapshot).startsWith('<svg')).toBe(true);
+  });
+
+  it('exports live fetch contracts as types only', async () => {
+    const parsedHandle: ParsedGitHubHandle = { lookup: 'OctoCat' };
+    const result: FetchGitHubSnapshotResult = {
+      kind: 'success',
+      snapshot: {
+        handle: parsedHandle.lookup,
+        accountCreatedDate: '2020-01-01',
+        firstPublicActivityDate: null,
+        capturedAtDate: '2026-07-04',
+        contributionDays: [],
+        repositories: [],
+      },
+    };
+    const transport: HttpTransport = {
+      async get() {
+        return { status: 200, headers: new Map(), body: '{}' };
+      },
+    };
+
+    expect(result.snapshot.handle).toBe('OctoCat');
+    await expect(transport.get('https://api.github.com/users/OctoCat')).resolves.toEqual({
+      status: 200,
+      headers: new Map(),
+      body: '{}',
+    });
+    expect(Object.keys(publicApi).sort()).toEqual([
+      'detectChapters',
+      'narrateChapter',
+      'renderEpic',
+    ]);
   });
 });
