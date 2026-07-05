@@ -38,12 +38,12 @@ describe('scoreStrengths', () => {
 
   it('crowns the genuine strongest dimension even when every value is sub-baseline', () => {
     const snapshot = buildHistorySnapshot({
-      followerCount: 1,
-      pullRequestsOpenedCount: 0,
-      issuesOpenedCount: 0,
-      contributionDays: contributionDays(3),
+      followerCount: 5,
+      pullRequestsOpenedCount: 5,
+      issuesOpenedCount: 5,
+      contributionDays: contributionDays(50),
       repositories: [
-        buildRepositorySummary({ name: 'x', starCount: 9, forkCount: 0, primaryLanguage: 'TypeScript' }),
+        buildRepositorySummary({ name: 'x', starCount: 9, forkCount: 3, primaryLanguage: 'TypeScript' }),
       ],
     });
 

@@ -6,3 +6,10 @@ export type { FetchGitHubSnapshotResult } from './github/fetch-github-snapshot-r
 export type { GitHubHandleParseResult, ParsedGitHubHandle } from './github/github-handle.js';
 export type { HttpResponse, HttpTransport } from './github/http-transport.js';
 export type { HistorySnapshot } from './history-snapshot.js';
+export { scoreStrengths } from './strengths/score-strengths.js';
+export type {
+  StrengthsResult,
+  StrengthScore,
+  DominantLanguage,
+} from './strengths/score-strengths.js';
+export type { StrengthDimension } from './strengths/strength-dimensions.js';
