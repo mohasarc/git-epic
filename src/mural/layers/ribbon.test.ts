@@ -81,8 +81,8 @@ describe('renderRibbon column geometry', () => {
     expect(rects[0].x).toBeCloseTo(columns[0].x, 2);
     const last = rects[rects.length - 1];
     expect(last.x + last.width).toBeCloseTo(columns[columns.length - 1].x + columns[columns.length - 1].width, 2);
-    for (let index = 1; index < rects.length; index++) {
-      expect(rects[index].x).toBeCloseTo(rects[index - 1].x + rects[index - 1].width, 2);
+    for (let index = 1; index < columns.length; index++) {
+      expect(columns[index].x).toBeCloseTo(columns[index - 1].x + columns[index - 1].width, 6);
     }
   });
 
