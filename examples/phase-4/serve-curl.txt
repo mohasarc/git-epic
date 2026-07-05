@@ -1,0 +1,28 @@
+# Real curl -i against a booted server: PORT=8099 pnpm start
+# Live GitHub fetch for octocat; SVG body elided to its opening tag.
+
+$ curl -i http://localhost:8099/octocat.svg
+HTTP/1.1 200 OK
+Content-Type: image/svg+xml; charset=utf-8
+Cache-Control: public, max-age=86387
+
+<svg xmlns="http://www.w3.org/2000/svg" width="830" height="415" viewBox="0 0 830 415" role="img"> …[epic svg body]
+
+$ curl -i http://localhost:8099/octocat        # non-.svg path
+HTTP/1.1 404 Not Found
+Content-Type: text/plain; charset=utf-8
+
+Not found
+
+$ curl -i -X POST http://localhost:8099/octocat.svg   # non-GET
+HTTP/1.1 405 Method Not Allowed
+Content-Type: text/plain; charset=utf-8
+Allow: GET
+
+Method not allowed
+
+$ curl -I http://localhost:8099/octocat.svg     # HEAD: headers, empty body
+HTTP/1.1 200 OK
+Content-Type: image/svg+xml; charset=utf-8
+Cache-Control: public, max-age=86387
+
