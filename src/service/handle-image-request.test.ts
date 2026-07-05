@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import type { HttpResponse, HttpTransport } from '../github/http-transport.js';
 import { renderEpic } from '../render-epic.js';
+import { renderMural } from '../render-mural.js';
 import { fetchGitHubSnapshot } from '../github/fetch-github-snapshot.js';
 import { expectEmbedSafeSvg } from '../test-support/expect-embed-safe-svg.js';
 import type { EpicCacheEntry } from './epic-cache.js';
@@ -73,6 +74,17 @@ async function expectedEpicDocument(handle: string): Promise<string> {
     throw new Error('fixture transport did not produce a success snapshot');
   }
   return renderEpic(result.snapshot);
+}
+
+async function expectedMuralDocument(handle: string): Promise<string> {
+  const result = await fetchGitHubSnapshot(handle, {
+    transport: new FakeTransport(successResponses()),
+    capturedAtDate: NOW_ISO.slice(0, 10),
+  });
+  if (result.kind !== 'success') {
+    throw new Error('fixture transport did not produce a success snapshot');
+  }
+  return renderMural(result.snapshot);
 }
 
 function staleEntry(document: string): EpicCacheEntry {
@@ -275,6 +287,79 @@ describe('handleImageRequest', () => {
     expect(second.body).toBe(first.body);
     expect(setSpy).toHaveBeenCalledTimes(1);
     expect(transport.requestedUrls).toHaveLength(5);
+  });
+
+  it('renders and caches the mural variant under a :mural key', async () => {
+    const cache = createInMemoryEpicCache();
+    const setSpy = vi.spyOn(cache, 'set');
+    const transport = new FakeTransport(successResponses());
+
+    const response = await handleImageRequest('octocat', { transport, cache, nowIso: NOW_ISO }, 'mural');
+
+    expect(response.body).toBe(await expectedMuralDocument('octocat'));
+    expect(setSpy).toHaveBeenCalledWith('octocat:mural', {
+      document: await expectedMuralDocument('octocat'),
+      renderedAtIso: NOW_ISO,
+    });
+  });
+
+  it('keeps cosmic and mural in distinct keys that never serve each other', async () => {
+    const cache = createInMemoryEpicCache();
+
+    const cosmic = await handleImageRequest(
+      'octocat',
+      { transport: new FakeTransport(successResponses()), cache, nowIso: NOW_ISO },
+    );
+    const mural = await handleImageRequest(
+      'octocat',
+      { transport: new FakeTransport(successResponses()), cache, nowIso: NOW_ISO },
+      'mural',
+    );
+
+    expect(mural.body).not.toBe(cosmic.body);
+    expect((await cache.get('octocat'))?.document).toBe(cosmic.body);
+    expect((await cache.get('octocat:mural'))?.document).toBe(mural.body);
+  });
+
+  it('serves the mural from cache on the second hit without refetching', async () => {
+    const cache = createInMemoryEpicCache();
+    const transport = new FakeTransport(successResponses());
+
+    const first = await handleImageRequest('octocat', { transport, cache, nowIso: NOW_ISO }, 'mural');
+    const second = await handleImageRequest('octocat', { transport, cache, nowIso: NOW_ISO }, 'mural');
+
+    expect(second.body).toBe(first.body);
+    expect(transport.requestedUrls).toHaveLength(5);
+  });
+
+  it('renders the same no-such-legend card for a not-found handle across variants', async () => {
+    const cosmic = await handleImageRequest(
+      'ghost',
+      { transport: new FakeTransport([textResponse(404, JSON.stringify({ message: 'Not Found' }))]), cache: createInMemoryEpicCache(), nowIso: NOW_ISO },
+    );
+    const mural = await handleImageRequest(
+      'ghost',
+      { transport: new FakeTransport([textResponse(404, JSON.stringify({ message: 'Not Found' }))]), cache: createInMemoryEpicCache(), nowIso: NOW_ISO },
+      'mural',
+    );
+
+    expect(mural.body).toBe(cosmic.body);
+    expect(mural.body).toContain('No such legend');
+  });
+
+  it('renders the same still-being-written placeholder when the transport throws across variants', async () => {
+    const cosmic = await handleImageRequest(
+      'octocat',
+      { transport: new ThrowingTransport(), cache: createInMemoryEpicCache(), nowIso: NOW_ISO },
+    );
+    const mural = await handleImageRequest(
+      'octocat',
+      { transport: new ThrowingTransport(), cache: createInMemoryEpicCache(), nowIso: NOW_ISO },
+      'mural',
+    );
+
+    expect(mural.body).toBe(cosmic.body);
+    expect(mural.body).toContain('still being written');
   });
 
   it('keeps the body embed-safe for a hostile requested handle', async () => {
