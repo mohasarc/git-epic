@@ -4,5 +4,8 @@
   "firstPublicActivityDate": null,
   "capturedAtDate": "2026-07-04",
   "contributionDays": [],
-  "repositories": []
+  "followerCount": 0,
+  "repositories": [],
+  "pullRequestsOpenedCount": 0,
+  "issuesOpenedCount": 0
 }
