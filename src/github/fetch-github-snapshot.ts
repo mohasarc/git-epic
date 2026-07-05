@@ -1,5 +1,5 @@
 import type { HistorySnapshot } from '../history-snapshot.js';
-import { fetchContributionCalendar } from './contribution-calendar.js';
+import { ContributionCalendarRateLimitError, fetchContributionCalendar } from './contribution-calendar.js';
 import { defaultHttpTransport } from './default-http-transport.js';
 import type { FetchGitHubSnapshotResult } from './fetch-github-snapshot-result.js';
 import { fetchGitHubPublicProfile } from './github-rest-client.js';
@@ -26,20 +26,43 @@ export async function fetchGitHubSnapshot(
     return profileResult;
   }
 
-  const contributionDays = await fetchContributionCalendar(parsedHandle.handle, { transport });
+  const contributionDaysResult = await fetchContributionDays(parsedHandle.handle, transport, profileResult.profile.login);
+  if ('kind' in contributionDaysResult) {
+    return contributionDaysResult;
+  }
+
   const snapshot: HistorySnapshot = {
     handle: profileResult.profile.login,
     accountCreatedDate: profileResult.profile.accountCreatedDate,
     firstPublicActivityDate: firstPublicActivityDate(
-      contributionDays.map((contributionDay) => contributionDay.date),
+      contributionDaysResult.map((contributionDay) => contributionDay.date),
       profileResult.profile.repositories.map((repository) => repository.createdDate),
     ),
     capturedAtDate: options?.capturedAtDate ?? todayUtcDate(),
-    contributionDays,
+    contributionDays: contributionDaysResult,
     repositories: profileResult.profile.repositories,
   };
 
   return { kind: 'success', snapshot };
+}
+
+async function fetchContributionDays(
+  handle: { lookup: string },
+  transport: HttpTransport,
+  canonicalHandle: string,
+): Promise<HistorySnapshot['contributionDays'] | Extract<FetchGitHubSnapshotResult, { kind: 'rate-limited' }>> {
+  try {
+    return await fetchContributionCalendar(handle, { transport });
+  } catch (error) {
+    if (error instanceof ContributionCalendarRateLimitError) {
+      return {
+        kind: 'rate-limited',
+        handle: canonicalHandle,
+        retryAfterSeconds: error.retryAfterSeconds,
+      };
+    }
+    throw error;
+  }
 }
 
 function firstPublicActivityDate(contributionDates: string[], repositoryCreatedDates: string[]): string | null {

@@ -6,18 +6,29 @@ export type ContributionCalendarFetchOptions = {
   transport: HttpTransport;
 };
 
+export class ContributionCalendarRateLimitError extends Error {
+  readonly retryAfterSeconds: number | null;
+
+  constructor(retryAfterSeconds: number | null) {
+    super('GitHub contribution calendar rate limited');
+    this.retryAfterSeconds = retryAfterSeconds;
+  }
+}
+
 export async function fetchContributionCalendar(
   handle: ParsedGitHubHandle,
   options: ContributionCalendarFetchOptions,
 ): Promise<ContributionDay[]> {
   const profileUrl = `https://github.com/${handle.lookup}`;
   const profileResponse = await options.transport.get(profileUrl);
+  assertNotRateLimited(profileResponse);
   const contributionDaysByDate = new Map<string, ContributionDay>();
 
   addContributionDays(contributionDaysByDate, parseContributionCalendarHtml(profileResponse.body));
 
   for (const contributionUrl of parseContributionYearUrls(profileResponse.body)) {
     const contributionResponse = await options.transport.get(contributionUrl);
+    assertNotRateLimited(contributionResponse);
     addContributionDays(contributionDaysByDate, parseContributionCalendarHtml(contributionResponse.body));
   }
 
@@ -85,4 +96,21 @@ function parseContributionYearUrls(html: string): string[] {
 
 function decodeHtmlAttribute(value: string): string {
   return value.replaceAll('&amp;', '&');
+}
+
+function assertNotRateLimited(response: { status: number; headers: ReadonlyMap<string, string> }): void {
+  if (response.status !== 429 && response.status !== 403) {
+    return;
+  }
+
+  throw new ContributionCalendarRateLimitError(parseRetryAfter(response.headers.get('retry-after')));
+}
+
+function parseRetryAfter(value: string | undefined): number | null {
+  if (!value) {
+    return null;
+  }
+
+  const seconds = Number(value);
+  return Number.isInteger(seconds) && seconds >= 0 ? seconds : null;
 }

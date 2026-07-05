@@ -35,6 +35,14 @@ function htmlResponse(body: string): HttpResponse {
   };
 }
 
+function textResponse(status: number, body: string, headers?: Readonly<Record<string, string>>): HttpResponse {
+  return {
+    status,
+    headers: new Map(Object.entries(headers ?? {})),
+    body,
+  };
+}
+
 describe('fetchGitHubSnapshot', () => {
   it('assembles a canonical history snapshot with injected capture date', async () => {
     const transport = new FakeTransport([
@@ -121,6 +129,24 @@ describe('fetchGitHubSnapshot', () => {
     expect(result).toMatchObject({
       kind: 'success',
       snapshot: { firstPublicActivityDate: null },
+    });
+  });
+
+  it('surfaces contribution calendar rate limits distinctly', async () => {
+    const transport = new FakeTransport([
+      jsonResponse({
+        login: 'OctoCat',
+        type: 'User',
+        created_at: '2011-01-25T18:44:36Z',
+      }),
+      jsonResponse([]),
+      textResponse(429, 'slow down', { 'retry-after': '30' }),
+    ]);
+
+    await expect(fetchGitHubSnapshot('octocat', { transport, capturedAtDate: '2026-07-05' })).resolves.toEqual({
+      kind: 'rate-limited',
+      handle: 'OctoCat',
+      retryAfterSeconds: 30,
     });
   });
 });
