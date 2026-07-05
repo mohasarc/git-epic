@@ -1,25 +1,29 @@
 import { formatSvgNumber } from '../rendering/format-svg-number.js';
 import type { MuralScene } from './mural-scene.js';
+import { renderAccessibility } from './layers/accessibility.js';
 import { renderRibbon } from './layers/ribbon.js';
 import { renderRoad } from './layers/road.js';
 import { renderSky } from './layers/sky.js';
 import { renderStructures } from './layers/structures.js';
 import { renderTerrain } from './layers/terrain.js';
+import { renderText } from './layers/text.js';
 
 /**
- * The desert strip: sky gradient, distant terrain, per-era ground tints at local
- * origins, one continuous road at the ribbon-top baseline, tier-colored structures
- * at world scale, then the contribution ribbon band below the road. No text yet — that
- * layer grows in P7.
+ * The desert strip: accessible <title>/<desc>, sky gradient, distant terrain, per-era
+ * ground tints at local origins, one continuous road at the ribbon-top baseline,
+ * tier-colored structures at world scale, the contribution ribbon band below the road,
+ * then the visible caps titles/subtitle/label on top.
  */
 export function renderMuralSvg(scene: MuralScene): string {
   return (
     `<svg xmlns="http://www.w3.org/2000/svg" width="${formatSvgNumber(scene.width)}" height="${formatSvgNumber(scene.height)}" viewBox="0 0 ${formatSvgNumber(scene.width)} ${formatSvgNumber(scene.height)}" role="img">` +
+    renderAccessibility(scene) +
     renderSky(scene.width) +
     renderTerrain(scene.width, scene.eras) +
     renderRoad(scene.width) +
     renderStructures(scene.eras, scene.worldScale) +
     renderRibbon(scene.eras, scene.width) +
+    renderText(scene) +
     `</svg>`
   );
 }
