@@ -43,6 +43,7 @@ describe('fetchGitHubPublicProfile', () => {
         login: 'OctoCat',
         type: 'User',
         created_at: '2011-01-25T18:44:36Z',
+        followers: 7,
       }),
       jsonResponse(200, []),
     ]);
@@ -54,6 +55,7 @@ describe('fetchGitHubPublicProfile', () => {
       profile: {
         login: 'OctoCat',
         accountCreatedDate: '2011-01-25',
+        followerCount: 7,
         repositories: [],
       },
     });
@@ -108,6 +110,7 @@ describe('fetchGitHubPublicProfile', () => {
         login: 'OctoCat',
         type: 'User',
         created_at: '2011-01-25T18:44:36Z',
+        followers: 128,
       }),
       jsonResponse(200, [
         {
@@ -115,6 +118,8 @@ describe('fetchGitHubPublicProfile', () => {
           created_at: '2020-02-10T12:30:00Z',
           pushed_at: null,
           stargazers_count: 3,
+          forks_count: 1,
+          fork: true,
           language: null,
         },
         {
@@ -122,6 +127,8 @@ describe('fetchGitHubPublicProfile', () => {
           created_at: '2019-01-02T23:59:59Z',
           pushed_at: '2024-03-04T01:02:03Z',
           stargazers_count: 42,
+          forks_count: 9,
+          fork: false,
           language: 'TypeScript',
         },
       ]),
@@ -132,12 +139,15 @@ describe('fetchGitHubPublicProfile', () => {
     ).resolves.toMatchObject({
       kind: 'success',
       profile: {
+        followerCount: 128,
         repositories: [
           {
             name: 'older',
             createdDate: '2019-01-02',
             lastPushedDate: '2024-03-04',
             starCount: 42,
+            forkCount: 9,
+            isFork: false,
             primaryLanguage: 'TypeScript',
           },
           {
@@ -145,6 +155,8 @@ describe('fetchGitHubPublicProfile', () => {
             createdDate: '2020-02-10',
             lastPushedDate: null,
             starCount: 3,
+            forkCount: 1,
+            isFork: true,
             primaryLanguage: null,
           },
         ],

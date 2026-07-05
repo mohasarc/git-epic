@@ -24,12 +24,15 @@ describe('loadHistorySnapshotFixture', () => {
     expect(snapshot.repositories).toEqual([]);
   });
 
-  it('loads the rich history account fixture', () => {
+  it('loads the rich history account fixture with fork and follower fields', () => {
     const snapshot = loadHistorySnapshotFixture('rich-history-account.json');
 
     expect(snapshot.handle).toBe('saga-weaver');
     expect(snapshot.contributionDays.length).toBe(58);
     expect(snapshot.repositories.length).toBe(2);
+    expect(snapshot.followerCount).toBe(1200);
+    expect(snapshot.repositories.map((repository) => repository.forkCount)).toEqual([140, 12]);
+    expect(snapshot.repositories.map((repository) => repository.isFork)).toEqual([false, false]);
   });
 
   it('loads the fifteen-year overflow fixture', () => {
