@@ -3,8 +3,9 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
 import { buildHistorySnapshot } from '../test-support/build-history-snapshot.js';
+import { renderEpic } from '../render-epic.js';
 import { formatFetchGitHubSnapshotResult } from './format-fetch-github-snapshot-result.js';
-import { writeCapturedSnapshotFile } from './live-snapshot-files.js';
+import { writeCapturedSnapshotFile, writeRenderedSnapshotFile } from './live-snapshot-files.js';
 
 let temporaryDirectories: string[] = [];
 
@@ -74,5 +75,19 @@ describe('writeCapturedSnapshotFile', () => {
 
     writeCapturedSnapshotFile(buildHistorySnapshot({ handle: 'OctoCat' }), outputPath, { force: true });
     expect(readFileSync(outputPath, 'utf8')).toContain('"handle": "OctoCat"');
+  });
+});
+
+describe('writeRenderedSnapshotFile', () => {
+  it('writes the same SVG as rendering the captured snapshot directly', () => {
+    const outputPath = join(temporaryDirectory(), 'nested', 'octocat.svg');
+    const snapshot = buildHistorySnapshot({
+      handle: 'OctoCat',
+      contributionDays: [{ date: '2019-03-20', count: 1 }],
+    });
+
+    writeRenderedSnapshotFile(snapshot, outputPath);
+
+    expect(readFileSync(outputPath, 'utf8')).toBe(renderEpic(snapshot));
   });
 });
