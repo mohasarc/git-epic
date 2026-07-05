@@ -40,6 +40,14 @@ describe('loadHistorySnapshotFixture', () => {
     expect(snapshot.repositories.length).toBe(4);
   });
 
+  it('loads the captured live account fixture', () => {
+    const snapshot = loadHistorySnapshotFixture('mohasarc-captured.json');
+
+    expect(snapshot.handle).toBe('mohasarc');
+    expect(snapshot.contributionDays.length).toBeGreaterThan(0);
+    expect(snapshot.repositories.length).toBeGreaterThan(0);
+  });
+
   it('throws with the attempted path for a nonexistent fixture', () => {
     expect(() => loadHistorySnapshotFixture('no-such-fixture.json')).toThrow(
       /test-fixtures[\\/]no-such-fixture\.json/,
