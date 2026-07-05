@@ -1,5 +1,9 @@
 import { renderStillBeingWrittenCard } from '../rendering/cards/still-being-written-card.js';
-import { handleImageRequest, type ImageRequestDependencies } from './handle-image-request.js';
+import {
+  handleImageRequest,
+  type EpicVariant,
+  type ImageRequestDependencies,
+} from './handle-image-request.js';
 import type { ImageResponse } from './image-response.js';
 
 export type ServiceRequest = { method: string | undefined; url: string | undefined };
@@ -27,14 +31,19 @@ async function routeToImageHandler(
     return methodNotAllowedResponse();
   }
 
-  const pathname = (request.url ?? '').split('?')[0];
+  const [pathname, queryString = ''] = (request.url ?? '').split('?');
   if (!pathname.endsWith(SVG_SUFFIX)) {
     return notFoundResponse();
   }
 
   const requestedHandle = decodeURIComponent(pathname.slice(1, -SVG_SUFFIX.length));
-  const response = await handleImageRequest(requestedHandle, deps);
+  const variant = parseVariant(queryString);
+  const response = await handleImageRequest(requestedHandle, deps, variant);
   return method === 'HEAD' ? { ...response, body: '' } : response;
+}
+
+function parseVariant(queryString: string): EpicVariant {
+  return new URLSearchParams(queryString).get('preview') === 'mural' ? 'mural' : 'cosmic';
 }
 
 function methodNotAllowedResponse(): ImageResponse {
