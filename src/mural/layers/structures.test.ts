@@ -11,7 +11,7 @@ import { buildMuralScene } from '../build-mural-scene.js';
 import type { MuralScene } from '../mural-scene.js';
 import { STRUCTURE_FILL, Y_BANDS } from '../mural-vocabulary.js';
 import { renderMuralSvg } from '../render-mural-svg.js';
-import { renderStructures } from './structures.js';
+import { renderEraStructures, renderStructures } from './structures.js';
 
 function narrate(snapshot: HistorySnapshot): NarratedChapter[] {
   return detectChapters(snapshot).map((chapter) => ({ chapter, narration: narrateChapter(chapter) }));
@@ -74,6 +74,21 @@ describe('renderStructures slot fill', () => {
   it('appears inside the full mural strip', () => {
     const svg = renderMuralSvg(richScene);
     expect(svg).toContain(renderStructures(richScene.eras, richScene.worldScale));
+  });
+});
+
+describe('renderEraStructures per-era accessor', () => {
+  it('composes into renderStructures byte-identically', () => {
+    expect(richScene.eras.map((era) => renderEraStructures(era, richScene.worldScale)).join('')).toBe(
+      renderStructures(richScene.eras, richScene.worldScale),
+    );
+  });
+
+  it('renders one era as a substring of the full layer', () => {
+    const era = richScene.eras.find((candidate) => candidate.slots.length > 0)!;
+    const fragment = renderEraStructures(era, richScene.worldScale);
+    expect(fragment).not.toBe('');
+    expect(renderStructures(richScene.eras, richScene.worldScale)).toContain(fragment);
   });
 });
 
