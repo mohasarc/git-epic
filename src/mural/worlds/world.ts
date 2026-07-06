@@ -22,7 +22,7 @@ export type World = {
   distantTerrain: string;
   groundTint: Record<MuralTier, string>;
   structureFill: Record<MuralTier, ModuleFill>;
-  spine: { kind: 'road' | 'river'; color: string };
+  spine: { kind: 'road' | 'river'; color: string; highlight?: string };
   ribbonRamp: readonly string[];
   goldAccent: string;
   structureBody: string;

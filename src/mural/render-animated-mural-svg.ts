@@ -6,7 +6,7 @@ import { renderAccessibility } from './layers/accessibility.js';
 import { renderBadgeFinale } from './layers/badge-finale.js';
 import { renderMotif } from './layers/motifs.js';
 import { renderRibbon } from './layers/ribbon.js';
-import { renderRoad } from './layers/road.js';
+import { renderRoad, renderSpineFlow } from './layers/road.js';
 import { renderSky } from './layers/sky.js';
 import { renderEraStructures } from './layers/structures.js';
 import { renderDistantBand, renderEraGround } from './layers/terrain.js';
@@ -97,7 +97,8 @@ function frontPlane(scene: MuralScene, track: CameraTrack, isSubWindow: boolean,
     renderRibbon(scene.eras, scene.width, world) +
     eraGroups;
   if (isSubWindow) return staticPlane('front', scene.width, body);
-  return `<g class="mural-plane front">${body}${panAnimateTransform(track, PLANE_RATE.front)}</g>`;
+  const flow = renderSpineFlow(scene.width, world);
+  return `<g class="mural-plane front">${body}${flow}${panAnimateTransform(track, PLANE_RATE.front)}</g>`;
 }
 
 /**
