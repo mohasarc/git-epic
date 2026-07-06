@@ -3,13 +3,14 @@ import type { CameraTrack } from './camera-track.js';
 import { BEAT_SETTLE_SECONDS, PLANE_RATE } from './camera-track.js';
 import { buildCameraTrack } from './build-camera.js';
 import { renderAccessibility } from './layers/accessibility.js';
+import { renderBadgeFinale } from './layers/badge-finale.js';
 import { renderEraMotifs } from './layers/motifs.js';
 import { renderRibbon } from './layers/ribbon.js';
 import { renderRoad } from './layers/road.js';
 import { renderSky } from './layers/sky.js';
 import { renderEraStructures } from './layers/structures.js';
 import { renderDistantBand, renderEraGround } from './layers/terrain.js';
-import { eraTitleText } from './layers/text.js';
+import { eraTitleText, renderSubtitle } from './layers/text.js';
 import type { MuralScene, PlacedEra } from './mural-scene.js';
 import { CAMERA_WINDOW_WIDTH, MURAL_HEIGHT } from './mural-vocabulary.js';
 
@@ -32,7 +33,31 @@ export function renderAnimatedMuralSvg(scene: MuralScene): string {
     backPlane() +
     midPlane(scene, track, isSubWindow) +
     frontPlane(scene, track, isSubWindow) +
+    hudPlane(scene, track) +
     `</svg>`
+  );
+}
+
+/**
+ * Topmost window-pinned overlay, rate 0 (never translated): the persistent subtitle caption and
+ * the badge finale. The finale anchors to the camera window so the freeze frame never clips, and
+ * fades in exactly as the camera settles on the present-day dwell — the money shot.
+ */
+function hudPlane(scene: MuralScene, track: CameraTrack): string {
+  const presentDay = track.eraTimings[track.eraTimings.length - 1];
+  const begin = `${formatSvgNumber(presentDay.dwellStartSeconds + BEAT_SETTLE_SECONDS)}s`;
+  const finale = renderBadgeFinale(scene, { anchorWidth: CAMERA_WINDOW_WIDTH });
+  return `<g class="mural-hud">${renderSubtitle(scene)}${finaleFade(finale, begin)}</g>`;
+}
+
+/** The finale panel, hidden until the present-day dwell settles, then frozen in. */
+function finaleFade(finale: string, begin: string): string {
+  if (finale === '') return '';
+  return (
+    `<g class="mural-finale" opacity="0">` +
+    finale +
+    `<animate attributeName="opacity" from="0" to="1" dur="${formatSvgNumber(BEAT_SECONDS)}s" begin="${begin}" fill="freeze"/>` +
+    `</g>`
   );
 }
 
