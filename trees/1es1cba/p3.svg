@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="23" height="343" viewBox="720 0 23 343.40000000000003"><style>
+    :root {
+      --ct-fill: rgba(246,248,250,0.85);
+      --ct-path: #24292f;
+      --ct-muted: #57606a;
+      --ct-added: #1a7f37;
+      --ct-changed: #9a6700;
+      --ct-moved: #8250df;
+      --ct-removed: #cf222e;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --ct-fill: rgba(22,27,34,0.85);
+        --ct-path: #e6edf3;
+        --ct-muted: #8b949e;
+        --ct-added: #3fb950;
+        --ct-changed: #d29922;
+        --ct-moved: #bc8cff;
+        --ct-removed: #f85149;
+      }
+    }
+    text { font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace; font-size: 13.6px; }
+  </style>
+  <text x="-1" y="23.799999999999997" xml:space="preserve"><tspan fill="var(--ct-path)">.</tspan></text>
+  <text x="-1" y="43.519999999999996" xml:space="preserve"><tspan fill="var(--ct-muted)">├── </tspan><tspan fill="var(--ct-path)">package.json                              # ** drop render-fixture script</tspan></text>
+  <text x="-1" y="63.239999999999995" xml:space="preserve"><tspan fill="var(--ct-muted)">├── </tspan><tspan fill="var(--ct-path)">scripts/</tspan></text>
+  <text x="-1" y="82.96" xml:space="preserve"><tspan fill="var(--ct-muted)">│   └── </tspan><tspan fill="var(--ct-path)">render-fixture-to-svg.ts              # -- redundant with render-mural</tspan></text>
+  <text x="-1" y="102.67999999999999" xml:space="preserve"><tspan fill="var(--ct-muted)">└── </tspan><tspan fill="var(--ct-path)">src/</tspan></text>
+  <text x="-1" y="122.39999999999999" xml:space="preserve"><tspan fill="var(--ct-muted)">    ├── </tspan><tspan fill="var(--ct-path)">index.ts                              # ** drop renderEpic export</tspan></text>
+  <text x="-1" y="142.12" xml:space="preserve"><tspan fill="var(--ct-muted)">    ├── </tspan><tspan fill="var(--ct-path)">github/</tspan></text>
+  <text x="-1" y="161.84" xml:space="preserve"><tspan fill="var(--ct-muted)">    │   ├── </tspan><tspan fill="var(--ct-path)">live-snapshot-files.ts            # ** writeRenderedSnapshotFile -&gt; renderMural</tspan></text>
+  <text x="-1" y="181.56" xml:space="preserve"><tspan fill="var(--ct-muted)">    │   └── </tspan><tspan fill="var(--ct-path)">live-snapshot-cli.test.ts         # ** assert mural output</tspan></text>
+  <text x="-1" y="201.28" xml:space="preserve"><tspan fill="var(--ct-muted)">    ├── </tspan><tspan fill="var(--ct-path)">render-epic.test.ts                   # ** public-API keys drop renderEpic</tspan></text>
+  <text x="-1" y="221" xml:space="preserve"><tspan fill="var(--ct-muted)">    ├── </tspan><tspan fill="var(--ct-path)">render-mural.test.ts                  # ** drop cosmic foil</tspan></text>
+  <text x="-1" y="240.72" xml:space="preserve"><tspan fill="var(--ct-muted)">    └── </tspan><tspan fill="var(--ct-path)">mural/</tspan></text>
+  <text x="-1" y="260.44" xml:space="preserve"><tspan fill="var(--ct-muted)">        ├── </tspan><tspan fill="var(--ct-path)">render-mural.done-when.test.ts    # ** drop cosmic foil</tspan></text>
+  <text x="-1" y="280.15999999999997" xml:space="preserve"><tspan fill="var(--ct-muted)">        └── </tspan><tspan fill="var(--ct-path)">mural-strengths-integration.test.ts  # ** drop cosmic foil</tspan></text>
+  <text x="-1" y="299.87999999999994" xml:space="preserve"></text>
+  <text x="-1" y="329.46"><tspan fill="var(--ct-added)">++</tspan><tspan fill="var(--ct-muted)"> added   </tspan><tspan fill="var(--ct-changed)">**</tspan><tspan fill="var(--ct-muted)"> changed   </tspan><tspan fill="var(--ct-moved)">~~</tspan><tspan fill="var(--ct-muted)"> moved   </tspan><tspan fill="var(--ct-removed)">--</tspan><tspan fill="var(--ct-muted)"> removed</tspan></text></svg>
