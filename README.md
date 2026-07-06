@@ -2,16 +2,16 @@
 
 Your GitHub history replayed as an animated cinematic SVG — "The Epic of `<handle>`" — living in your profile README.
 
-![The Epic of saga-weaver](examples/stage-3-phase-5/rich-history-account.svg)
+![The Epic of saga-weaver](examples/stage-6/saga-weaver.svg)
 
-Rendered from [`test-fixtures/rich-history-account.json`](test-fixtures/rich-history-account.json) — title card, chapter replay, then a living ambient state. Animation is baked in (SMIL); it plays right here on github.com.
+Rendered from [`test-fixtures/rich-history-account.json`](test-fixtures/rich-history-account.json) — a camera pans the mural through the career's eras, then freezes and rests in a living ambient state. Animation is baked in (SMIL); it plays right here on github.com.
 
 Spec: [`plans/000/git-epic-functional-spec.md`](plans/000/git-epic-functional-spec.md)
 
 ## Usage
 
 ```ts
-import { renderEpic, type HistorySnapshot } from 'git-epic';
+import { renderMural, type HistorySnapshot } from 'git-epic';
 
 const snapshot: HistorySnapshot = {
   handle: 'first-spark',
@@ -22,7 +22,7 @@ const snapshot: HistorySnapshot = {
   repositories: [],
 };
 
-const svg = renderEpic(snapshot);
+const svg = renderMural(snapshot);
 // write svg somewhere, embed in a README — animation is baked in (SMIL)
 ```
 
@@ -30,7 +30,7 @@ Output is deterministic: same snapshot in, byte-identical SVG out.
 
 ### Chapters without rendering
 
-`detectChapters` finds the career's chapters from a snapshot; `narrateChapter` turns one into its caption. Same functions `renderEpic` uses internally.
+`detectChapters` finds the career's chapters from a snapshot; `narrateChapter` turns one into its caption. Same functions `renderMural` uses internally.
 
 ```ts
 import { detectChapters, narrateChapter, type Chapter } from 'git-epic';
@@ -52,7 +52,7 @@ Seven chapter kinds: origin, dark age, great streak, prolificacy, flagship rise,
 ### Render a fixture locally
 
 ```sh
-pnpm render-fixture test-fixtures/rich-history-account.json
+pnpm render-mural test-fixtures/rich-history-account.json
 # writes temp/rich-history-account.svg — open it in a browser to watch the replay
 ```
 
@@ -69,7 +69,14 @@ Live capture uses public logged-out GitHub data. Expected outcomes are distinct:
 
 ## Image endpoint
 
-`GET /<handle>.svg` returns HTTP 200 with an animated SVG for any input — no auth, embed it straight in a README. Response is byte-identical for every viewer inside the freshness window, so the camo proxy can cache it.
+The address routes by extension:
+
+| Request | Served |
+| --- | --- |
+| `GET /<handle>.svg` | animated mural (the default embed) |
+| `GET /<handle>.png` | static row-wrapped export, the same story re-laid without motion |
+
+Both honor `?world=` and return HTTP 200 for any input — no auth, embed straight in a README. Response is byte-identical for every viewer inside the freshness window, so the camo proxy can cache it. The `.png` body is the export SVG served as `image/svg+xml` (camo proxies on Content-Type, not extension); no rasterizer, the package stays zero-dependency. Static export sample: [`examples/stage-6/saga-weaver.png`](examples/stage-6/saga-weaver.png).
 
 Four served states:
 
@@ -80,7 +87,7 @@ Four served states:
 | Missing user, org account, or bad handle | "no such legend" card |
 | Upstream down or rate-limited | last-good epic if cached, else "still being written" placeholder |
 
-A `.svg` request never returns a broken image: any unexpected error falls back to the placeholder at 200. `Cache-Control` carries `max-age` down to the epic's 24h freshness boundary (min 300s); cards and placeholders use `max-age=300`.
+A request never returns a broken image on either extension: any unexpected error falls back to the placeholder at 200. `Cache-Control` carries `max-age` down to the epic's 24h freshness boundary (min 300s); cards and placeholders use `max-age=300`.
 
 The two fallback cards:
 
@@ -90,20 +97,20 @@ The two fallback cards:
 
 ### Worlds
 
-The mural preview (`?preview=mural`) renders in one of three worlds — desert, river,
-mountain — each with its own ancient → classical → modern material vocabulary. World is
-pure taste: it never encodes anything about the user, so the same history reads the same in
-every world. Only palette and two per-world signatures (the ancient-opener camp and a world
-prop) change; every landmark, motif, and plaque stays shared and recolored.
+The mural renders in one of three worlds — desert, river, mountain — each with its own
+ancient → classical → modern material vocabulary. World is pure taste: it never encodes
+anything about the user, so the same history reads the same in every world. Only palette and
+two per-world signatures (the ancient-opener camp and a world prop) change; every landmark,
+motif, and plaque stays shared and recolored.
 
-`?world=desert|river|mountain` picks one:
+`?world=desert|river|mountain` picks one; it works on both extensions:
 
 | request | world |
 | --- | --- |
-| `?preview=mural&world=river` | river |
-| `?preview=mural&world=mountain` | mountain |
-| `?preview=mural` (absent) | hash default off the handle |
-| `?preview=mural&world=River` (wrong case / unknown) | hash default off the handle |
+| `<handle>.svg?world=river` | river |
+| `<handle>.png?world=mountain` | mountain |
+| `<handle>.svg` (absent) | hash default off the handle |
+| `<handle>.svg?world=River` (wrong case / unknown) | hash default off the handle |
 
 Any value that is not a lowercase-exact match hash-defaults to a stable world for that
 handle (`WORLD_NAMES[hash(handle) % 3]`), so every handle gets a world with no parameter.
@@ -117,7 +124,7 @@ pnpm start          # listens on http://localhost:8080
 PORT=3000 pnpm start
 ```
 
-`http.createServer` binds `routeServiceRequest` and computes `nowIso` per request. Non-`.svg` paths → 404; non-GET (except HEAD) → 405.
+`http.createServer` binds `routeServiceRequest` and computes `nowIso` per request. Paths without a `.svg` or `.png` extension → 404; non-GET (except HEAD) → 405.
 
 ### Deploy
 
