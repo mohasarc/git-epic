@@ -34,10 +34,11 @@ function renderColumn(column: RibbonColumn, world: World): string {
   return `<rect x="${formatSvgNumber(column.x)}" y="${formatSvgNumber(y)}" width="${formatSvgNumber(column.width)}" height="${formatSvgNumber(height)}" fill="${ribbonColumnColor(column.density, world)}"/>`;
 }
 
-function renderLegend(stripWidth: number, world: World): string {
+/** Density swatches plus the low/high labels, right-anchored to anchorWidth. */
+export function renderLegend(anchorWidth: number, world: World): string {
   const ramp = world.ribbonRamp;
   const swatchesWidth = ramp.length * (LEGEND_SWATCH + LEGEND_GAP) - LEGEND_GAP;
-  const swatchesStart = stripWidth - 24 - swatchesWidth - measureLabelWidth(RIBBON_LEGEND_HIGH);
+  const swatchesStart = anchorWidth - 24 - swatchesWidth - measureLabelWidth(RIBBON_LEGEND_HIGH);
   const lowX = swatchesStart - LEGEND_GAP;
   const swatches = ramp.map((color, index) => {
     const x = swatchesStart + index * (LEGEND_SWATCH + LEGEND_GAP);
