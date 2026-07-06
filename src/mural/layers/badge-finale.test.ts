@@ -8,6 +8,7 @@ import { expectEmbedSafeSvg } from '../../test-support/expect-embed-safe-svg.js'
 import type { HistorySnapshot } from '../../history-snapshot.js';
 import type { NarratedChapter } from '../../timeline/build-timeline.js';
 import { buildMuralScene } from '../build-mural-scene.js';
+import { deriveBadges } from '../derive-badges.js';
 import type { Badge, MuralScene } from '../mural-scene.js';
 import { MURAL_HEIGHT } from '../mural-vocabulary.js';
 import { renderBadgeFinale } from './badge-finale.js';
@@ -16,8 +17,10 @@ function narrate(snapshot: HistorySnapshot): NarratedChapter[] {
   return detectChapters(snapshot).map((chapter) => ({ chapter, narration: narrateChapter(chapter) }));
 }
 
+// Badge derivation is wired into scene.badges in Phase 9; inject it here to pin the render.
 function sceneOf(snapshot: HistorySnapshot): MuralScene {
-  return buildMuralScene(snapshot, narrate(snapshot), scoreStrengths(snapshot));
+  const strengths = scoreStrengths(snapshot);
+  return { ...buildMuralScene(snapshot, narrate(snapshot), strengths), badges: deriveBadges(strengths) };
 }
 
 function fakeScene(overrides: Partial<MuralScene>): MuralScene {
@@ -102,6 +105,23 @@ describe('renderBadgeFinale geometry', () => {
     expect(panel.y + panel.height).toBeLessThan(172);
   });
 
+  it('keeps a long badge line on a narrow mural inside the canvas', () => {
+    const badges: Badge[] = [
+      { label: 'Polyglot Explorer' },
+      { label: 'Prolific Builder' },
+      { label: 'Star Magnet' },
+      { label: 'Relentless' },
+    ];
+    const scene = fakeScene({ width: 368, badges });
+    const svg = renderBadgeFinale(scene);
+    const panel = panelGeometry(svg);
+    expect(panel.x).toBeGreaterThanOrEqual(0);
+    expect(panel.x + panel.width).toBeLessThanOrEqual(scene.width);
+    const fontSize = Number(svg.match(/font-size="([\d.]+)"/)![1]);
+    expect(fontSize).toBeLessThan(12);
+    expect(fontSize).toBeGreaterThanOrEqual(7);
+  });
+
   it('sizes the panel to its content, not to an era', () => {
     const narrow = panelGeometry(renderBadgeFinale(fakeScene({ badges: [{ label: 'Followed' }] })));
     const wide = panelGeometry(
@@ -113,7 +133,7 @@ describe('renderBadgeFinale geometry', () => {
 
 describe('renderBadgeFinale escaping', () => {
   it('escapes an XML-hostile badge label and plaque', () => {
-    const badges: Badge[] = [{ label: '"><g onload="x">', plaque: '<script>alert(1)</script> & "42"' }];
+    const badges: Badge[] = [{ label: '<b>&"Legend"</b>', plaque: "9 & <> '★'" }];
     expectEmbedSafeSvg(renderBadgeFinale(fakeScene({ badges })));
   });
 });
