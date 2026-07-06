@@ -1,6 +1,7 @@
 import { formatSvgNumber } from '../rendering/format-svg-number.js';
 import type { MuralScene } from './mural-scene.js';
 import { renderAccessibility } from './layers/accessibility.js';
+import { renderBadgeFinale } from './layers/badge-finale.js';
 import { renderMotifs } from './layers/motifs.js';
 import { renderRibbon } from './layers/ribbon.js';
 import { renderRoad } from './layers/road.js';
@@ -13,7 +14,8 @@ import { renderText } from './layers/text.js';
  * The desert strip: accessible <title>/<desc>, sky gradient, distant terrain, per-era
  * ground tints at local origins, one continuous road at the ribbon-top baseline,
  * tier-colored structures at world scale, strength motifs over them, the contribution
- * ribbon band below the road, then the visible caps titles/subtitle/label on top.
+ * ribbon band below the road, the visible caps titles/subtitle/label, then the present-day
+ * badge finale panel topmost.
  */
 export function renderMuralSvg(scene: MuralScene): string {
   return (
@@ -26,6 +28,7 @@ export function renderMuralSvg(scene: MuralScene): string {
     renderMotifs(scene.eras, scene.worldScale) +
     renderRibbon(scene.eras, scene.width) +
     renderText(scene) +
+    renderBadgeFinale(scene) +
     `</svg>`
   );
 }
