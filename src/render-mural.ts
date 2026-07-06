@@ -4,6 +4,7 @@ import { narrateChapter } from './narration/narrate-chapter.js';
 import { buildMuralScene } from './mural/build-mural-scene.js';
 import type { MuralScene } from './mural/mural-scene.js';
 import { renderAnimatedMuralSvg } from './mural/render-animated-mural-svg.js';
+import { renderStaticExport } from './mural/render-static-export.js';
 import { worlds } from './mural/worlds/catalog.js';
 import type { WorldName } from './mural/worlds/world.js';
 import { scoreStrengths } from './strengths/score-strengths.js';
@@ -19,4 +20,8 @@ export function buildSceneFromSnapshot(snapshot: HistorySnapshot): MuralScene {
 
 export function renderMural(snapshot: HistorySnapshot, world: WorldName = 'desert'): string {
   return renderAnimatedMuralSvg(buildSceneFromSnapshot(snapshot), worlds[world]);
+}
+
+export function renderMuralExport(snapshot: HistorySnapshot, world: WorldName = 'desert'): string {
+  return renderStaticExport(buildSceneFromSnapshot(snapshot), worlds[world], snapshot.contributionDays);
 }

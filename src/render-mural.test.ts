@@ -7,7 +7,7 @@ import { detectChapters } from './chapters/detect-chapters.js';
 import * as publicApi from './index.js';
 import { narrateChapter } from './narration/narrate-chapter.js';
 import { renderEpic } from './render-epic.js';
-import { renderMural } from './render-mural.js';
+import { buildSceneFromSnapshot, renderMural, renderMuralExport } from './render-mural.js';
 import { buildMuralScene } from './mural/build-mural-scene.js';
 import { CAMERA_WINDOW_WIDTH, MURAL_HEIGHT } from './mural/mural-vocabulary.js';
 import { scoreStrengths } from './strengths/score-strengths.js';
@@ -84,6 +84,36 @@ describe('renderMural', () => {
     const slotCount = (s: ReturnType<typeof scene>) =>
       s.eras.reduce((total, era) => total + era.slots.length, 0);
     expect(Math.abs(slotCount(twinScene) - slotCount(baseScene))).toBeLessThanOrEqual(2);
+  });
+});
+
+describe('renderMuralExport', () => {
+  const fixture = 'rich-history-account.json';
+
+  it('defaults to the desert world', () => {
+    const snapshot = loadHistorySnapshotFixture(fixture);
+    expect(renderMuralExport(snapshot)).toBe(renderMuralExport(snapshot, 'desert'));
+  });
+
+  it('renders a static export with no SMIL motion', () => {
+    const svg = renderMuralExport(loadHistorySnapshotFixture(fixture));
+    expect(svg.startsWith('<svg')).toBe(true);
+    expect(svg.trimEnd().endsWith('</svg>')).toBe(true);
+    expect(svg).not.toContain('<animate');
+    expect(svg).not.toContain('dur=');
+    expectEmbedSafeSvg(svg);
+  });
+
+  it('shows the same badges and era titles as the shared scene', () => {
+    const snapshot = loadHistorySnapshotFixture(fixture);
+    const built = buildSceneFromSnapshot(snapshot);
+    const svg = renderMuralExport(snapshot);
+    for (const badge of built.badges) {
+      expect(svg).toContain(badge.label);
+    }
+    for (const era of built.eras) {
+      expect(svg).toContain(era.title);
+    }
   });
 });
 
