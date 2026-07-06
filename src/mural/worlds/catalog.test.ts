@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { WORLD_NAMES, worlds } from './catalog.js';
 import { desert } from './desert.js';
+import { mountain } from './mountain.js';
 import { river } from './river.js';
 
 describe('worlds catalog', () => {
@@ -15,9 +16,9 @@ describe('worlds catalog', () => {
     }
   });
 
-  it('binds desert and river to their own worlds, mountain still aliasing desert', () => {
+  it('binds every name to its own real world, no aliases left', () => {
     expect(worlds.desert).toBe(desert);
     expect(worlds.river).toBe(river);
-    expect(worlds.mountain).toBe(desert);
+    expect(worlds.mountain).toBe(mountain);
   });
 });

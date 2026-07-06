@@ -8,11 +8,13 @@ import {
 import { bannerModule } from './banner.js';
 import { boatModule } from './boat.js';
 import { bridgeModule } from './bridge.js';
+import { cairnModule } from './cairn.js';
 import { crowdModule } from './crowd.js';
 import { crownGateModule } from './crown-gate.js';
 import { dockHutModule } from './dock-hut.js';
 import { markerModule } from './marker.js';
 import { noticeBoardModule } from './notice-board.js';
+import { pineModule } from './pine.js';
 import { propModule } from './prop.js';
 import { sideRoadModule } from './side-road.js';
 import { structureModule } from './structure.js';
@@ -33,6 +35,8 @@ const MODULES: { name: keyof typeof MODULE_PATH_BUDGET; render: Module }[] = [
   { name: 'noticeBoard', render: noticeBoardModule },
   { name: 'dockHut', render: dockHutModule },
   { name: 'boat', render: boatModule },
+  { name: 'cairn', render: cairnModule },
+  { name: 'pine', render: pineModule },
 ];
 
 const FILL_A: ModuleFill = { body: '#101010', accent: '#202020' };
