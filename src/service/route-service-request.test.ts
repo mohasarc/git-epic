@@ -5,8 +5,8 @@ import { createInMemoryEpicCache } from './in-memory-epic-cache.js';
 import { routeServiceRequest } from './route-service-request.js';
 
 const NOW_ISO = '2026-07-05T12:00:00.000Z';
-const FRESH_DOCUMENT = '<svg>fresh</svg>';
 const MURAL_DOCUMENT = '<svg>mural</svg>';
+const STATIC_DOCUMENT = '<svg>static</svg>';
 
 class UnusedTransport implements HttpTransport {
   async get(url: string): Promise<HttpResponse> {
@@ -14,43 +14,96 @@ class UnusedTransport implements HttpTransport {
   }
 }
 
-async function freshCache(): Promise<EpicCache> {
-  const cache = createInMemoryEpicCache();
-  await cache.set('octocat', { document: FRESH_DOCUMENT, renderedAtIso: NOW_ISO });
-  return cache;
-}
-
 function deps(cache: EpicCache) {
   return { transport: new UnusedTransport(), cache, nowIso: NOW_ISO };
 }
 
+async function cacheWith(entries: Record<string, string>): Promise<EpicCache> {
+  const cache = createInMemoryEpicCache();
+  for (const [key, document] of Object.entries(entries)) {
+    await cache.set(key, { document, renderedAtIso: NOW_ISO });
+  }
+  return cache;
+}
+
 describe('routeServiceRequest', () => {
-  it('delegates a .svg GET to the image handler', async () => {
-    const response = await routeServiceRequest({ method: 'GET', url: '/octocat.svg' }, deps(await freshCache()));
+  it('serves the mural for a bare .svg GET from the mural cache key', async () => {
+    const cache = await cacheWith({ 'octocat:mural:desert': MURAL_DOCUMENT });
+
+    const response = await routeServiceRequest({ method: 'GET', url: '/octocat.svg' }, deps(cache));
 
     expect(response.status).toBe(200);
     expect(response.headers['Content-Type']).toBe('image/svg+xml; charset=utf-8');
-    expect(response.body).toBe(FRESH_DOCUMENT);
+    expect(response.body).toBe(MURAL_DOCUMENT);
+  });
+
+  it('serves the static export for a .png GET from the static cache key', async () => {
+    const cache = await cacheWith({ 'octocat:static:desert': STATIC_DOCUMENT });
+
+    const response = await routeServiceRequest({ method: 'GET', url: '/octocat.png' }, deps(cache));
+
+    expect(response.status).toBe(200);
+    expect(response.headers['Content-Type']).toBe('image/svg+xml; charset=utf-8');
+    expect(response.body).toBe(STATIC_DOCUMENT);
   });
 
   it('ignores the query string when resolving the handle', async () => {
+    const cache = await cacheWith({ 'octocat:mural:desert': MURAL_DOCUMENT });
+
     const response = await routeServiceRequest(
       { method: 'GET', url: '/octocat.svg?foo=bar&cachebust=1' },
-      deps(await freshCache()),
+      deps(cache),
     );
 
-    expect(response.body).toBe(FRESH_DOCUMENT);
+    expect(response.body).toBe(MURAL_DOCUMENT);
   });
 
   it('percent-decodes the path before resolving the handle', async () => {
-    const response = await routeServiceRequest({ method: 'GET', url: '/oct%6fcat.svg' }, deps(await freshCache()));
+    const cache = await cacheWith({ 'octocat:mural:desert': MURAL_DOCUMENT });
 
-    expect(response.body).toBe(FRESH_DOCUMENT);
+    const response = await routeServiceRequest({ method: 'GET', url: '/oct%6fcat.svg' }, deps(cache));
+
+    expect(response.body).toBe(MURAL_DOCUMENT);
   });
 
-  it('returns 404 plain text for a non-svg path', async () => {
-    for (const url of ['/', '/octocat']) {
-      const response = await routeServiceRequest({ method: 'GET', url }, deps(await freshCache()));
+  it('routes ?world to the matching per-world mural cache key', async () => {
+    const cache = await cacheWith({ 'octocat:mural:river': MURAL_DOCUMENT });
+
+    const response = await routeServiceRequest(
+      { method: 'GET', url: '/octocat.svg?world=river' },
+      deps(cache),
+    );
+
+    expect(response.body).toBe(MURAL_DOCUMENT);
+  });
+
+  it('routes ?world on a .png to the matching per-world static cache key', async () => {
+    const cache = await cacheWith({ 'octocat:static:river': STATIC_DOCUMENT });
+
+    const response = await routeServiceRequest(
+      { method: 'GET', url: '/octocat.png?world=river' },
+      deps(cache),
+    );
+
+    expect(response.body).toBe(STATIC_DOCUMENT);
+  });
+
+  it('resolves an absent world to the hash default for both extensions', async () => {
+    const cache = await cacheWith({
+      'octocat:mural:desert': MURAL_DOCUMENT,
+      'octocat:static:desert': STATIC_DOCUMENT,
+    });
+
+    const svg = await routeServiceRequest({ method: 'GET', url: '/octocat.svg' }, deps(cache));
+    const png = await routeServiceRequest({ method: 'GET', url: '/octocat.png' }, deps(cache));
+
+    expect(svg.body).toBe(MURAL_DOCUMENT);
+    expect(png.body).toBe(STATIC_DOCUMENT);
+  });
+
+  it('returns 404 plain text for a path that is neither .svg nor .png', async () => {
+    for (const url of ['/', '/octocat', '/octocat.gif']) {
+      const response = await routeServiceRequest({ method: 'GET', url }, deps(createInMemoryEpicCache()));
 
       expect(response.status).toBe(404);
       expect(response.headers['Content-Type']).toBe('text/plain; charset=utf-8');
@@ -59,7 +112,7 @@ describe('routeServiceRequest', () => {
 
   it('returns 405 with Allow: GET for a non-GET method', async () => {
     for (const method of ['POST', 'PUT']) {
-      const response = await routeServiceRequest({ method, url: '/octocat.svg' }, deps(await freshCache()));
+      const response = await routeServiceRequest({ method, url: '/octocat.svg' }, deps(createInMemoryEpicCache()));
 
       expect(response.status).toBe(405);
       expect(response.headers.Allow).toBe('GET');
@@ -67,101 +120,20 @@ describe('routeServiceRequest', () => {
     }
   });
 
-  it('answers HEAD with the GET headers and an empty body', async () => {
-    const getResponse = await routeServiceRequest({ method: 'GET', url: '/octocat.svg' }, deps(await freshCache()));
-    const headResponse = await routeServiceRequest({ method: 'HEAD', url: '/octocat.svg' }, deps(await freshCache()));
+  it('answers HEAD with the GET headers and an empty body for both extensions', async () => {
+    const cache = await cacheWith({
+      'octocat:mural:desert': MURAL_DOCUMENT,
+      'octocat:static:desert': STATIC_DOCUMENT,
+    });
 
-    expect(headResponse.status).toBe(getResponse.status);
-    expect(headResponse.headers).toEqual(getResponse.headers);
-    expect(headResponse.body).toBe('');
-  });
+    for (const url of ['/octocat.svg', '/octocat.png']) {
+      const getResponse = await routeServiceRequest({ method: 'GET', url }, deps(cache));
+      const headResponse = await routeServiceRequest({ method: 'HEAD', url }, deps(cache));
 
-  it('routes ?preview=mural to the hash-default world cache key', async () => {
-    const cache = await freshCache();
-    await cache.set('octocat:mural:desert', { document: MURAL_DOCUMENT, renderedAtIso: NOW_ISO });
-
-    const response = await routeServiceRequest(
-      { method: 'GET', url: '/octocat.svg?preview=mural' },
-      deps(cache),
-    );
-
-    expect(response.body).toBe(MURAL_DOCUMENT);
-  });
-
-  it('routes ?world to the matching per-world mural cache key', async () => {
-    const cache = await freshCache();
-    await cache.set('octocat:mural:river', { document: MURAL_DOCUMENT, renderedAtIso: NOW_ISO });
-
-    const response = await routeServiceRequest(
-      { method: 'GET', url: '/octocat.svg?preview=mural&world=river' },
-      deps(cache),
-    );
-
-    expect(response.body).toBe(MURAL_DOCUMENT);
-  });
-
-  it('routes ?preview=mural-static to the static cache key', async () => {
-    const cache = await freshCache();
-    await cache.set('octocat:static:desert', { document: MURAL_DOCUMENT, renderedAtIso: NOW_ISO });
-
-    const response = await routeServiceRequest(
-      { method: 'GET', url: '/octocat.svg?preview=mural-static' },
-      deps(cache),
-    );
-
-    expect(response.body).toBe(MURAL_DOCUMENT);
-  });
-
-  it('keeps ?preview=mural on the mural key, not the static key', async () => {
-    const cache = await freshCache();
-    await cache.set('octocat:mural:desert', { document: MURAL_DOCUMENT, renderedAtIso: NOW_ISO });
-    await cache.set('octocat:static:desert', { document: '<svg>static</svg>', renderedAtIso: NOW_ISO });
-
-    const response = await routeServiceRequest(
-      { method: 'GET', url: '/octocat.svg?preview=mural' },
-      deps(cache),
-    );
-
-    expect(response.body).toBe(MURAL_DOCUMENT);
-  });
-
-  it('falls back to cosmic for a non-mural preview value', async () => {
-    const cache = await freshCache();
-    await cache.set('octocat:mural', { document: MURAL_DOCUMENT, renderedAtIso: NOW_ISO });
-
-    const response = await routeServiceRequest(
-      { method: 'GET', url: '/octocat.svg?preview=galaxy' },
-      deps(cache),
-    );
-
-    expect(response.body).toBe(FRESH_DOCUMENT);
-  });
-
-  it('serves cosmic for the bare url even when a mural entry exists', async () => {
-    const cache = await freshCache();
-    await cache.set('octocat:mural', { document: MURAL_DOCUMENT, renderedAtIso: NOW_ISO });
-
-    const response = await routeServiceRequest({ method: 'GET', url: '/octocat.svg' }, deps(cache));
-
-    expect(response.body).toBe(FRESH_DOCUMENT);
-  });
-
-  it('answers HEAD for a mural preview with the GET headers and an empty body', async () => {
-    const cache = await freshCache();
-    await cache.set('octocat:mural:desert', { document: MURAL_DOCUMENT, renderedAtIso: NOW_ISO });
-
-    const getResponse = await routeServiceRequest(
-      { method: 'GET', url: '/octocat.svg?preview=mural' },
-      deps(cache),
-    );
-    const headResponse = await routeServiceRequest(
-      { method: 'HEAD', url: '/octocat.svg?preview=mural' },
-      deps(cache),
-    );
-
-    expect(headResponse.status).toBe(getResponse.status);
-    expect(headResponse.headers).toEqual(getResponse.headers);
-    expect(headResponse.body).toBe('');
+      expect(headResponse.status).toBe(getResponse.status);
+      expect(headResponse.headers).toEqual(getResponse.headers);
+      expect(headResponse.body).toBe('');
+    }
   });
 
   it('returns the still-being-written placeholder at 200 when the handler throws', async () => {
