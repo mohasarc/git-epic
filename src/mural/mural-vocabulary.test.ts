@@ -56,6 +56,8 @@ describe('mural vocabulary', () => {
       crowd: 3,
       bridge: 4,
       noticeBoard: 3,
+      dockHut: 3,
+      boat: 2,
     });
   });
 });

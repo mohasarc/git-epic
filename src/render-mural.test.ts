@@ -113,9 +113,9 @@ describe('renderMural world selection', () => {
     expect(renderMural(snapshot)).toBe(renderMural(snapshot, 'desert'));
   });
 
-  it('renders river and mountain identical to desert while they alias it', () => {
+  it('renders river apart from desert, mountain still aliasing it', () => {
     const desertSvg = renderMural(loadHistorySnapshotFixture(fixture), 'desert');
-    expect(renderMural(loadHistorySnapshotFixture(fixture), 'river')).toBe(desertSvg);
+    expect(renderMural(loadHistorySnapshotFixture(fixture), 'river')).not.toBe(desertSvg);
     expect(renderMural(loadHistorySnapshotFixture(fixture), 'mountain')).toBe(desertSvg);
   });
 });
