@@ -131,6 +131,18 @@ describe('renderBadgeFinale geometry', () => {
   });
 });
 
+describe('renderBadgeFinale anchor width', () => {
+  it('defaults anchorWidth to scene.width, byte-identical', () => {
+    expect(renderBadgeFinale(richScene)).toBe(renderBadgeFinale(richScene, { anchorWidth: richScene.width }));
+  });
+
+  it('anchors to the given width, not scene.width', () => {
+    const scene = fakeScene({ width: 2000, badges: [{ label: 'Star Magnet' }] });
+    const panel = panelGeometry(renderBadgeFinale(scene, { anchorWidth: 640 }));
+    expect(panel.x + panel.width).toBeLessThanOrEqual(640);
+  });
+});
+
 describe('renderBadgeFinale escaping', () => {
   it('escapes an XML-hostile badge label and plaque', () => {
     const badges: Badge[] = [{ label: '<b>&"Legend"</b>', plaque: "9 & <> '★'" }];
