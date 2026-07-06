@@ -1,0 +1,325 @@
+{
+  "star-heavy": [
+    {
+      "era": "flagship-rise",
+      "motifs": [
+        {
+          "dimension": "stars",
+          "kind": "crownGate",
+          "tier": 4,
+          "count": 1,
+          "standout": true,
+          "plaque": "15k ★",
+          "x": 190,
+          "width": 132,
+          "baselineY": 300
+        }
+      ]
+    },
+    {
+      "era": "flagship-rise",
+      "motifs": [
+        {
+          "dimension": "followers",
+          "kind": "crowd",
+          "tier": 1,
+          "count": 6,
+          "standout": false,
+          "plaque": "40 followers",
+          "x": 390,
+          "width": 132,
+          "baselineY": 300
+        }
+      ]
+    },
+    {
+      "era": "flagship-rise",
+      "motifs": [
+        {
+          "dimension": "pullRequests",
+          "kind": "bridge",
+          "tier": 1,
+          "count": 1,
+          "standout": false,
+          "plaque": "20 PRs",
+          "x": 590,
+          "width": 132,
+          "baselineY": 300
+        }
+      ]
+    },
+    {
+      "era": "star-milestone",
+      "motifs": [
+        {
+          "dimension": "forks",
+          "kind": "sideRoad",
+          "tier": 1,
+          "count": 1,
+          "standout": false,
+          "plaque": "12 forks",
+          "x": 790,
+          "width": 118,
+          "baselineY": 300
+        }
+      ]
+    },
+    {
+      "era": "star-milestone",
+      "motifs": [
+        {
+          "dimension": "languageBreadth",
+          "kind": "banner",
+          "tier": 1,
+          "count": 2,
+          "standout": false,
+          "plaque": null,
+          "x": 970,
+          "width": 118,
+          "baselineY": 210
+        }
+      ]
+    },
+    {
+      "era": "star-milestone",
+      "motifs": [
+        {
+          "dimension": "issues",
+          "kind": "noticeBoard",
+          "tier": 1,
+          "count": 1,
+          "standout": false,
+          "plaque": "10 issues",
+          "x": 1150,
+          "width": 118,
+          "baselineY": 300
+        }
+      ]
+    }
+  ],
+  "pr-heavy": [
+    {
+      "era": "origin",
+      "motifs": [
+        {
+          "dimension": "pullRequests",
+          "kind": "bridge",
+          "tier": 3,
+          "count": 1,
+          "standout": true,
+          "plaque": "600 PRs",
+          "x": 30,
+          "width": 17,
+          "baselineY": 300
+        },
+        {
+          "dimension": "stars",
+          "kind": "crownGate",
+          "tier": 1,
+          "count": 1,
+          "standout": false,
+          "plaque": "60 ★",
+          "x": 55,
+          "width": 17,
+          "baselineY": 300
+        },
+        {
+          "dimension": "languageBreadth",
+          "kind": "banner",
+          "tier": 1,
+          "count": 3,
+          "standout": false,
+          "plaque": null,
+          "x": 79,
+          "width": 17,
+          "baselineY": 210
+        },
+        {
+          "dimension": "followers",
+          "kind": "crowd",
+          "tier": 1,
+          "count": 6,
+          "standout": false,
+          "plaque": "50 followers",
+          "x": 104,
+          "width": 17,
+          "baselineY": 300
+        },
+        {
+          "dimension": "issues",
+          "kind": "noticeBoard",
+          "tier": 1,
+          "count": 1,
+          "standout": false,
+          "plaque": "20 issues",
+          "x": 129,
+          "width": 17,
+          "baselineY": 300
+        },
+        {
+          "dimension": "forks",
+          "kind": "sideRoad",
+          "tier": 1,
+          "count": 1,
+          "standout": false,
+          "plaque": "15 forks",
+          "x": 153,
+          "width": 17,
+          "baselineY": 300
+        }
+      ]
+    }
+  ],
+  "polyglot": [
+    {
+      "era": "origin",
+      "motifs": [
+        {
+          "dimension": "languageBreadth",
+          "kind": "banner",
+          "tier": 3,
+          "count": 8,
+          "standout": true,
+          "plaque": "9 languages",
+          "x": 30,
+          "width": 21,
+          "baselineY": 210
+        },
+        {
+          "dimension": "stars",
+          "kind": "crownGate",
+          "tier": 1,
+          "count": 1,
+          "standout": false,
+          "plaque": "31 ★",
+          "x": 60,
+          "width": 21,
+          "baselineY": 300
+        },
+        {
+          "dimension": "pullRequests",
+          "kind": "bridge",
+          "tier": 1,
+          "count": 1,
+          "standout": false,
+          "plaque": "15 PRs",
+          "x": 89,
+          "width": 21,
+          "baselineY": 300
+        },
+        {
+          "dimension": "followers",
+          "kind": "crowd",
+          "tier": 1,
+          "count": 6,
+          "standout": false,
+          "plaque": "20 followers",
+          "x": 119,
+          "width": 21,
+          "baselineY": 300
+        },
+        {
+          "dimension": "forks",
+          "kind": "sideRoad",
+          "tier": 1,
+          "count": 1,
+          "standout": false,
+          "plaque": "8 forks",
+          "x": 148,
+          "width": 21,
+          "baselineY": 300
+        }
+      ]
+    }
+  ],
+  "modest": [
+    {
+      "era": "origin",
+      "motifs": [
+        {
+          "dimension": "pullRequests",
+          "kind": "bridge",
+          "tier": 1,
+          "count": 1,
+          "standout": false,
+          "plaque": "22 PRs",
+          "x": 30,
+          "width": 104,
+          "baselineY": 300
+        }
+      ]
+    },
+    {
+      "era": "language-era",
+      "motifs": [
+        {
+          "dimension": "languageBreadth",
+          "kind": "banner",
+          "tier": 2,
+          "count": 4,
+          "standout": false,
+          "plaque": null,
+          "x": 190,
+          "width": 59,
+          "baselineY": 210
+        },
+        {
+          "dimension": "forks",
+          "kind": "sideRoad",
+          "tier": 1,
+          "count": 1,
+          "standout": false,
+          "plaque": "8 forks",
+          "x": 274,
+          "width": 59,
+          "baselineY": 300
+        }
+      ]
+    },
+    {
+      "era": "language-era",
+      "motifs": [
+        {
+          "dimension": "stars",
+          "kind": "crownGate",
+          "tier": 1,
+          "count": 1,
+          "standout": false,
+          "plaque": "45 ★",
+          "x": 370,
+          "width": 59,
+          "baselineY": 300
+        },
+        {
+          "dimension": "followers",
+          "kind": "crowd",
+          "tier": 1,
+          "count": 6,
+          "standout": false,
+          "plaque": "13 followers",
+          "x": 454,
+          "width": 59,
+          "baselineY": 300
+        }
+      ]
+    }
+  ],
+  "brand-new": [
+    {
+      "era": "present-day",
+      "motifs": [
+        {
+          "dimension": "stars",
+          "kind": "banner",
+          "tier": 0,
+          "count": 1,
+          "standout": false,
+          "plaque": null,
+          "x": 30,
+          "width": 87,
+          "baselineY": 246
+        }
+      ]
+    }
+  ]
+}

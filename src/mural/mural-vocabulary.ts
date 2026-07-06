@@ -1,6 +1,11 @@
 /** The desert-world style system: warm palette, the single sky gradient, tier tints, canvas bands. */
 
+import type { WorldScale } from './mural-scene.js';
+
 export type ModuleFill = { body: string; accent?: string };
+
+/** Tallest a structure slot stands, by world scale — camp squat, metropolis high. */
+export const STRUCTURE_HEIGHT: Record<WorldScale, number> = { camp: 46, town: 82, metropolis: 128 };
 
 export const MURAL_HEIGHT = 360;
 

@@ -4,10 +4,8 @@ import { propModule } from '../modules/prop.js';
 import { structureModule } from '../modules/structure.js';
 import { tentModule } from '../modules/tent.js';
 import type { MuralSlot, PlacedEra, WorldScale } from '../mural-scene.js';
-import { STRUCTURE_FILL, type ModuleFill } from '../mural-vocabulary.js';
+import { STRUCTURE_FILL, STRUCTURE_HEIGHT, type ModuleFill } from '../mural-vocabulary.js';
 
-/** Tallest a structure slot stands, by world scale — camp squat, metropolis high. */
-const STRUCTURE_HEIGHT: Record<WorldScale, number> = { camp: 46, town: 82, metropolis: 128 };
 const MARKER_HEIGHT: Record<WorldScale, number> = { camp: 34, town: 54, metropolis: 78 };
 const PROP_HEIGHT = 16;
 
