@@ -11,7 +11,7 @@ import type { NarratedChapter } from '../timeline/build-timeline.js';
 import { buildMuralScene } from './build-mural-scene.js';
 import type { MuralScene } from './mural-scene.js';
 import { buildCameraTrack } from './build-camera.js';
-import { PLANE_RATE } from './camera-track.js';
+import { BEAT_SETTLE_SECONDS, PLANE_RATE } from './camera-track.js';
 import { CAMERA_WINDOW_WIDTH, MURAL_HEIGHT } from './mural-vocabulary.js';
 import { renderAnimatedMuralSvg } from './render-animated-mural-svg.js';
 
@@ -60,6 +60,30 @@ function planeGroup(svg: string, plane: 'back' | 'mid' | 'front'): string {
   throw new Error(`unbalanced plane group: ${plane}`);
 }
 
+/** Every `<g class="mural-era">...</g>` inside the front plane, in scene-era order. */
+function eraGroups(svg: string): string[] {
+  const front = frontPlane(svg);
+  const marker = '<g class="mural-era"';
+  const groups: string[] = [];
+  let cursor = 0;
+  while (true) {
+    const open = front.indexOf(marker, cursor);
+    if (open < 0) return groups;
+    let depth = 0;
+    for (let index = open; index < front.length; index++) {
+      if (front.startsWith('<g', index)) depth++;
+      else if (front.startsWith('</g>', index)) {
+        depth--;
+        if (depth === 0) {
+          groups.push(front.slice(open, index + 4));
+          cursor = index + 4;
+          break;
+        }
+      }
+    }
+  }
+}
+
 function attribute(fragment: string, name: string): string {
   const match = fragment.match(new RegExp(`${name}="([^"]*)"`));
   expect(match).not.toBeNull();
@@ -97,7 +121,7 @@ describe('renderAnimatedMuralSvg depth planes', () => {
   it('pans the front plane on the raw track values', () => {
     const { track } = buildCameraTrack(richScene.eras, richScene.width);
     const front = frontPlane(renderAnimatedMuralSvg(richScene));
-    const animate = front.slice(front.indexOf('<animateTransform'));
+    const animate = front.slice(front.lastIndexOf('<animateTransform'));
 
     const expectedValues = track.values.map((value) => `${formatSvgNumber(value)} 0`).join(';');
     const expectedKeyTimes = track.keyTimes.map((keyTime) => formatSvgNumber(keyTime)).join(';');
@@ -134,7 +158,71 @@ describe('renderAnimatedMuralSvg depth planes', () => {
   });
 });
 
+describe('renderAnimatedMuralSvg per-era intro beats', () => {
+  it('wraps every era in a front-plane era group, one per scene era', () => {
+    const groups = eraGroups(renderAnimatedMuralSvg(richScene));
+    expect(groups).toHaveLength(richScene.eras.length);
+  });
+
+  it('rises and fades a dwelled era in from its settled dwell start', () => {
+    const { eraTimings } = buildCameraTrack(richScene.eras, richScene.width);
+    const dwelledIndex = eraTimings.findIndex((timing) => timing.dwelled);
+    const group = eraGroups(renderAnimatedMuralSvg(richScene))[dwelledIndex];
+    const begin = `${formatSvgNumber(eraTimings[dwelledIndex].dwellStartSeconds + BEAT_SETTLE_SECONDS)}s`;
+
+    const opacity = group.slice(group.indexOf('<animate '));
+    expect(attribute(opacity, 'attributeName')).toBe('opacity');
+    expect(attribute(opacity, 'from')).toBe('0');
+    expect(attribute(opacity, 'to')).toBe('1');
+    expect(attribute(opacity, 'begin')).toBe(begin);
+    expect(opacity).toContain('fill="freeze"');
+
+    const rise = group.slice(group.indexOf('<animateTransform'));
+    expect(attribute(rise, 'type')).toBe('translate');
+    expect(attribute(rise, 'from')).toBe('0 8');
+    expect(attribute(rise, 'to')).toBe('0 0');
+    expect(attribute(rise, 'begin')).toBe(begin);
+    expect(group).toContain('opacity="0"');
+  });
+
+  it('leaves a zipped era present with no beat', () => {
+    const { eraTimings } = buildCameraTrack(richScene.eras, richScene.width);
+    const zippedIndex = eraTimings.findIndex((timing) => !timing.dwelled);
+    expect(zippedIndex).toBeGreaterThanOrEqual(0);
+    const group = eraGroups(renderAnimatedMuralSvg(richScene))[zippedIndex];
+    expect(group).not.toContain('<animate');
+    expect(group).not.toContain('opacity="0"');
+  });
+
+  it('emits two beats per dwelled era, capped by the dwell budget', () => {
+    const { eraTimings } = buildCameraTrack(richScene.eras, richScene.width);
+    const dwelledCount = eraTimings.filter((timing) => timing.dwelled).length;
+    const groups = eraGroups(renderAnimatedMuralSvg(richScene)).join('');
+    const opacityBeats = groups.match(/<animate /g) ?? [];
+    const riseBeats = groups.match(/<animateTransform/g) ?? [];
+    expect(opacityBeats).toHaveLength(dwelledCount);
+    expect(opacityBeats.length + riseBeats.length).toBe(dwelledCount * 2);
+    expect(opacityBeats.length + riseBeats.length).toBeLessThanOrEqual(12);
+  });
+
+  it('nests the era beat groups inside the panning front plane', () => {
+    const svg = renderAnimatedMuralSvg(richScene);
+    const front = frontPlane(svg);
+    expect(front).toContain('<g class="mural-era"');
+    expect(front.indexOf('<g class="mural-plane front"')).toBe(0);
+  });
+});
+
 describe('renderAnimatedMuralSvg sub-window grace floor', () => {
+  it('holds every era still with no beat', () => {
+    const groups = eraGroups(renderAnimatedMuralSvg(subWindowScene));
+    expect(groups).toHaveLength(subWindowScene.eras.length);
+    for (const group of groups) {
+      expect(group).not.toContain('<animate');
+      expect(group).not.toContain('opacity="0"');
+    }
+  });
+
   it('centers every plane statically with no pan', () => {
     expect(subWindowScene.width).toBeLessThanOrEqual(CAMERA_WINDOW_WIDTH);
     const svg = renderAnimatedMuralSvg(subWindowScene);
