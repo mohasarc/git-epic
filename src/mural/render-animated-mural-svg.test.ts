@@ -9,12 +9,13 @@ import { formatSvgNumber } from '../rendering/format-svg-number.js';
 import type { HistorySnapshot } from '../history-snapshot.js';
 import type { NarratedChapter } from '../timeline/build-timeline.js';
 import { buildMuralScene } from './build-mural-scene.js';
-import type { MuralScene } from './mural-scene.js';
+import type { MuralMotif, MuralScene } from './mural-scene.js';
 import { buildCameraTrack } from './build-camera.js';
 import { BEAT_SETTLE_SECONDS, PLANE_RATE } from './camera-track.js';
 import { renderSubtitle } from './layers/text.js';
 import { CAMERA_WINDOW_WIDTH, MURAL_HEIGHT, Y_BANDS } from './mural-vocabulary.js';
 import { renderAnimatedMuralSvg } from './render-animated-mural-svg.js';
+import { renderMuralSvg } from './render-mural-svg.js';
 
 function narrate(snapshot: HistorySnapshot): NarratedChapter[] {
   return detectChapters(snapshot).map((chapter) => ({ chapter, narration: narrateChapter(chapter) }));
@@ -104,6 +105,61 @@ function attribute(fragment: string, name: string): string {
   const match = fragment.match(new RegExp(`${name}="([^"]*)"`));
   expect(match).not.toBeNull();
   return match![1];
+}
+
+/** Every balanced `<g class="<className>">...</g>` group, in document order. */
+function groupsByClass(svg: string, className: string): string[] {
+  const marker = `<g class="${className}"`;
+  const groups: string[] = [];
+  let cursor = 0;
+  while (true) {
+    const open = svg.indexOf(marker, cursor);
+    if (open < 0) return groups;
+    let depth = 0;
+    for (let index = open; index < svg.length; index++) {
+      if (svg.startsWith('<g', index)) depth++;
+      else if (svg.startsWith('</g>', index)) {
+        depth--;
+        if (depth === 0) {
+          groups.push(svg.slice(open, index + 4));
+          cursor = index + 4;
+          break;
+        }
+      }
+    }
+  }
+}
+
+/** One motif, seated at an absolute x (rest window of the rich strip starts at 1317). */
+function motifAt(kind: MuralMotif['kind'], x: number, overrides: Partial<MuralMotif> = {}): MuralMotif {
+  return {
+    dimension: 'stars',
+    kind,
+    tier: 2,
+    x,
+    width: 100,
+    baselineY: Y_BANDS.roadBaseline,
+    count: 1,
+    standout: false,
+    ...overrides,
+  };
+}
+
+/**
+ * Rich strip with every era's motifs cleared, then the given rest-window motifs seated on the
+ * trailing present-day era and the off-window motifs on the first era. Lets a test own exactly
+ * what falls in the rest window.
+ */
+function withMotifs(base: MuralScene, restWindow: MuralMotif[], offWindow: MuralMotif[] = []): MuralScene {
+  const last = base.eras.length - 1;
+  return {
+    ...base,
+    eras: base.eras.map((era, index) => {
+      if (index === last) return { ...era, motifs: restWindow };
+      if (index === 0) return { ...era, motifs: offWindow };
+      return { ...era, motifs: [] };
+    }),
+  };
 }
 
 describe('renderAnimatedMuralSvg frame', () => {
@@ -214,8 +270,8 @@ describe('renderAnimatedMuralSvg per-era intro beats', () => {
     const { eraTimings } = buildCameraTrack(richScene.eras, richScene.width);
     const dwelledCount = eraTimings.filter((timing) => timing.dwelled).length;
     const groups = eraGroups(renderAnimatedMuralSvg(richScene)).join('');
-    const opacityBeats = groups.match(/<animate /g) ?? [];
-    const riseBeats = groups.match(/<animateTransform/g) ?? [];
+    const opacityBeats = groups.match(/<animate attributeName="opacity" from="0"/g) ?? [];
+    const riseBeats = groups.match(/<animateTransform attributeName="transform" type="translate" from="0 8"/g) ?? [];
     expect(opacityBeats).toHaveLength(dwelledCount);
     expect(opacityBeats.length + riseBeats.length).toBe(dwelledCount * 2);
     expect(opacityBeats.length + riseBeats.length).toBeLessThanOrEqual(12);
@@ -303,6 +359,79 @@ describe('renderAnimatedMuralSvg HUD overlay', () => {
       `${formatSvgNumber(presentDay.dwellStartSeconds + BEAT_SETTLE_SECONDS)}s`,
     );
     expect(fade).toContain('fill="freeze"');
+  });
+});
+
+describe('renderAnimatedMuralSvg rest-window ambient loops', () => {
+  it('sways an in-window banner and leaves off-window motifs still', () => {
+    const ambient = groupsByClass(renderAnimatedMuralSvg(richScene), 'mural-ambient');
+    expect(ambient).toHaveLength(1);
+    const loop = ambient[0].slice(ambient[0].indexOf('<animateTransform'));
+    expect(attribute(loop, 'type')).toBe('rotate');
+    expect(loop).toContain('repeatCount="indefinite"');
+  });
+
+  it('glows an in-window gold standout, off-window standouts stay still', () => {
+    const scene = withMotifs(
+      richScene,
+      [motifAt('crownGate', 1400, { standout: true })],
+      [motifAt('crownGate', 50, { standout: true })],
+    );
+    const ambient = groupsByClass(renderAnimatedMuralSvg(scene), 'mural-ambient');
+    expect(ambient).toHaveLength(1);
+    const glow = ambient[0].slice(ambient[0].indexOf('<animate '));
+    expect(attribute(glow, 'attributeName')).toBe('opacity');
+    expect(glow).toContain('repeatCount="indefinite"');
+    expect(glow).not.toContain('<animateTransform');
+  });
+
+  it('bobs an in-window crowd', () => {
+    const scene = withMotifs(richScene, [motifAt('crowd', 1400)]);
+    const ambient = groupsByClass(renderAnimatedMuralSvg(scene), 'mural-ambient');
+    expect(ambient).toHaveLength(1);
+    const bob = ambient[0].slice(ambient[0].indexOf('<animateTransform'));
+    expect(attribute(bob, 'type')).toBe('translate');
+    expect(bob).toContain('repeatCount="indefinite"');
+  });
+
+  it('caps ambient-animated elements at eight', () => {
+    const many = Array.from({ length: 12 }, (_unused, index) =>
+      motifAt('crowd', 1330 + index * 8, { width: 20 }),
+    );
+    const ambient = groupsByClass(renderAnimatedMuralSvg(withMotifs(richScene, many)), 'mural-ambient');
+    expect(ambient.length).toBeLessThanOrEqual(8);
+    expect(ambient).toHaveLength(8);
+  });
+
+  it('keeps ambient on the inner motif, beat on the era group', () => {
+    const scene = withMotifs(richScene, [motifAt('crowd', 1400)]);
+    const tail = eraGroups(renderAnimatedMuralSvg(scene)).at(-1)!;
+    expect(tail).toContain('<g class="mural-era" opacity="0"');
+    expect(tail).toContain('<g class="mural-ambient">');
+    expect(tail.indexOf('<g class="mural-ambient">')).toBeGreaterThan(tail.indexOf('<g class="mural-era"'));
+    const ambient = groupsByClass(tail, 'mural-ambient')[0];
+    expect(ambient).toContain('repeatCount="indefinite"');
+  });
+
+  it('adds no ambient when the rest window holds no motifs', () => {
+    const scene = withMotifs(richScene, []);
+    const svg = renderAnimatedMuralSvg(scene);
+    expect(groupsByClass(svg, 'mural-ambient')).toHaveLength(0);
+    expect(svg).toContain('<svg');
+  });
+
+  it('leaves the static mural motion-free for the same scene', () => {
+    expect(renderMuralSvg(richScene)).not.toContain('<animate');
+  });
+
+  it('is embed-safe with ambient loops', () => {
+    const scene = withMotifs(richScene, [motifAt('crownGate', 1400, { standout: true })]);
+    expectEmbedSafeSvg(renderAnimatedMuralSvg(scene));
+  });
+
+  it('re-renders byte-identical with ambient loops', () => {
+    const scene = withMotifs(richScene, [motifAt('crownGate', 1400, { standout: true })]);
+    expect(renderAnimatedMuralSvg(scene)).toBe(renderAnimatedMuralSvg(scene));
   });
 });
 

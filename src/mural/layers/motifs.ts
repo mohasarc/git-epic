@@ -51,7 +51,7 @@ export function renderEraMotifs(era: PlacedEra, worldScale: WorldScale): string 
   return era.motifs.map((motif) => renderMotif(motif, worldScale)).join('');
 }
 
-function renderMotif(motif: MuralMotif, worldScale: WorldScale): string {
+export function renderMotif(motif: MuralMotif, worldScale: WorldScale): string {
   const height = motifHeight(motif, worldScale);
   const module = MODULE_BY_KIND[motif.kind];
   const fill = motifFill(motif);
