@@ -45,7 +45,14 @@ async function routeToImageHandler(
 }
 
 function parseVariant(params: URLSearchParams): EpicVariant {
-  return params.get('preview') === 'mural' ? 'mural' : 'cosmic';
+  switch (params.get('preview')) {
+    case 'mural-static':
+      return 'static';
+    case 'mural':
+      return 'mural';
+    default:
+      return 'cosmic';
+  }
 }
 
 function methodNotAllowedResponse(): ImageResponse {

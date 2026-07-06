@@ -100,6 +100,31 @@ describe('routeServiceRequest', () => {
     expect(response.body).toBe(MURAL_DOCUMENT);
   });
 
+  it('routes ?preview=mural-static to the static cache key', async () => {
+    const cache = await freshCache();
+    await cache.set('octocat:static:desert', { document: MURAL_DOCUMENT, renderedAtIso: NOW_ISO });
+
+    const response = await routeServiceRequest(
+      { method: 'GET', url: '/octocat.svg?preview=mural-static' },
+      deps(cache),
+    );
+
+    expect(response.body).toBe(MURAL_DOCUMENT);
+  });
+
+  it('keeps ?preview=mural on the mural key, not the static key', async () => {
+    const cache = await freshCache();
+    await cache.set('octocat:mural:desert', { document: MURAL_DOCUMENT, renderedAtIso: NOW_ISO });
+    await cache.set('octocat:static:desert', { document: '<svg>static</svg>', renderedAtIso: NOW_ISO });
+
+    const response = await routeServiceRequest(
+      { method: 'GET', url: '/octocat.svg?preview=mural' },
+      deps(cache),
+    );
+
+    expect(response.body).toBe(MURAL_DOCUMENT);
+  });
+
   it('falls back to cosmic for a non-mural preview value', async () => {
     const cache = await freshCache();
     await cache.set('octocat:mural', { document: MURAL_DOCUMENT, renderedAtIso: NOW_ISO });
