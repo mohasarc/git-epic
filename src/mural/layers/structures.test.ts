@@ -73,7 +73,7 @@ describe('renderStructures slot fill', () => {
 
   it('appears inside the full mural strip', () => {
     const svg = renderMuralSvg(richScene);
-    expect(moduleGroups(svg)).toHaveLength(totalSlots(richScene));
+    expect(svg).toContain(renderStructures(richScene.eras, richScene.worldScale));
   });
 });
 
