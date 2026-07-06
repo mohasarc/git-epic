@@ -41,6 +41,7 @@ export function buildMuralScene(
       slots: allocateSlots(placement, worldScale, eraCount),
       ribbon: bucketRibbon(era, placement, eraDays),
       title: eraTitle(era.chapter),
+      motifs: [],
     };
   });
 
@@ -50,6 +51,7 @@ export function buildMuralScene(
     height: MURAL_HEIGHT,
     worldScale,
     eras: placedEras,
+    badges: [],
     subtitle: stripSubtitle(snapshot, strengths),
     presentDayLabel: PRESENT_DAY_LABEL,
     accessibleTitle: accessibleTitle(snapshot.handle),
