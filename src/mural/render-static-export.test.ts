@@ -17,11 +17,13 @@ import {
   MARGIN,
   MURAL_HEIGHT,
   ROW_GAP,
+  STATIC_EXPORT_BYTE_CEILING,
   STATIC_ROW_WIDTH,
 } from './mural-vocabulary.js';
 import { packEraRows, rowY } from './pack-era-rows.js';
 import { renderStaticExport } from './render-static-export.js';
 import { desert } from './worlds/desert.js';
+import { WORLD_NAMES, worlds } from './worlds/catalog.js';
 
 function narrate(snapshot: HistorySnapshot): NarratedChapter[] {
   return detectChapters(snapshot).map((chapter) => ({ chapter, narration: narrateChapter(chapter) }));
@@ -155,5 +157,15 @@ describe('renderStaticExport embed safety', () => {
     const svg = render();
     expect(svg).not.toContain('<animate');
     expect(svg).not.toContain('dur=');
+  });
+});
+
+describe('renderStaticExport byte ceiling', () => {
+  const denseSnapshot = loadHistorySnapshotFixture('fifteen-year-overflow.json');
+  const denseScene = scene(denseSnapshot);
+
+  it.each([...WORLD_NAMES])('keeps the dense worst case under the ceiling in %s', (world) => {
+    const svg = renderStaticExport(denseScene, worlds[world], denseSnapshot.contributionDays);
+    expect(Buffer.byteLength(svg, 'utf8')).toBeLessThan(STATIC_EXPORT_BYTE_CEILING);
   });
 });

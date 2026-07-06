@@ -70,6 +70,15 @@ export const MURAL_BYTE_CEILING = 72900;
  */
 export const MURAL_ANIMATED_BYTE_CEILING = 75850;
 
+/**
+ * Static image-export ceiling, calibrated just above the measured worst-case dense export, binding
+ * max across the three worlds: fifteen-year overflow at metropolis in mountain — its stone cairns
+ * top desert's 44729 and river's 44689 to 44777 bytes, after the Phase-2 floor band + run-length
+ * merge compact the per-day ribbon. ~223 bytes of guard catch regression while the off-GitHub file
+ * stays small. Separate from the embed ceilings; the row-wrapped export packs a different weight.
+ */
+export const STATIC_EXPORT_BYTE_CEILING = 45000;
+
 /** Literal §6.9 per-module element cap (path/rect/circle/polygon). */
 export const MODULE_PATH_BUDGET = {
   structure: 5,
