@@ -14,9 +14,17 @@ import {
   MURAL_TYPOGRAPHY,
   ROW_GAP,
   SEAM_FEATHER_WIDTH,
+  STATIC_EXPORT_BYTE_CEILING,
   STATIC_ROW_WIDTH,
   Y_BANDS,
 } from './mural-vocabulary.js';
+import { detectChapters } from '../chapters/detect-chapters.js';
+import { narrateChapter } from '../narration/narrate-chapter.js';
+import { scoreStrengths } from '../strengths/score-strengths.js';
+import { loadHistorySnapshotFixture } from '../test-support/load-history-snapshot-fixture.js';
+import { buildMuralScene } from './build-mural-scene.js';
+import { renderStaticExport } from './render-static-export.js';
+import { WORLD_NAMES, worlds } from './worlds/catalog.js';
 
 const HEX_COLOR_PATTERN = /^#[0-9a-f]{6}$/;
 
@@ -46,6 +54,23 @@ describe('mural vocabulary', () => {
   it('reserves a separate animated ceiling above the static one', () => {
     expect(Number.isInteger(MURAL_ANIMATED_BYTE_CEILING)).toBe(true);
     expect(MURAL_ANIMATED_BYTE_CEILING).toBeGreaterThan(MURAL_BYTE_CEILING);
+  });
+
+  it('pins the static-export ceiling just above the measured dense render', () => {
+    expect(Number.isInteger(STATIC_EXPORT_BYTE_CEILING)).toBe(true);
+    const snapshot = loadHistorySnapshotFixture('fifteen-year-overflow.json');
+    const narrated = detectChapters(snapshot).map((chapter) => ({
+      chapter,
+      narration: narrateChapter(chapter),
+    }));
+    const scene = buildMuralScene(snapshot, narrated, scoreStrengths(snapshot));
+    const measuredMax = Math.max(
+      ...WORLD_NAMES.map((world) =>
+        Buffer.byteLength(renderStaticExport(scene, worlds[world], snapshot.contributionDays), 'utf8'),
+      ),
+    );
+    expect(STATIC_EXPORT_BYTE_CEILING).toBeGreaterThan(measuredMax);
+    expect(STATIC_EXPORT_BYTE_CEILING - measuredMax).toBeLessThan(1000);
   });
 
   it('sizes the static export as a row width plus symmetric margins and stacked bands', () => {
