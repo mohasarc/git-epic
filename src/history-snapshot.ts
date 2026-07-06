@@ -31,4 +31,8 @@ export type HistorySnapshot = {
   followerCount: number;
   /** Public repos, ascending by createdDate. */
   repositories: RepositorySummary[];
+  /** Opened PRs, search-derived. null = search unavailable (dimension goes quiet); 0 = genuine zero. */
+  pullRequestsOpenedCount: number | null;
+  /** Opened issues, search-derived. null = search unavailable; 0 = genuine zero. */
+  issuesOpenedCount: number | null;
 };

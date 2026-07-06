@@ -14,6 +14,8 @@ describe('buildHistorySnapshot', () => {
       contributionDays: [],
       followerCount: 0,
       repositories: [],
+      pullRequestsOpenedCount: 0,
+      issuesOpenedCount: 0,
     });
   });
 

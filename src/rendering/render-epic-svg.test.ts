@@ -16,6 +16,8 @@ const firstSparkSnapshot: HistorySnapshot = {
   contributionDays: [],
   followerCount: 0,
   repositories: [],
+  pullRequestsOpenedCount: 0,
+  issuesOpenedCount: 0,
 };
 
 function firstSparkTimeline(): Timeline {

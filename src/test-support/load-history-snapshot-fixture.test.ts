@@ -33,6 +33,8 @@ describe('loadHistorySnapshotFixture', () => {
     expect(snapshot.followerCount).toBe(1200);
     expect(snapshot.repositories.map((repository) => repository.forkCount)).toEqual([140, 12]);
     expect(snapshot.repositories.map((repository) => repository.isFork)).toEqual([false, false]);
+    expect(snapshot.pullRequestsOpenedCount).toBe(640);
+    expect(snapshot.issuesOpenedCount).toBe(210);
   });
 
   it('loads the fifteen-year overflow fixture', () => {

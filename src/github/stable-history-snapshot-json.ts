@@ -24,5 +24,7 @@ function stableHistorySnapshot(snapshot: HistorySnapshot): HistorySnapshot {
       isFork: repository.isFork,
       primaryLanguage: repository.primaryLanguage,
     })),
+    pullRequestsOpenedCount: snapshot.pullRequestsOpenedCount,
+    issuesOpenedCount: snapshot.issuesOpenedCount,
   };
 }

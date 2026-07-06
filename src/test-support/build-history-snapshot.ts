@@ -9,6 +9,8 @@ export function buildHistorySnapshot(overrides?: Partial<HistorySnapshot>): Hist
     contributionDays: [],
     followerCount: 0,
     repositories: [],
+    pullRequestsOpenedCount: 0,
+    issuesOpenedCount: 0,
     ...overrides,
   };
 }

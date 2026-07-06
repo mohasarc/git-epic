@@ -1,6 +1,7 @@
 import type { HistorySnapshot } from '../history-snapshot.js';
 import { ContributionCalendarRateLimitError, fetchContributionCalendar } from './contribution-calendar.js';
 import { defaultHttpTransport } from './default-http-transport.js';
+import { fetchAuthoredCounts } from './fetch-authored-counts.js';
 import type { FetchGitHubSnapshotResult } from './fetch-github-snapshot-result.js';
 import { fetchGitHubPublicProfile } from './github-rest-client.js';
 import { parseGitHubHandleInput } from './github-handle.js';
@@ -31,6 +32,8 @@ export async function fetchGitHubSnapshot(
     return contributionDaysResult;
   }
 
+  const authoredCounts = await fetchAuthoredCounts(profileResult.profile.login, transport);
+
   const snapshot: HistorySnapshot = {
     handle: profileResult.profile.login,
     accountCreatedDate: profileResult.profile.accountCreatedDate,
@@ -42,6 +45,8 @@ export async function fetchGitHubSnapshot(
     contributionDays: contributionDaysResult,
     followerCount: profileResult.profile.followerCount,
     repositories: profileResult.profile.repositories,
+    pullRequestsOpenedCount: authoredCounts.pullRequestsOpenedCount,
+    issuesOpenedCount: authoredCounts.issuesOpenedCount,
   };
 
   return { kind: 'success', snapshot };
