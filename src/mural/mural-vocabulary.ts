@@ -54,6 +54,16 @@ export const SEAM_FEATHER_WIDTH = 12;
 /** Target column pixel pitch for the ribbon; per-era column count = round(eraWidth / RIBBON_PITCH). */
 export const RIBBON_PITCH = 4;
 
+/** Warm desert density ramp, pale-but-present → saturated terracotta; never GitHub green (§6.6). */
+export const RIBBON_RAMP: readonly string[] = ['#f0d5a8', '#e3b877', '#d18f4b', '#b3672f', '#8a4a22'];
+
+/**
+ * Whole-strip byte ceiling, calibrated just above the measured dense static render
+ * (rich / fifteen-year mural with the ribbon). Catches bloat now while leaving Stage-3
+ * SMIL headroom; not a rubber-stamped round number.
+ */
+export const MURAL_BYTE_CEILING = 72000;
+
 /** Literal §6.9 per-module element cap (path/rect/circle/polygon). */
 export const MODULE_PATH_BUDGET = {
   structure: 5,
