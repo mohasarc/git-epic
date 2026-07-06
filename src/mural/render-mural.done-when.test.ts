@@ -4,9 +4,13 @@ import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
 
 import { detectChapters } from '../chapters/detect-chapters.js';
+import type { HttpResponse, HttpTransport } from '../github/http-transport.js';
 import { narrateChapter } from '../narration/narrate-chapter.js';
 import { renderEpic } from '../render-epic.js';
 import { renderMural } from '../render-mural.js';
+import { formatSvgNumber } from '../rendering/format-svg-number.js';
+import { createInMemoryEpicCache } from '../service/in-memory-epic-cache.js';
+import { handleImageRequest } from '../service/handle-image-request.js';
 import { scoreStrengths } from '../strengths/score-strengths.js';
 import type { Chapter } from '../chapters/chapter.js';
 import type { HistorySnapshot } from '../history-snapshot.js';
@@ -22,8 +26,11 @@ import {
   CAMERA_WINDOW_WIDTH,
   MURAL_ANIMATED_BYTE_CEILING,
   MURAL_BYTE_CEILING,
+  Y_BANDS,
 } from './mural-vocabulary.js';
 import { renderMuralSvg } from './render-mural-svg.js';
+import { WORLD_NAMES, worlds } from './worlds/catalog.js';
+import { resolveWorldName } from './worlds/resolve-world-name.js';
 
 function narrate(snapshot: HistorySnapshot): NarratedChapter[] {
   return detectChapters(snapshot).map((chapter) => ({ chapter, narration: narrateChapter(chapter) }));
@@ -198,6 +205,133 @@ describe('dwell-and-zip done-when suite', () => {
       const staticSvg = renderMuralSvg(s);
       expect(staticSvg).toBe(staticGolden);
       expect(staticSvg).not.toContain('<animate');
+    });
+  });
+});
+
+const WATER_BAND = `y="${formatSvgNumber(Y_BANDS.roadBaseline - 10)}"`;
+/** The cairn capstone circle — a geometry fingerprint only mountain's camp silhouette draws. */
+const CAIRN_CAPSTONE = 'cy="-0.87" r="0.13"';
+const ANY_HANDLE_FIXTURES = [
+  'brand-new-account.json',
+  'single-contribution-account.json',
+  'rich-history-account.json',
+];
+const GRACE_FIXTURES = ['single-contribution-account.json', 'brand-new-account.json'];
+const DENSE_FIXTURE = 'fifteen-year-overflow.json';
+
+function isComplete(svg: string): boolean {
+  return svg.startsWith('<svg') && svg.trimEnd().endsWith('</svg>');
+}
+
+describe('stage-4 three-world done-when suite', () => {
+  describe.each([...WORLD_NAMES])('the %s world', (world) => {
+    it('renders a complete animated epic for any handle', () => {
+      for (const fixture of ANY_HANDLE_FIXTURES) {
+        const svg = renderMural(loadHistorySnapshotFixture(fixture), world);
+        expect(isComplete(svg)).toBe(true);
+        expectEmbedSafeSvg(svg);
+      }
+    });
+
+    it('stays deterministic on a re-rendered dense fixture', () => {
+      const snapshot = loadHistorySnapshotFixture(DENSE_FIXTURE);
+      expect(renderMural(snapshot, world)).toBe(renderMural(snapshot, world));
+    });
+
+    it('keeps the dense worst case inside both byte ceilings', () => {
+      const snapshot = loadHistorySnapshotFixture(DENSE_FIXTURE);
+      expect(byteLength(renderMural(snapshot, world))).toBeLessThan(MURAL_ANIMATED_BYTE_CEILING);
+      expect(byteLength(renderMuralSvg(scene(snapshot), worlds[world]))).toBeLessThan(MURAL_BYTE_CEILING);
+    });
+
+    it('holds the grace floor for single-commit and brand-new accounts', () => {
+      for (const fixture of GRACE_FIXTURES) {
+        const svg = renderMural(loadHistorySnapshotFixture(fixture), world);
+        expect(isComplete(svg)).toBe(true);
+        expect(svg).not.toContain('calcMode="spline"');
+        expectEmbedSafeSvg(svg);
+      }
+    });
+  });
+
+  it('renders the three worlds byte-distinct for a dense fixture', () => {
+    const snapshot = loadHistorySnapshotFixture(DENSE_FIXTURE);
+    const renders = WORLD_NAMES.map((world) => renderMural(snapshot, world));
+    expect(new Set(renders).size).toBe(WORLD_NAMES.length);
+  });
+
+  it('draws the river water spine and the mountain cairn at the grace floor, desert neither', () => {
+    const snapshot = loadHistorySnapshotFixture('single-contribution-account.json');
+    const riverSvg = renderMural(snapshot, 'river');
+    const mountainSvg = renderMural(snapshot, 'mountain');
+    const desertSvg = renderMural(snapshot, 'desert');
+    expect(riverSvg).toContain(WATER_BAND);
+    expect(mountainSvg).toContain(CAIRN_CAPSTONE);
+    expect(desertSvg).not.toContain(WATER_BAND);
+    expect(desertSvg).not.toContain(CAIRN_CAPSTONE);
+  });
+
+  describe('the world parameter through the service', () => {
+    const NOW_ISO = '2026-07-05T12:00:00.000Z';
+    const profile = { login: 'octocat', type: 'User', created_at: '2011-01-25T18:44:36Z' };
+    const repos = [
+      {
+        name: 'hello-world',
+        created_at: '2012-02-01T00:00:00Z',
+        pushed_at: '2019-04-01T00:00:00Z',
+        stargazers_count: 80,
+        language: 'TypeScript',
+      },
+    ];
+    const contributionsHtml = '<td data-date="2011-03-04" data-count="5"></td>';
+
+    function successTransport(): HttpTransport {
+      const responses: HttpResponse[] = [
+        { status: 200, headers: new Map(), body: JSON.stringify(profile) },
+        { status: 200, headers: new Map(), body: JSON.stringify(repos) },
+        { status: 200, headers: new Map(), body: contributionsHtml },
+      ];
+      return {
+        async get() {
+          const response = responses.shift();
+          if (!response) throw new Error('unexpected request');
+          return response;
+        },
+      };
+    }
+
+    it('picks the requested world and keys its own cache entry', async () => {
+      const cache = createInMemoryEpicCache();
+      const river = await handleImageRequest(
+        'octocat',
+        { transport: successTransport(), cache, nowIso: NOW_ISO },
+        'mural',
+        'river',
+      );
+      const mountain = await handleImageRequest(
+        'octocat',
+        { transport: successTransport(), cache, nowIso: NOW_ISO },
+        'mural',
+        'mountain',
+      );
+      expect(river.body).not.toBe(mountain.body);
+      expect((await cache.get('octocat:mural:river'))?.document).toBe(river.body);
+      expect((await cache.get('octocat:mural:mountain'))?.document).toBe(mountain.body);
+    });
+
+    it('hash-defaults an absent or invalid world to the same deterministic world', async () => {
+      const fallback = resolveWorldName(null, 'octocat');
+      for (const requested of [null, 'ocean', 'River']) {
+        const cache = createInMemoryEpicCache();
+        const response = await handleImageRequest(
+          'octocat',
+          { transport: successTransport(), cache, nowIso: NOW_ISO },
+          'mural',
+          requested,
+        );
+        expect((await cache.get(`octocat:mural:${fallback}`))?.document).toBe(response.body);
+      }
     });
   });
 });
