@@ -1,11 +1,7 @@
-import { readFileSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
-
 import { describe, expect, it } from 'vitest';
 
 import { detectChapters } from '../chapters/detect-chapters.js';
 import { narrateChapter } from '../narration/narrate-chapter.js';
-import { renderEpic } from '../render-epic.js';
 import { renderMural } from '../render-mural.js';
 import { scoreStrengths } from '../strengths/score-strengths.js';
 import type { StrengthDimension } from '../strengths/strength-dimensions.js';
@@ -160,13 +156,5 @@ describe('strengths integration — byte ceiling and non-regression', () => {
     );
     expect(rich).toBeLessThan(MURAL_BYTE_CEILING);
     expect(fifteen).toBeLessThan(MURAL_BYTE_CEILING);
-  });
-
-  it('leaves the cosmic embed byte-identical to its golden', () => {
-    const golden = readFileSync(
-      fileURLToPath(new URL('../../examples/stage-3-phase-5/rich-history-account.svg', import.meta.url)),
-      'utf8',
-    );
-    expect(renderEpic(loadHistorySnapshotFixture('rich-history-account.json'))).toBe(golden);
   });
 });

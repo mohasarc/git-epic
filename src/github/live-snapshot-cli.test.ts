@@ -3,7 +3,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
 import { buildHistorySnapshot } from '../test-support/build-history-snapshot.js';
-import { renderEpic } from '../render-epic.js';
+import { renderMural } from '../render-mural.js';
 import { formatFetchGitHubSnapshotResult } from './format-fetch-github-snapshot-result.js';
 import { writeCapturedSnapshotFile, writeRenderedSnapshotFile } from './live-snapshot-files.js';
 
@@ -88,6 +88,6 @@ describe('writeRenderedSnapshotFile', () => {
 
     writeRenderedSnapshotFile(snapshot, outputPath);
 
-    expect(readFileSync(outputPath, 'utf8')).toBe(renderEpic(snapshot));
+    expect(readFileSync(outputPath, 'utf8')).toBe(renderMural(snapshot));
   });
 });

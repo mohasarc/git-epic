@@ -6,7 +6,6 @@ import { describe, expect, it } from 'vitest';
 import { detectChapters } from '../chapters/detect-chapters.js';
 import type { HttpResponse, HttpTransport } from '../github/http-transport.js';
 import { narrateChapter } from '../narration/narrate-chapter.js';
-import { renderEpic } from '../render-epic.js';
 import { renderMural } from '../render-mural.js';
 import { formatSvgNumber } from '../rendering/format-svg-number.js';
 import { createInMemoryEpicCache } from '../service/in-memory-epic-cache.js';
@@ -188,14 +187,6 @@ describe('dwell-and-zip done-when suite', () => {
   });
 
   describe('static path is untouched', () => {
-    it('leaves the cosmic embed byte-identical to its golden', () => {
-      const cosmicGolden = readFileSync(
-        fileURLToPath(new URL('../../examples/stage-3-phase-5/rich-history-account.svg', import.meta.url)),
-        'utf8',
-      );
-      expect(renderEpic(loadHistorySnapshotFixture('rich-history-account.json'))).toBe(cosmicGolden);
-    });
-
     it('leaves the static mural byte-identical and motion-free', () => {
       const staticGolden = readFileSync(
         fileURLToPath(new URL('../../examples/stage-1-phase-8/rich-history-account.svg', import.meta.url)),

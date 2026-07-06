@@ -6,7 +6,6 @@ import { describe, expect, it } from 'vitest';
 import { detectChapters } from './chapters/detect-chapters.js';
 import * as publicApi from './index.js';
 import { narrateChapter } from './narration/narrate-chapter.js';
-import { renderEpic } from './render-epic.js';
 import { buildSceneFromSnapshot, renderMural, renderMuralExport } from './render-mural.js';
 import { buildMuralScene } from './mural/build-mural-scene.js';
 import { CAMERA_WINDOW_WIDTH, MURAL_HEIGHT } from './mural/mural-vocabulary.js';
@@ -64,14 +63,6 @@ describe('renderMural', () => {
     expect(svg).toBe(animatedExampleSvg('rich-history-account.svg'));
   });
 
-  it('leaves the cosmic render byte-identical to its existing golden', () => {
-    const cosmicGolden = readFileSync(
-      fileURLToPath(new URL('../examples/stage-3-phase-5/rich-history-account.svg', import.meta.url)),
-      'utf8',
-    );
-    expect(renderEpic(loadHistorySnapshotFixture('rich-history-account.json'))).toBe(cosmicGolden);
-  });
-
   it('renders genuinely similar snapshots as similar strips', () => {
     const base = loadHistorySnapshotFixture('modest-account.json');
     const nearTwin: HistorySnapshot = { ...base, followerCount: base.followerCount + 2 };
@@ -118,12 +109,11 @@ describe('renderMuralExport', () => {
 });
 
 describe('mural entry point', () => {
-  it('exports renderMural alongside the cosmic surface', () => {
+  it('exports renderMural as the render surface', () => {
     expect(Object.keys(publicApi).sort()).toEqual([
       'WORLD_NAMES',
       'detectChapters',
       'narrateChapter',
-      'renderEpic',
       'renderMural',
       'scoreStrengths',
     ]);
