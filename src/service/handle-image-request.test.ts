@@ -297,7 +297,7 @@ describe('handleImageRequest', () => {
     const response = await handleImageRequest('octocat', { transport, cache, nowIso: NOW_ISO }, 'mural');
 
     expect(response.body).toBe(await expectedMuralDocument('octocat'));
-    expect(setSpy).toHaveBeenCalledWith('octocat:mural', {
+    expect(setSpy).toHaveBeenCalledWith('octocat:mural:desert', {
       document: await expectedMuralDocument('octocat'),
       renderedAtIso: NOW_ISO,
     });
@@ -318,7 +318,48 @@ describe('handleImageRequest', () => {
 
     expect(mural.body).not.toBe(cosmic.body);
     expect((await cache.get('octocat'))?.document).toBe(cosmic.body);
-    expect((await cache.get('octocat:mural'))?.document).toBe(mural.body);
+    expect((await cache.get('octocat:mural:desert'))?.document).toBe(mural.body);
+  });
+
+  it('resolves an absent world to the handle hash default and keys the mural cache by it', async () => {
+    const cache = createInMemoryEpicCache();
+    const setSpy = vi.spyOn(cache, 'set');
+    const transport = new FakeTransport(successResponses());
+
+    await handleImageRequest('octocat', { transport, cache, nowIso: NOW_ISO }, 'mural');
+
+    expect(setSpy).toHaveBeenCalledWith('octocat:mural:desert', expect.anything());
+  });
+
+  it('keys each requested world under its own :mural:<world> entry', async () => {
+    const cache = createInMemoryEpicCache();
+
+    const desert = await handleImageRequest(
+      'octocat',
+      { transport: new FakeTransport(successResponses()), cache, nowIso: NOW_ISO },
+      'mural',
+      'desert',
+    );
+    const river = await handleImageRequest(
+      'octocat',
+      { transport: new FakeTransport(successResponses()), cache, nowIso: NOW_ISO },
+      'mural',
+      'river',
+    );
+
+    expect((await cache.get('octocat:mural:desert'))?.document).toBe(desert.body);
+    expect((await cache.get('octocat:mural:river'))?.document).toBe(river.body);
+  });
+
+  it('serves a requested world from its own cache entry, not another world', async () => {
+    const cache = createInMemoryEpicCache();
+    await cache.set('octocat:mural:river', { document: '<svg>river-cached</svg>', renderedAtIso: NOW_ISO });
+    const transport = new FakeTransport([]);
+
+    const response = await handleImageRequest('octocat', { transport, cache, nowIso: NOW_ISO }, 'mural', 'river');
+
+    expect(response.body).toBe('<svg>river-cached</svg>');
+    expect(transport.requestedUrls).toHaveLength(0);
   });
 
   it('serves the mural from cache on the second hit without refetching', async () => {

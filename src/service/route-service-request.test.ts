@@ -76,12 +76,24 @@ describe('routeServiceRequest', () => {
     expect(headResponse.body).toBe('');
   });
 
-  it('routes ?preview=mural to the mural variant cache key', async () => {
+  it('routes ?preview=mural to the hash-default world cache key', async () => {
     const cache = await freshCache();
-    await cache.set('octocat:mural', { document: MURAL_DOCUMENT, renderedAtIso: NOW_ISO });
+    await cache.set('octocat:mural:desert', { document: MURAL_DOCUMENT, renderedAtIso: NOW_ISO });
 
     const response = await routeServiceRequest(
       { method: 'GET', url: '/octocat.svg?preview=mural' },
+      deps(cache),
+    );
+
+    expect(response.body).toBe(MURAL_DOCUMENT);
+  });
+
+  it('routes ?world to the matching per-world mural cache key', async () => {
+    const cache = await freshCache();
+    await cache.set('octocat:mural:river', { document: MURAL_DOCUMENT, renderedAtIso: NOW_ISO });
+
+    const response = await routeServiceRequest(
+      { method: 'GET', url: '/octocat.svg?preview=mural&world=river' },
       deps(cache),
     );
 
@@ -111,7 +123,7 @@ describe('routeServiceRequest', () => {
 
   it('answers HEAD for a mural preview with the GET headers and an empty body', async () => {
     const cache = await freshCache();
-    await cache.set('octocat:mural', { document: MURAL_DOCUMENT, renderedAtIso: NOW_ISO });
+    await cache.set('octocat:mural:desert', { document: MURAL_DOCUMENT, renderedAtIso: NOW_ISO });
 
     const getResponse = await routeServiceRequest(
       { method: 'GET', url: '/octocat.svg?preview=mural' },
