@@ -37,13 +37,15 @@ async function routeToImageHandler(
   }
 
   const requestedHandle = decodeURIComponent(pathname.slice(1, -SVG_SUFFIX.length));
-  const variant = parseVariant(queryString);
-  const response = await handleImageRequest(requestedHandle, deps, variant);
+  const params = new URLSearchParams(queryString);
+  const variant = parseVariant(params);
+  const requestedWorld = params.get('world');
+  const response = await handleImageRequest(requestedHandle, deps, variant, requestedWorld);
   return method === 'HEAD' ? { ...response, body: '' } : response;
 }
 
-function parseVariant(queryString: string): EpicVariant {
-  return new URLSearchParams(queryString).get('preview') === 'mural' ? 'mural' : 'cosmic';
+function parseVariant(params: URLSearchParams): EpicVariant {
+  return params.get('preview') === 'mural' ? 'mural' : 'cosmic';
 }
 
 function methodNotAllowedResponse(): ImageResponse {
