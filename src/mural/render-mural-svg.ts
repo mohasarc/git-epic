@@ -10,6 +10,7 @@ import { renderStructures } from './layers/structures.js';
 import { renderTerrain } from './layers/terrain.js';
 import { renderText } from './layers/text.js';
 import { desert } from './worlds/desert.js';
+import type { World } from './worlds/world.js';
 
 /**
  * The desert strip: accessible <title>/<desc>, sky gradient, distant terrain, per-era
@@ -18,18 +19,18 @@ import { desert } from './worlds/desert.js';
  * ribbon band below the road, the visible caps titles/subtitle/label, then the present-day
  * badge finale panel topmost.
  */
-export function renderMuralSvg(scene: MuralScene): string {
+export function renderMuralSvg(scene: MuralScene, world: World = desert): string {
   return (
     `<svg xmlns="http://www.w3.org/2000/svg" width="${formatSvgNumber(scene.width)}" height="${formatSvgNumber(scene.height)}" viewBox="0 0 ${formatSvgNumber(scene.width)} ${formatSvgNumber(scene.height)}" role="img">` +
     renderAccessibility(scene) +
-    renderSky(scene.width, desert) +
-    renderTerrain(scene.width, scene.eras, desert) +
-    renderRoad(scene.width, desert) +
-    renderStructures(scene.eras, scene.worldScale, desert) +
-    renderMotifs(scene.eras, scene.worldScale, desert) +
-    renderRibbon(scene.eras, scene.width, desert) +
+    renderSky(scene.width, world) +
+    renderTerrain(scene.width, scene.eras, world) +
+    renderRoad(scene.width, world) +
+    renderStructures(scene.eras, scene.worldScale, world) +
+    renderMotifs(scene.eras, scene.worldScale, world) +
+    renderRibbon(scene.eras, scene.width, world) +
     renderText(scene) +
-    renderBadgeFinale(scene, desert) +
+    renderBadgeFinale(scene, world) +
     `</svg>`
   );
 }

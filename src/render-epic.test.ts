@@ -103,6 +103,7 @@ describe('renderEpic', () => {
 describe('entry point', () => {
   it('exports exactly renderEpic, detectChapters, and narrateChapter at runtime', () => {
     expect(Object.keys(publicApi).sort()).toEqual([
+      'WORLD_NAMES',
       'detectChapters',
       'narrateChapter',
       'renderEpic',
@@ -159,6 +160,7 @@ describe('entry point', () => {
       body: '{}',
     });
     expect(Object.keys(publicApi).sort()).toEqual([
+      'WORLD_NAMES',
       'detectChapters',
       'narrateChapter',
       'renderEpic',

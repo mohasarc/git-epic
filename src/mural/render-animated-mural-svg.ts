@@ -14,6 +14,7 @@ import { eraTitleText, renderSubtitle } from './layers/text.js';
 import type { MuralMotif, MuralScene, PlacedEra, WorldScale } from './mural-scene.js';
 import { CAMERA_WINDOW_WIDTH, MURAL_HEIGHT } from './mural-vocabulary.js';
 import { desert } from './worlds/desert.js';
+import type { World } from './worlds/world.js';
 
 /** Rise-and-fade of a dwelled era's content once the camera settles on it. */
 const BEAT_SECONDS = 0.5;
@@ -34,16 +35,16 @@ const BOB_OFFSET = 2;
  * Motifs in the trailing rest window loop forever. Sub-window strips degrade to a static
  * centered hold with no pan and no ambient.
  */
-export function renderAnimatedMuralSvg(scene: MuralScene): string {
+export function renderAnimatedMuralSvg(scene: MuralScene, world: World = desert): string {
   const track = buildCameraTrack(scene.eras, scene.width);
   const isSubWindow = scene.width <= CAMERA_WINDOW_WIDTH;
   return (
     `<svg xmlns="http://www.w3.org/2000/svg" width="${formatSvgNumber(CAMERA_WINDOW_WIDTH)}" height="${formatSvgNumber(MURAL_HEIGHT)}" viewBox="0 0 ${formatSvgNumber(CAMERA_WINDOW_WIDTH)} ${formatSvgNumber(MURAL_HEIGHT)}" role="img">` +
     renderAccessibility(scene) +
-    backPlane() +
-    midPlane(scene, track, isSubWindow) +
-    frontPlane(scene, track, isSubWindow) +
-    hudPlane(scene, track) +
+    backPlane(world) +
+    midPlane(scene, track, isSubWindow, world) +
+    frontPlane(scene, track, isSubWindow, world) +
+    hudPlane(scene, track, world) +
     `</svg>`
   );
 }
@@ -53,10 +54,10 @@ export function renderAnimatedMuralSvg(scene: MuralScene): string {
  * the badge finale. The finale anchors to the camera window so the freeze frame never clips, and
  * fades in exactly as the camera settles on the present-day dwell — the money shot.
  */
-function hudPlane(scene: MuralScene, track: CameraTrack): string {
+function hudPlane(scene: MuralScene, track: CameraTrack, world: World): string {
   const presentDay = track.eraTimings[track.eraTimings.length - 1];
   const begin = `${formatSvgNumber(presentDay.dwellStartSeconds + BEAT_SETTLE_SECONDS)}s`;
-  const finale = renderBadgeFinale(scene, desert, { anchorWidth: CAMERA_WINDOW_WIDTH });
+  const finale = renderBadgeFinale(scene, world, { anchorWidth: CAMERA_WINDOW_WIDTH });
   return `<g class="mural-hud">${renderSubtitle(scene)}${finaleFade(finale, begin)}</g>`;
 }
 
@@ -72,28 +73,28 @@ function finaleFade(finale: string, begin: string): string {
 }
 
 /** Window-pinned sky gradient, rate 0 — never translated. */
-function backPlane(): string {
-  return `<g class="mural-plane back">${renderSky(CAMERA_WINDOW_WIDTH, desert)}</g>`;
+function backPlane(world: World): string {
+  return `<g class="mural-plane back">${renderSky(CAMERA_WINDOW_WIDTH, world)}</g>`;
 }
 
 /** Distant band, extended on the trailing edge so the slower plane still covers the window. */
-function midPlane(scene: MuralScene, track: CameraTrack, isSubWindow: boolean): string {
+function midPlane(scene: MuralScene, track: CameraTrack, isSubWindow: boolean, world: World): string {
   const bleed = (1 - PLANE_RATE.distantBand) * maxPanSpan(scene.width);
-  const band = renderDistantBand(scene.width + bleed, desert);
+  const band = renderDistantBand(scene.width + bleed, world);
   if (isSubWindow) return staticPlane('mid', scene.width, band);
   return `<g class="mural-plane mid">${band}${panAnimateTransform(track, PLANE_RATE.distantBand)}</g>`;
 }
 
 /** Every layer spatially coupled to the road, panned at full rate. */
-function frontPlane(scene: MuralScene, track: CameraTrack, isSubWindow: boolean): string {
+function frontPlane(scene: MuralScene, track: CameraTrack, isSubWindow: boolean, world: World): string {
   const ambient = isSubWindow ? new Set<MuralMotif>() : selectAmbientMotifs(scene);
   const eraGroups = scene.eras
-    .map((era, index) => renderEraGroup(scene, era, track.eraTimings[index], !isSubWindow, ambient))
+    .map((era, index) => renderEraGroup(scene, era, track.eraTimings[index], !isSubWindow, ambient, world))
     .join('');
   const body =
-    renderEraGround(scene.width, scene.eras, desert) +
-    renderRoad(scene.width, desert) +
-    renderRibbon(scene.eras, scene.width, desert) +
+    renderEraGround(scene.width, scene.eras, world) +
+    renderRoad(scene.width, world) +
+    renderRibbon(scene.eras, scene.width, world) +
     eraGroups;
   if (isSubWindow) return staticPlane('front', scene.width, body);
   return `<g class="mural-plane front">${body}${panAnimateTransform(track, PLANE_RATE.front)}</g>`;
@@ -110,10 +111,11 @@ function renderEraGroup(
   timing: CameraTrack['eraTimings'][number],
   animateBeats: boolean,
   ambient: Set<MuralMotif>,
+  world: World,
 ): string {
   const body =
-    renderEraStructures(era, scene.worldScale, desert) +
-    renderEraMotifsWithAmbient(era, scene.worldScale, ambient) +
+    renderEraStructures(era, scene.worldScale, world) +
+    renderEraMotifsWithAmbient(era, scene.worldScale, ambient, world) +
     eraTitleText(era);
   if (!animateBeats || !timing.dwelled) return `<g class="mural-era">${body}</g>`;
   return (
@@ -129,10 +131,11 @@ function renderEraMotifsWithAmbient(
   era: PlacedEra,
   worldScale: WorldScale,
   ambient: Set<MuralMotif>,
+  world: World,
 ): string {
   return era.motifs
     .map((motif) => {
-      const drawn = renderMotif(motif, worldScale, desert);
+      const drawn = renderMotif(motif, worldScale, world);
       if (!ambient.has(motif)) return drawn;
       return `<g class="mural-ambient">${drawn}${ambientLoop(motif)}</g>`;
     })
