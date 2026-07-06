@@ -2,8 +2,10 @@ import type { ContributionDay, HistorySnapshot } from '../history-snapshot.js';
 import type { StrengthsResult } from '../strengths/score-strengths.js';
 import type { NarratedChapter } from '../timeline/build-timeline.js';
 import { allocateSlots } from './allocate-slots.js';
+import { deriveBadges } from './derive-badges.js';
 import { deriveWorldScale } from './derive-world-scale.js';
 import { layOutEras } from './era-widths.js';
+import { placeMotifs } from './place-motifs.js';
 import type { MuralEra, MuralScene, PlacedEra } from './mural-scene.js';
 import { MURAL_HEIGHT } from './mural-vocabulary.js';
 import {
@@ -50,8 +52,8 @@ export function buildMuralScene(
     width,
     height: MURAL_HEIGHT,
     worldScale,
-    eras: placedEras,
-    badges: [],
+    eras: placeMotifs(placedEras, strengths),
+    badges: deriveBadges(strengths),
     subtitle: stripSubtitle(snapshot, strengths),
     presentDayLabel: PRESENT_DAY_LABEL,
     accessibleTitle: accessibleTitle(snapshot.handle),
