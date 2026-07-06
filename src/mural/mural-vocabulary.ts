@@ -16,6 +16,20 @@ export const MURAL_HEIGHT = 360;
  */
 export const CAMERA_WINDOW_WIDTH = 640;
 
+/**
+ * Static export geometry. Rows pack to STATIC_ROW_WIDTH and stack ROW_GAP apart; the
+ * document adds symmetric side MARGIN, a HEADER_HEIGHT subtitle band on top, and a
+ * FINALE_HEIGHT badge panel plus FOOTER_HEIGHT legend below the last row. Named apart
+ * from CAMERA_WINDOW_WIDTH on purpose — the animated camera window and the still row
+ * width answer to different layouts and must diverge freely.
+ */
+export const STATIC_ROW_WIDTH = 640;
+export const ROW_GAP = 16;
+export const MARGIN = 24;
+export const HEADER_HEIGHT = 48;
+export const FINALE_HEIGHT = 220;
+export const FOOTER_HEIGHT = 56;
+
 /** Thin dark outline, fixed across tiers and worlds — an outline, never a fill param. */
 export const MURAL_OUTLINE = '#3a2417';
 export const MURAL_OUTLINE_WIDTH = 1;
