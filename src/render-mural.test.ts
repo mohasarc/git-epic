@@ -9,7 +9,7 @@ import { narrateChapter } from './narration/narrate-chapter.js';
 import { renderEpic } from './render-epic.js';
 import { renderMural } from './render-mural.js';
 import { buildMuralScene } from './mural/build-mural-scene.js';
-import { MURAL_HEIGHT } from './mural/mural-vocabulary.js';
+import { CAMERA_WINDOW_WIDTH, MURAL_HEIGHT } from './mural/mural-vocabulary.js';
 import { scoreStrengths } from './strengths/score-strengths.js';
 import type { HistorySnapshot } from './history-snapshot.js';
 import type { NarratedChapter } from './timeline/build-timeline.js';
@@ -25,9 +25,9 @@ const muralFixtureFileNames = [
   'modest-account.json',
 ];
 
-function exampleSvg(fileName: string): string {
+function animatedExampleSvg(fileName: string): string {
   return readFileSync(
-    fileURLToPath(new URL(`../examples/stage-1-phase-8/${fileName}`, import.meta.url)),
+    fileURLToPath(new URL(`../examples/stage-3-phase-8/${fileName}`, import.meta.url)),
     'utf8',
   );
 }
@@ -47,7 +47,7 @@ describe('renderMural', () => {
       const svg = renderMural(snapshot);
       expect(svg.startsWith('<svg')).toBe(true);
       expect(svg.trimEnd().endsWith('</svg>')).toBe(true);
-      expect(svg).toContain(`viewBox="0 0 ${scene(snapshot).width} ${MURAL_HEIGHT}"`);
+      expect(svg).toContain(`viewBox="0 0 ${CAMERA_WINDOW_WIDTH} ${MURAL_HEIGHT}"`);
       expect(svg).toContain(`The Epic of ${snapshot.handle}`);
       expectEmbedSafeSvg(svg);
     });
@@ -59,9 +59,9 @@ describe('renderMural', () => {
     });
   }
 
-  it('matches the committed golden for the rich history fixture', () => {
+  it('matches the committed animated golden for the rich history fixture', () => {
     const svg = renderMural(loadHistorySnapshotFixture('rich-history-account.json'));
-    expect(svg).toBe(exampleSvg('rich-history-account.svg'));
+    expect(svg).toBe(animatedExampleSvg('rich-history-account.svg'));
   });
 
   it('leaves the cosmic render byte-identical to its existing golden', () => {
