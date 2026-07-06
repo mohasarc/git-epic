@@ -23,13 +23,16 @@ const PANEL_FILL = MURAL_PALETTE.skyLow;
  * inside the canvas rather than overflowing the left edge.
  * Derived badges are always non-empty; the empty guard only covers the pre-wiring scene.
  */
-export function renderBadgeFinale(scene: MuralScene): string {
+export function renderBadgeFinale(
+  scene: MuralScene,
+  { anchorWidth = scene.width }: { anchorWidth?: number } = {},
+): string {
   if (scene.badges.length === 0) return '';
   const line = scene.badges.map(badgeText).join(SEPARATOR);
-  const maxPanelWidth = scene.width - SIDE_MARGIN * 2;
+  const maxPanelWidth = anchorWidth - SIDE_MARGIN * 2;
   const fontSize = fitFontSize(line, maxPanelWidth);
   const panelWidth = Math.min(panelWidthAt(line, fontSize), maxPanelWidth);
-  const left = Math.max(SIDE_MARGIN, scene.width - SIDE_MARGIN - panelWidth);
+  const left = Math.max(SIDE_MARGIN, anchorWidth - SIDE_MARGIN - panelWidth);
   const centerX = left + panelWidth / 2;
   const baselineY = PANEL_TOP + PANEL_HEIGHT / 2 + fontSize * 0.35;
   return (
