@@ -5,8 +5,14 @@ import {
   MURAL_OUTLINE,
   type ModuleFill,
 } from '../mural-vocabulary.js';
+import { bannerModule } from './banner.js';
+import { bridgeModule } from './bridge.js';
+import { crowdModule } from './crowd.js';
+import { crownGateModule } from './crown-gate.js';
 import { markerModule } from './marker.js';
+import { noticeBoardModule } from './notice-board.js';
 import { propModule } from './prop.js';
+import { sideRoadModule } from './side-road.js';
 import { structureModule } from './structure.js';
 import { tentModule } from './tent.js';
 
@@ -17,6 +23,12 @@ const MODULES: { name: keyof typeof MODULE_PATH_BUDGET; render: Module }[] = [
   { name: 'tent', render: tentModule },
   { name: 'marker', render: markerModule },
   { name: 'prop', render: propModule },
+  { name: 'banner', render: bannerModule },
+  { name: 'crownGate', render: crownGateModule },
+  { name: 'sideRoad', render: sideRoadModule },
+  { name: 'crowd', render: crowdModule },
+  { name: 'bridge', render: bridgeModule },
+  { name: 'noticeBoard', render: noticeBoardModule },
 ];
 
 const FILL_A: ModuleFill = { body: '#101010', accent: '#202020' };
