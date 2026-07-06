@@ -14,21 +14,22 @@ const PRESENT_DAY_LABEL_Y = Y_BANDS.roadBaseline - 10;
  */
 export function renderText(scene: MuralScene): string {
   return (
-    subtitleText(scene.subtitle) +
+    renderSubtitle(scene) +
     scene.eras.map(eraTitleText).join('') +
     presentDayLabelText(scene)
   );
 }
 
-function subtitleText(subtitle: string): string {
-  return svgText(subtitle, 24, SUBTITLE_Y, {
+/** The handle-plus-fact caption, top-left. Window-relative once the strip stops panning. */
+export function renderSubtitle(scene: MuralScene): string {
+  return svgText(scene.subtitle, 24, SUBTITLE_Y, {
     fontSize: 13,
     anchor: 'start',
     letterSpacing: 0.5,
   });
 }
 
-function eraTitleText(era: PlacedEra): string {
+export function eraTitleText(era: PlacedEra): string {
   return svgText(era.title, era.x + era.width / 2, ERA_TITLE_Y, {
     fontSize: 14,
     anchor: 'middle',

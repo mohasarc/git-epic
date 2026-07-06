@@ -11,7 +11,7 @@ import type { NarratedChapter } from '../../timeline/build-timeline.js';
 import { buildMuralScene } from '../build-mural-scene.js';
 import type { MuralScene } from '../mural-scene.js';
 import { renderMuralSvg } from '../render-mural-svg.js';
-import { renderText } from './text.js';
+import { eraTitleText, renderSubtitle, renderText } from './text.js';
 
 function narrate(snapshot: HistorySnapshot): NarratedChapter[] {
   return detectChapters(snapshot).map((chapter) => ({ chapter, narration: narrateChapter(chapter) }));
@@ -52,6 +52,30 @@ describe('renderText visible strings', () => {
   it('renders the present-day label', () => {
     const contents = textContents(renderText(richScene));
     expect(contents).toContain(escapeXmlText(richScene.presentDayLabel));
+  });
+});
+
+describe('renderSubtitle extraction', () => {
+  it('is the leading fragment of renderText, byte-identical', () => {
+    const subtitle = renderSubtitle(richScene);
+    expect(renderText(richScene).startsWith(subtitle)).toBe(true);
+    expect(subtitle).toContain(escapeXmlText(richScene.subtitle));
+  });
+
+  it('emits exactly the subtitle text, no era titles', () => {
+    const contents = textContents(renderSubtitle(richScene));
+    expect(contents).toEqual([escapeXmlText(richScene.subtitle)]);
+  });
+});
+
+describe('eraTitleText per-era accessor', () => {
+  it('renders each era title as a substring of the full text layer', () => {
+    const full = renderText(richScene);
+    for (const era of richScene.eras) {
+      const fragment = eraTitleText(era);
+      expect(fragment).not.toBe('');
+      expect(full).toContain(fragment);
+    }
   });
 });
 

@@ -16,10 +16,10 @@ const PROP_HEIGHT = 16;
  * exists — a small scene without a dark-age chapter never shows one (§3.3).
  */
 export function renderStructures(eras: PlacedEra[], worldScale: WorldScale): string {
-  return eras.map((era) => renderEra(era, worldScale)).join('');
+  return eras.map((era) => renderEraStructures(era, worldScale)).join('');
 }
 
-function renderEra(era: PlacedEra, worldScale: WorldScale): string {
+export function renderEraStructures(era: PlacedEra, worldScale: WorldScale): string {
   const fill = STRUCTURE_FILL[era.tier];
   return era.slots.map((slot) => placeModule(slot, worldScale, fill)).join('');
 }

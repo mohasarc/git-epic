@@ -44,7 +44,11 @@ const COUNT_ATOM_KINDS = new Set<MuralMotifKind>(['crowd', 'banner']);
  * their lane; scale-driven kinds grow one atom by tier. Plaques ride above each motif.
  */
 export function renderMotifs(eras: PlacedEra[], worldScale: WorldScale): string {
-  return eras.flatMap((era) => era.motifs.map((motif) => renderMotif(motif, worldScale))).join('');
+  return eras.map((era) => renderEraMotifs(era, worldScale)).join('');
+}
+
+export function renderEraMotifs(era: PlacedEra, worldScale: WorldScale): string {
+  return era.motifs.map((motif) => renderMotif(motif, worldScale)).join('');
 }
 
 function renderMotif(motif: MuralMotif, worldScale: WorldScale): string {
