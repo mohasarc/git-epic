@@ -90,11 +90,12 @@ export const LANGUAGE_ACCENT: Record<string, string> = {
 };
 
 /**
- * Whole-strip byte ceiling, calibrated just above the measured dense static render
- * (rich / fifteen-year mural with the ribbon). Catches bloat now while leaving Stage-3
- * SMIL headroom; not a rubber-stamped round number.
+ * Whole-strip byte ceiling, calibrated just above the measured dense static render:
+ * fifteen-year overflow at metropolis with the ribbon, a stars spike, six motifs across
+ * eras, and the four-badge finale — 72438 bytes. ~460 bytes of guard catch bloat now
+ * while the render stays a GitHub-safe file with Stage-3 SMIL headroom; not a round bump.
  */
-export const MURAL_BYTE_CEILING = 72000;
+export const MURAL_BYTE_CEILING = 72900;
 
 /** Literal §6.9 per-module element cap (path/rect/circle/polygon). */
 export const MODULE_PATH_BUDGET = {
