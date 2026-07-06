@@ -106,6 +106,7 @@ describe('entry point', () => {
       'detectChapters',
       'narrateChapter',
       'renderEpic',
+      'scoreStrengths',
     ]);
   });
 
@@ -160,6 +161,7 @@ describe('entry point', () => {
       'detectChapters',
       'narrateChapter',
       'renderEpic',
+      'scoreStrengths',
     ]);
   });
 });
