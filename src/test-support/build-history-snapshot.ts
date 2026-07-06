@@ -7,6 +7,7 @@ export function buildHistorySnapshot(overrides?: Partial<HistorySnapshot>): Hist
     firstPublicActivityDate: '2019-03-20',
     capturedAtDate: '2026-07-04',
     contributionDays: [],
+    followerCount: 0,
     repositories: [],
     ...overrides,
   };

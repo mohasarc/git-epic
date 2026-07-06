@@ -10,6 +10,8 @@ function repository(starCount: number): RepositorySummary {
     createdDate: '2020-01-01',
     lastPushedDate: '2020-06-01',
     starCount,
+    forkCount: 0,
+    isFork: false,
     primaryLanguage: 'TypeScript',
   };
 }

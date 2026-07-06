@@ -14,6 +14,7 @@ const firstSparkSnapshot: HistorySnapshot = {
   firstPublicActivityDate: '2019-03-20',
   capturedAtDate: '2026-07-04',
   contributionDays: [],
+  followerCount: 0,
   repositories: [],
 };
 
@@ -224,6 +225,8 @@ describe('renderEpicSvg', () => {
           createdDate: '2020-01-01',
           lastPushedDate: '2024-05-01',
           starCount: 900,
+          forkCount: 0,
+          isFork: false,
           primaryLanguage: 'TypeScript',
         },
         {
@@ -231,6 +234,8 @@ describe('renderEpicSvg', () => {
           createdDate: '2021-02-03',
           lastPushedDate: '2024-04-01',
           starCount: 140,
+          forkCount: 0,
+          isFork: false,
           primaryLanguage: 'Rust',
         },
         {
@@ -238,6 +243,8 @@ describe('renderEpicSvg', () => {
           createdDate: '2022-06-09',
           lastPushedDate: null,
           starCount: 0,
+          forkCount: 0,
+          isFork: false,
           primaryLanguage: null,
         },
       ],
@@ -269,6 +276,8 @@ describe('renderEpicSvg', () => {
           createdDate: '2020-01-01',
           lastPushedDate: '2024-05-01',
           starCount: 1040,
+          forkCount: 0,
+          isFork: false,
           primaryLanguage: 'TypeScript',
         },
       ],

@@ -7,6 +7,10 @@ export type RepositorySummary = {
   /** null = never pushed (empty repo). */
   lastPushedDate: string | null;
   starCount: number;
+  /** Inbound forks of this repo (forks_count). */
+  forkCount: number;
+  /** This repo is itself a fork of another. */
+  isFork: boolean;
   primaryLanguage: string | null;
 };
 
@@ -24,6 +28,7 @@ export type HistorySnapshot = {
   capturedAtDate: string;
   /** Days with ≥1 public contribution only, ascending by date. */
   contributionDays: ContributionDay[];
+  followerCount: number;
   /** Public repos, ascending by createdDate. */
   repositories: RepositorySummary[];
 };
