@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import {
   CAMERA_WINDOW_WIDTH,
+  FINALE_HEIGHT,
+  FOOTER_HEIGHT,
+  HEADER_HEIGHT,
+  MARGIN,
   MODULE_PATH_BUDGET,
   MURAL_ANIMATED_BYTE_CEILING,
   MURAL_BYTE_CEILING,
@@ -8,7 +12,9 @@ import {
   MURAL_OUTLINE,
   MURAL_OUTLINE_WIDTH,
   MURAL_TYPOGRAPHY,
+  ROW_GAP,
   SEAM_FEATHER_WIDTH,
+  STATIC_ROW_WIDTH,
   Y_BANDS,
 } from './mural-vocabulary.js';
 
@@ -40,6 +46,15 @@ describe('mural vocabulary', () => {
   it('reserves a separate animated ceiling above the static one', () => {
     expect(Number.isInteger(MURAL_ANIMATED_BYTE_CEILING)).toBe(true);
     expect(MURAL_ANIMATED_BYTE_CEILING).toBeGreaterThan(MURAL_BYTE_CEILING);
+  });
+
+  it('sizes the static export as a row width plus symmetric margins and stacked bands', () => {
+    for (const value of [STATIC_ROW_WIDTH, ROW_GAP, MARGIN, HEADER_HEIGHT, FINALE_HEIGHT, FOOTER_HEIGHT]) {
+      expect(Number.isInteger(value)).toBe(true);
+      expect(value).toBeGreaterThan(0);
+    }
+    expect(STATIC_ROW_WIDTH).toBe(640);
+    expect(ROW_GAP).toBe(16);
   });
 
   it('declares a thin outline width and per-module path budgets', () => {
