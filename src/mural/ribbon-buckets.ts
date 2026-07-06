@@ -5,9 +5,9 @@ import type { EraPlacement } from './era-widths.js';
 import type { MuralEra, RibbonColumn } from './mural-scene.js';
 
 /** Daily contribution rate that reads as full saturation. */
-const RIBBON_SATURATION_COUNT = 5;
+export const RIBBON_SATURATION_COUNT = 5;
 /** Quiet columns stay visible, never fully empty (§6.6 pale-but-present). */
-const RIBBON_MIN_DENSITY = 0.08;
+export const RIBBON_MIN_DENSITY = 0.08;
 
 /**
  * Fixed-pitch columns across the era, each a normalized density of the era's own
