@@ -17,6 +17,7 @@ import { renderMuralSvg } from '../render-mural-svg.js';
 import {
   RIBBON_LEGEND_HIGH,
   RIBBON_LEGEND_LOW,
+  renderLegend,
   renderRibbon,
   ribbonColumnColor,
 } from './ribbon.js';
@@ -131,6 +132,29 @@ describe('renderRibbon warm ramp and legend', () => {
     expect(svg).toContain(RIBBON_LEGEND_HIGH);
     expect(RIBBON_LEGEND_LOW).toBe('Less activity');
     expect(RIBBON_LEGEND_HIGH).toBe('More activity');
+  });
+});
+
+describe('renderLegend as its own fragment', () => {
+  it('emits the swatches and both labels at the anchor width', () => {
+    const legend = renderLegend(richScene.width, desert);
+    expect(legend).toContain(RIBBON_LEGEND_LOW);
+    expect(legend).toContain(RIBBON_LEGEND_HIGH);
+    for (const color of desert.ribbonRamp) {
+      expect(legend).toContain(`fill="${color}"`);
+    }
+    expect(legend.match(/<text /g)).toHaveLength(2);
+  });
+
+  it('anchors to the given width, shifting with it', () => {
+    const narrow = renderLegend(400, desert);
+    const wide = renderLegend(800, desert);
+    expect(narrow).not.toBe(wide);
+  });
+
+  it('leaves renderRibbon byte-identical: columns then the same legend', () => {
+    const svg = renderRibbon(richScene.eras, richScene.width, desert);
+    expect(svg.endsWith(renderLegend(richScene.width, desert))).toBe(true);
   });
 });
 
