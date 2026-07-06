@@ -12,7 +12,8 @@ import { buildMuralScene } from './build-mural-scene.js';
 import type { MuralScene } from './mural-scene.js';
 import { buildCameraTrack } from './build-camera.js';
 import { BEAT_SETTLE_SECONDS, PLANE_RATE } from './camera-track.js';
-import { CAMERA_WINDOW_WIDTH, MURAL_HEIGHT } from './mural-vocabulary.js';
+import { renderSubtitle } from './layers/text.js';
+import { CAMERA_WINDOW_WIDTH, MURAL_HEIGHT, Y_BANDS } from './mural-vocabulary.js';
 import { renderAnimatedMuralSvg } from './render-animated-mural-svg.js';
 
 function narrate(snapshot: HistorySnapshot): NarratedChapter[] {
@@ -43,6 +44,21 @@ function midPlane(svg: string): string {
 
 function backPlane(svg: string): string {
   return planeGroup(svg, 'back');
+}
+
+/** The topmost `<g class="mural-hud">...</g>` overlay, balanced by group depth. */
+function hudGroup(svg: string): string {
+  const open = svg.indexOf('<g class="mural-hud"');
+  expect(open).toBeGreaterThanOrEqual(0);
+  let depth = 0;
+  for (let index = open; index < svg.length; index++) {
+    if (svg.startsWith('<g', index)) depth++;
+    else if (svg.startsWith('</g>', index)) {
+      depth--;
+      if (depth === 0) return svg.slice(open, index + 4);
+    }
+  }
+  throw new Error('unbalanced hud group');
 }
 
 /** The `<g class="mural-plane ...">...</g>` for one depth plane, balanced by group depth. */
@@ -231,6 +247,62 @@ describe('renderAnimatedMuralSvg sub-window grace floor', () => {
     const centered = formatSvgNumber((CAMERA_WINDOW_WIDTH - subWindowScene.width) / 2);
     expect(frontPlane(svg)).toContain(`<g class="mural-plane front" transform="translate(${centered},0)">`);
     expect(midPlane(svg)).toContain(`<g class="mural-plane mid" transform="translate(${centered},0)">`);
+  });
+});
+
+describe('renderAnimatedMuralSvg HUD overlay', () => {
+  it('places the HUD last in document order with no translate', () => {
+    const svg = renderAnimatedMuralSvg(richScene);
+    const hud = hudGroup(svg);
+    expect(svg.indexOf('<g class="mural-hud"')).toBeGreaterThan(
+      svg.indexOf('<g class="mural-plane front"'),
+    );
+    expect(svg.endsWith(`${hud}</svg>`)).toBe(true);
+    expect(hud).not.toContain('<animateTransform');
+    expect(hud).not.toContain('transform=');
+  });
+
+  it('pins the subtitle at full opacity', () => {
+    const hud = hudGroup(renderAnimatedMuralSvg(richScene));
+    expect(hud).toContain(renderSubtitle(richScene));
+  });
+
+  it('anchors the finale to the camera window, inside the frame', () => {
+    const hud = hudGroup(renderAnimatedMuralSvg(richScene));
+    const rect = hud.match(/<rect x="([-\d.]+)" y="[-\d.]+" width="([\d.]+)"/);
+    expect(rect).not.toBeNull();
+    const left = Number(rect![1]);
+    const width = Number(rect![2]);
+    expect(left).toBeGreaterThanOrEqual(16);
+    expect(left + width).toBeLessThanOrEqual(CAMERA_WINDOW_WIDTH);
+    expect(richScene.width).toBeGreaterThan(CAMERA_WINDOW_WIDTH);
+    expect(left + width).toBeLessThan(richScene.width);
+  });
+
+  it('keeps the finale panel in the sky band, clear of structures', () => {
+    const hud = hudGroup(renderAnimatedMuralSvg(richScene));
+    const rect = hud.match(/<rect x="[-\d.]+" y="([-\d.]+)" width="[\d.]+" height="([\d.]+)"/);
+    const top = Number(rect![1]);
+    const height = Number(rect![2]);
+    expect(top).toBe(84);
+    expect(top + height).toBeLessThanOrEqual(Y_BANDS.skyBottom);
+  });
+
+  it('gates the finale fade on the present-day dwell settling', () => {
+    const { eraTimings } = buildCameraTrack(richScene.eras, richScene.width);
+    const presentDay = eraTimings[eraTimings.length - 1];
+    expect(presentDay.dwelled).toBe(true);
+    const hud = hudGroup(renderAnimatedMuralSvg(richScene));
+    expect(hud).toContain('<g class="mural-finale" opacity="0">');
+
+    const fade = hud.slice(hud.indexOf('<animate '));
+    expect(attribute(fade, 'attributeName')).toBe('opacity');
+    expect(attribute(fade, 'from')).toBe('0');
+    expect(attribute(fade, 'to')).toBe('1');
+    expect(attribute(fade, 'begin')).toBe(
+      `${formatSvgNumber(presentDay.dwellStartSeconds + BEAT_SETTLE_SECONDS)}s`,
+    );
+    expect(fade).toContain('fill="freeze"');
   });
 });
 
