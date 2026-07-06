@@ -1,0 +1,52 @@
+== Palette additions ==
+GOLD_ACCENT = #f2c14e
+LANGUAGE_ACCENT =
+  TypeScript  #4e6a8f
+  JavaScript  #c9a84e
+  Python      #5a7fa0
+  Go          #4f97a3
+  Rust        #a8593a
+  Java        #9c6b3f
+  Ruby        #a5433a
+  C           #6f7a8a
+  C++         #7a5a86
+  C#          #5f7a55
+  PHP         #6b6a9a
+  Swift       #c07145
+  Kotlin      #8a6aa0
+  Shell       #6f8a5a
+  HTML        #bd6440
+  CSS         #6a6f9a
+  (unknown)   -> MURAL_PALETTE.structureAccent #8f4a24
+
+== scoreStrengths per fixture ==
+# polyglot-account.json
+  topDimension : languageBreadth (tier 3, reach 0.850)
+  dominantLang : TypeScript @ repoShare 0.111
+  worldScale   : town (spike baseline 1)
+  ranked       : languageBreadth=t3  projectCount=t1  stars=t1  activityVolume=t1  pullRequests=t1  followers=t1  forks=t1  issues=t0
+
+# star-heavy-account.json
+  topDimension : stars (tier 4, reach 1.000)
+  dominantLang : TypeScript @ repoShare 0.750
+  worldScale   : town (spike baseline 1)
+  ranked       : stars=t4  followers=t1  pullRequests=t1  activityVolume=t1  forks=t1  projectCount=t1  languageBreadth=t1  issues=t1
+
+# pr-heavy-account.json
+  topDimension : pullRequests (tier 3, reach 0.867)
+  dominantLang : TypeScript @ repoShare 0.333
+  worldScale   : town (spike baseline 1)
+  ranked       : pullRequests=t3  activityVolume=t1  stars=t1  languageBreadth=t1  followers=t1  projectCount=t1  issues=t1  forks=t1
+
+# brand-new-account.json
+  topDimension : stars (tier 0, reach 0.000)
+  dominantLang : null
+  worldScale   : camp (spike baseline 0)
+  ranked       : stars=t0  projectCount=t0  languageBreadth=t0  forks=t0  followers=t0  pullRequests=t0  issues=t0  activityVolume=t0
+
+# single-contribution-account.json
+  topDimension : stars (tier 0, reach 0.000)
+  dominantLang : null
+  worldScale   : camp (spike baseline 0)
+  ranked       : stars=t0  projectCount=t0  languageBreadth=t0  forks=t0  followers=t0  pullRequests=t0  issues=t0  activityVolume=t0
+
