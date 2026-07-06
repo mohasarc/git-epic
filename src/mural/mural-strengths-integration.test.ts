@@ -16,6 +16,7 @@ import type { NarratedChapter } from '../timeline/build-timeline.js';
 import { buildMuralScene } from './build-mural-scene.js';
 import type { MuralScene } from './mural-scene.js';
 import { MURAL_BYTE_CEILING } from './mural-vocabulary.js';
+import { renderMuralSvg } from './render-mural-svg.js';
 
 function narrate(snapshot: HistorySnapshot): NarratedChapter[] {
   return detectChapters(snapshot).map((chapter) => ({ chapter, narration: narrateChapter(chapter) }));
@@ -152,9 +153,11 @@ describe('strengths integration — escaping and determinism', () => {
 });
 
 describe('strengths integration — byte ceiling and non-regression', () => {
-  it('keeps the densest strengths render under the byte ceiling', () => {
-    const rich = byteSize(renderMural(loadHistorySnapshotFixture('rich-history-account.json')));
-    const fifteen = byteSize(renderMural(loadHistorySnapshotFixture('fifteen-year-overflow.json')));
+  it('keeps the densest strengths render under the static byte ceiling', () => {
+    const rich = byteSize(renderMuralSvg(sceneFor(loadHistorySnapshotFixture('rich-history-account.json'))));
+    const fifteen = byteSize(
+      renderMuralSvg(sceneFor(loadHistorySnapshotFixture('fifteen-year-overflow.json'))),
+    );
     expect(rich).toBeLessThan(MURAL_BYTE_CEILING);
     expect(fifteen).toBeLessThan(MURAL_BYTE_CEILING);
   });
