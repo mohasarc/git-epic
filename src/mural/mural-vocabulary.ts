@@ -69,4 +69,6 @@ export const MODULE_PATH_BUDGET = {
   noticeBoard: 3,
   dockHut: 3,
   boat: 2,
+  cairn: 3,
+  pine: 2,
 } as const;

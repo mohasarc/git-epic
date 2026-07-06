@@ -59,7 +59,7 @@ describe('mural vocabulary', () => {
       dockHut: 3,
       boat: 2,
       cairn: 3,
-      pine: 3,
+      pine: 2,
     });
   });
 });
