@@ -113,9 +113,12 @@ describe('renderMural world selection', () => {
     expect(renderMural(snapshot)).toBe(renderMural(snapshot, 'desert'));
   });
 
-  it('renders river apart from desert, mountain still aliasing it', () => {
+  it('renders river and mountain each apart from desert and from each other', () => {
     const desertSvg = renderMural(loadHistorySnapshotFixture(fixture), 'desert');
-    expect(renderMural(loadHistorySnapshotFixture(fixture), 'river')).not.toBe(desertSvg);
-    expect(renderMural(loadHistorySnapshotFixture(fixture), 'mountain')).toBe(desertSvg);
+    const riverSvg = renderMural(loadHistorySnapshotFixture(fixture), 'river');
+    const mountainSvg = renderMural(loadHistorySnapshotFixture(fixture), 'mountain');
+    expect(riverSvg).not.toBe(desertSvg);
+    expect(mountainSvg).not.toBe(desertSvg);
+    expect(mountainSvg).not.toBe(riverSvg);
   });
 });

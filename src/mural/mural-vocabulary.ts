@@ -39,19 +39,20 @@ export const SEAM_FEATHER_WIDTH = 12;
 export const RIBBON_PITCH = 4;
 
 /**
- * Whole-strip byte ceiling, calibrated just above the measured dense static render:
- * fifteen-year overflow at metropolis with the ribbon, a stars spike, six motifs across
- * eras, and the four-badge finale — 72438 bytes. ~460 bytes of guard catch bloat now
- * while the render stays a GitHub-safe file with Stage-3 SMIL headroom; not a round bump.
+ * Whole-strip byte ceiling, calibrated just above the measured dense static render, worst case
+ * across the three worlds: fifteen-year overflow at metropolis in mountain — the grey-green stone
+ * tiers edge past desert's 72438 and river's 72478 to 72486 bytes, the honest cross-world max.
+ * ~414 bytes of guard catch bloat while the render stays a GitHub-safe file; not a round bump.
  */
 export const MURAL_BYTE_CEILING = 72900;
 
 /**
- * Animated whole-file ceiling, calibrated just above the measured worst-case dense animated
- * render: fifteen-year overflow at metropolis — 3 plane translates, six dwell beats, the finale
- * fade, and the rest-window ambient loops on top of the static strip — 75371 bytes. ~480 bytes of
- * guard catch SMIL bloat while the file stays GitHub-safe. Separate from the static ceiling; the
- * static render never carries this weight.
+ * Animated whole-file ceiling, calibrated just above the measured worst-case dense animated render,
+ * binding max across the three worlds: fifteen-year overflow at metropolis in river — its flow loop
+ * tops desert's 75371 and mountain's 75419 to 75610 bytes — 3 plane translates, six dwell beats, the
+ * finale fade, and the rest-window ambient loops on top of the static strip. ~240 bytes of guard
+ * catch SMIL bloat while the file stays GitHub-safe. Separate from the static ceiling; the static
+ * render never carries this weight.
  */
 export const MURAL_ANIMATED_BYTE_CEILING = 75850;
 
@@ -69,4 +70,6 @@ export const MODULE_PATH_BUDGET = {
   noticeBoard: 3,
   dockHut: 3,
   boat: 2,
+  cairn: 3,
+  pine: 2,
 } as const;

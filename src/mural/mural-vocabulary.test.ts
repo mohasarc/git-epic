@@ -58,6 +58,8 @@ describe('mural vocabulary', () => {
       noticeBoard: 3,
       dockHut: 3,
       boat: 2,
+      cairn: 3,
+      pine: 2,
     });
   });
 });
