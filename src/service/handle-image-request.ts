@@ -2,8 +2,10 @@ import { fetchGitHubSnapshot } from '../github/fetch-github-snapshot.js';
 import { parseGitHubHandleInput } from '../github/github-handle.js';
 import type { HttpTransport } from '../github/http-transport.js';
 import { renderEpic } from '../render-epic.js';
-import { renderMural } from '../render-mural.js';
+import type { HistorySnapshot } from '../history-snapshot.js';
+import { renderMural, renderMuralExport } from '../render-mural.js';
 import { resolveWorldName } from '../mural/worlds/resolve-world-name.js';
+import type { WorldName } from '../mural/worlds/world.js';
 import { renderNoSuchLegendCard } from '../rendering/cards/no-such-legend-card.js';
 import { renderStillBeingWrittenCard } from '../rendering/cards/still-being-written-card.js';
 import type { EpicCache, EpicCacheEntry } from './epic-cache.js';
@@ -16,7 +18,7 @@ export type ImageRequestDependencies = {
   nowIso: string;
 };
 
-export type EpicVariant = 'cosmic' | 'mural';
+export type EpicVariant = 'cosmic' | 'mural' | 'static';
 
 const CARD_MAX_AGE_SECONDS = 300;
 
@@ -33,7 +35,7 @@ export async function handleImageRequest(
 
   const handleKey = parsedHandle.handle.lookup.toLowerCase();
   const worldName = resolveWorldName(requestedWorld, handleKey);
-  const cacheKey = variant === 'mural' ? `${handleKey}:mural:${worldName}` : handleKey;
+  const cacheKey = variant === 'cosmic' ? handleKey : `${handleKey}:${variant}:${worldName}`;
   const cachedEntry = await cache.get(cacheKey);
   if (cachedEntry && isEpicFresh(nowIso, cachedEntry.renderedAtIso)) {
     return epicResponse(cachedEntry, nowIso);
@@ -51,10 +53,7 @@ export async function handleImageRequest(
 
   switch (fetchResult.kind) {
     case 'success': {
-      const document =
-        variant === 'mural'
-          ? renderMural(fetchResult.snapshot, worldName)
-          : renderEpic(fetchResult.snapshot);
+      const document = renderVariant(variant, fetchResult.snapshot, worldName);
       const entry: EpicCacheEntry = {
         document,
         renderedAtIso: nowIso,
@@ -67,6 +66,17 @@ export async function handleImageRequest(
       return cardResponse(renderNoSuchLegendCard(requestedHandle));
     case 'rate-limited':
       return unavailableResponse(cachedEntry);
+  }
+}
+
+function renderVariant(variant: EpicVariant, snapshot: HistorySnapshot, worldName: WorldName): string {
+  switch (variant) {
+    case 'mural':
+      return renderMural(snapshot, worldName);
+    case 'static':
+      return renderMuralExport(snapshot, worldName);
+    case 'cosmic':
+      return renderEpic(snapshot);
   }
 }
 

@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import type { HttpResponse, HttpTransport } from '../github/http-transport.js';
 import { renderEpic } from '../render-epic.js';
-import { renderMural } from '../render-mural.js';
+import { renderMural, renderMuralExport } from '../render-mural.js';
 import { fetchGitHubSnapshot } from '../github/fetch-github-snapshot.js';
 import { expectEmbedSafeSvg } from '../test-support/expect-embed-safe-svg.js';
 import type { EpicCacheEntry } from './epic-cache.js';
@@ -85,6 +85,17 @@ async function expectedMuralDocument(handle: string): Promise<string> {
     throw new Error('fixture transport did not produce a success snapshot');
   }
   return renderMural(result.snapshot);
+}
+
+async function expectedStaticDocument(handle: string): Promise<string> {
+  const result = await fetchGitHubSnapshot(handle, {
+    transport: new FakeTransport(successResponses()),
+    capturedAtDate: NOW_ISO.slice(0, 10),
+  });
+  if (result.kind !== 'success') {
+    throw new Error('fixture transport did not produce a success snapshot');
+  }
+  return renderMuralExport(result.snapshot);
 }
 
 function staleEntry(document: string): EpicCacheEntry {
@@ -401,6 +412,60 @@ describe('handleImageRequest', () => {
 
     expect(mural.body).toBe(cosmic.body);
     expect(mural.body).toContain('still being written');
+  });
+
+  it('renders and caches the static export under a :static key', async () => {
+    const cache = createInMemoryEpicCache();
+    const setSpy = vi.spyOn(cache, 'set');
+    const transport = new FakeTransport(successResponses());
+
+    const response = await handleImageRequest('octocat', { transport, cache, nowIso: NOW_ISO }, 'static');
+
+    expect(response.body).toBe(await expectedStaticDocument('octocat'));
+    expect(setSpy).toHaveBeenCalledWith('octocat:static:desert', {
+      document: await expectedStaticDocument('octocat'),
+      renderedAtIso: NOW_ISO,
+    });
+  });
+
+  it('keeps mural and static in distinct keys that never serve each other', async () => {
+    const cache = createInMemoryEpicCache();
+
+    const mural = await handleImageRequest(
+      'octocat',
+      { transport: new FakeTransport(successResponses()), cache, nowIso: NOW_ISO },
+      'mural',
+    );
+    const staticExport = await handleImageRequest(
+      'octocat',
+      { transport: new FakeTransport(successResponses()), cache, nowIso: NOW_ISO },
+      'static',
+    );
+
+    expect(staticExport.body).not.toBe(mural.body);
+    expect((await cache.get('octocat:mural:desert'))?.document).toBe(mural.body);
+    expect((await cache.get('octocat:static:desert'))?.document).toBe(staticExport.body);
+  });
+
+  it('keys each requested world under its own :static:<world> entry', async () => {
+    const cache = createInMemoryEpicCache();
+
+    const desert = await handleImageRequest(
+      'octocat',
+      { transport: new FakeTransport(successResponses()), cache, nowIso: NOW_ISO },
+      'static',
+      'desert',
+    );
+    const river = await handleImageRequest(
+      'octocat',
+      { transport: new FakeTransport(successResponses()), cache, nowIso: NOW_ISO },
+      'static',
+      'river',
+    );
+
+    expect((await cache.get('octocat:static:desert'))?.document).toBe(desert.body);
+    expect((await cache.get('octocat:static:river'))?.document).toBe(river.body);
+    expect(river.body).not.toBe(desert.body);
   });
 
   it('keeps the body embed-safe for a hostile requested handle', async () => {
