@@ -8,7 +8,10 @@ import type { ImageResponse } from './image-response.js';
 
 export type ServiceRequest = { method: string | undefined; url: string | undefined };
 
-const SVG_SUFFIX = '.svg';
+const EXTENSION_VARIANTS: Record<string, EpicVariant> = {
+  '.svg': 'mural',
+  '.png': 'static',
+};
 const CARD_MAX_AGE_SECONDS = 300;
 
 export async function routeServiceRequest(
@@ -32,27 +35,16 @@ async function routeToImageHandler(
   }
 
   const [pathname, queryString = ''] = (request.url ?? '').split('?');
-  if (!pathname.endsWith(SVG_SUFFIX)) {
+  const variant = EXTENSION_VARIANTS[pathname.slice(-4)];
+  if (!variant) {
     return notFoundResponse();
   }
 
-  const requestedHandle = decodeURIComponent(pathname.slice(1, -SVG_SUFFIX.length));
+  const requestedHandle = decodeURIComponent(pathname.slice(1, -4));
   const params = new URLSearchParams(queryString);
-  const variant = parseVariant(params);
   const requestedWorld = params.get('world');
   const response = await handleImageRequest(requestedHandle, deps, variant, requestedWorld);
   return method === 'HEAD' ? { ...response, body: '' } : response;
-}
-
-function parseVariant(params: URLSearchParams): EpicVariant {
-  switch (params.get('preview')) {
-    case 'mural-static':
-      return 'static';
-    case 'mural':
-      return 'mural';
-    default:
-      return 'cosmic';
-  }
 }
 
 function methodNotAllowedResponse(): ImageResponse {
