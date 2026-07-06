@@ -1,6 +1,6 @@
 import { formatSvgNumber } from '../rendering/format-svg-number.js';
 import type { CameraTrack } from './camera-track.js';
-import { PLANE_RATE } from './camera-track.js';
+import { BEAT_SETTLE_SECONDS, PLANE_RATE } from './camera-track.js';
 import { buildCameraTrack } from './build-camera.js';
 import { renderAccessibility } from './layers/accessibility.js';
 import { renderEraMotifs } from './layers/motifs.js';
@@ -10,8 +10,12 @@ import { renderSky } from './layers/sky.js';
 import { renderEraStructures } from './layers/structures.js';
 import { renderDistantBand, renderEraGround } from './layers/terrain.js';
 import { eraTitleText } from './layers/text.js';
-import type { MuralScene } from './mural-scene.js';
+import type { MuralScene, PlacedEra } from './mural-scene.js';
 import { CAMERA_WINDOW_WIDTH, MURAL_HEIGHT } from './mural-vocabulary.js';
+
+/** Rise-and-fade of a dwelled era's content once the camera settles on it. */
+const BEAT_SECONDS = 0.5;
+const BEAT_RISE_OFFSET = 8;
 
 /**
  * The baked animated desert: three parallax planes framed by the camera window and panned by
@@ -47,15 +51,50 @@ function midPlane(scene: MuralScene, track: CameraTrack, isSubWindow: boolean): 
 
 /** Every layer spatially coupled to the road, panned at full rate. */
 function frontPlane(scene: MuralScene, track: CameraTrack, isSubWindow: boolean): string {
+  const eraGroups = scene.eras
+    .map((era, index) => renderEraGroup(scene, era, track.eraTimings[index], !isSubWindow))
+    .join('');
   const body =
     renderEraGround(scene.width, scene.eras) +
     renderRoad(scene.width) +
-    scene.eras.map((era) => renderEraStructures(era, scene.worldScale)).join('') +
-    scene.eras.map((era) => renderEraMotifs(era, scene.worldScale)).join('') +
     renderRibbon(scene.eras, scene.width) +
-    scene.eras.map(eraTitleText).join('');
+    eraGroups;
   if (isSubWindow) return staticPlane('front', scene.width, body);
   return `<g class="mural-plane front">${body}${panAnimateTransform(track, PLANE_RATE.front)}</g>`;
+}
+
+/**
+ * One era's road-coupled content — structures, motifs, title. Dwelled eras rise and fade in as
+ * the camera settles (translateY + opacity beats, nested under the front pan); zipped eras and
+ * the sub-window hold sit present at full opacity.
+ */
+function renderEraGroup(
+  scene: MuralScene,
+  era: PlacedEra,
+  timing: CameraTrack['eraTimings'][number],
+  animateBeats: boolean,
+): string {
+  const body =
+    renderEraStructures(era, scene.worldScale) +
+    renderEraMotifs(era, scene.worldScale) +
+    eraTitleText(era);
+  if (!animateBeats || !timing.dwelled) return `<g class="mural-era">${body}</g>`;
+  return (
+    `<g class="mural-era" opacity="0" transform="translate(0,${formatSvgNumber(BEAT_RISE_OFFSET)})">` +
+    body +
+    introBeats(timing.dwellStartSeconds) +
+    `</g>`
+  );
+}
+
+/** Opacity fade plus a short upward slide, both firing once the camera has settled on the dwell. */
+function introBeats(dwellStartSeconds: number): string {
+  const begin = `${formatSvgNumber(dwellStartSeconds + BEAT_SETTLE_SECONDS)}s`;
+  const dur = `${formatSvgNumber(BEAT_SECONDS)}s`;
+  return (
+    `<animate attributeName="opacity" from="0" to="1" dur="${dur}" begin="${begin}" fill="freeze"/>` +
+    `<animateTransform attributeName="transform" type="translate" from="0 ${formatSvgNumber(BEAT_RISE_OFFSET)}" to="0 0" dur="${dur}" begin="${begin}" fill="freeze"/>`
+  );
 }
 
 function staticPlane(plane: 'mid' | 'front', sceneWidth: number, body: string): string {
