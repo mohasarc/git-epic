@@ -88,6 +88,28 @@ The two fallback cards:
 
 ![The epic is still being written](examples/stage-5/still-being-written.svg)
 
+### Worlds
+
+The mural preview (`?preview=mural`) renders in one of three worlds — desert, river,
+mountain — each with its own ancient → classical → modern material vocabulary. World is
+pure taste: it never encodes anything about the user, so the same history reads the same in
+every world. Only palette and two per-world signatures (the ancient-opener camp and a world
+prop) change; every landmark, motif, and plaque stays shared and recolored.
+
+`?world=desert|river|mountain` picks one:
+
+| request | world |
+| --- | --- |
+| `?preview=mural&world=river` | river |
+| `?preview=mural&world=mountain` | mountain |
+| `?preview=mural` (absent) | hash default off the handle |
+| `?preview=mural&world=River` (wrong case / unknown) | hash default off the handle |
+
+Any value that is not a lowercase-exact match hash-defaults to a stable world for that
+handle (`WORLD_NAMES[hash(handle) % 3]`), so every handle gets a world with no parameter.
+Rendering stays deterministic: `identical (data, world) → identical bytes`. Side-by-side
+samples: [`examples/stage-4-worlds/`](examples/stage-4-worlds/).
+
 ### Run the server
 
 ```sh
