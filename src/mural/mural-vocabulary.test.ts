@@ -118,6 +118,17 @@ describe('mural vocabulary', () => {
   it('declares a thin outline width and per-module path budgets', () => {
     expect(MURAL_OUTLINE_WIDTH).toBeGreaterThan(0);
     expect(SEAM_FEATHER_WIDTH).toBeGreaterThan(0);
-    expect(MODULE_PATH_BUDGET).toEqual({ structure: 5, tent: 3, marker: 3, prop: 2 });
+    expect(MODULE_PATH_BUDGET).toEqual({
+      structure: 5,
+      tent: 3,
+      marker: 3,
+      prop: 2,
+      banner: 3,
+      crownGate: 4,
+      sideRoad: 2,
+      crowd: 3,
+      bridge: 4,
+      noticeBoard: 3,
+    });
   });
 });

@@ -102,4 +102,10 @@ export const MODULE_PATH_BUDGET = {
   tent: 3,
   marker: 3,
   prop: 2,
+  banner: 3,
+  crownGate: 4,
+  sideRoad: 2,
+  crowd: 3,
+  bridge: 4,
+  noticeBoard: 3,
 } as const;
