@@ -32,5 +32,8 @@ renderMural(snapshot, 'mountain');
 | `fifteen-year-overflow` (worst case) | 75419 | 72486 | 75850 | 72900 |
 | `mohasarc-captured` (sample) | 60686 | 57830 | 75850 | 72900 |
 
-Mountain's worst case sits under both existing ceilings — the pine prop stays a two-shape module,
-matching river's boat, so the three worlds share one byte budget with no recalibration.
+Mountain's static render (72486) is the new cross-world static max — it edges past desert (72438)
+and river (72478) but stays under the existing static ceiling, so the ceiling value holds and the
+calibration comment in `mural-vocabulary.ts` now names mountain as the documented basis. The pine
+prop stays a two-shape module, matching river's boat, so the three worlds share one byte budget with
+no ceiling bump. Animated stays bound by river (75610).
