@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  CAMERA_WINDOW_WIDTH,
   GOLD_ACCENT,
   GROUND_TINT,
   LANGUAGE_ACCENT,
@@ -113,6 +114,11 @@ describe('mural vocabulary', () => {
   it('uses a system-sans typography stack, no external fonts', () => {
     expect(MURAL_TYPOGRAPHY.fontStack).toContain('system-ui');
     expect(MURAL_TYPOGRAPHY.fontStack).not.toMatch(/https?:/);
+  });
+
+  it('frames the camera on a window narrower than the finale anchor is wide', () => {
+    expect(CAMERA_WINDOW_WIDTH).toBeGreaterThan(0);
+    expect(Number.isInteger(CAMERA_WINDOW_WIDTH)).toBe(true);
   });
 
   it('declares a thin outline width and per-module path budgets', () => {

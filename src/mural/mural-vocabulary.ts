@@ -9,6 +9,13 @@ export const STRUCTURE_HEIGHT: Record<WorldScale, number> = { camp: 46, town: 82
 
 export const MURAL_HEIGHT = 360;
 
+/**
+ * Width of the camera window the animated mural pans through (§Stage-3). ~3–4 eras frame at
+ * once; the finale panel anchors to this width so the freeze frame never clips. Default
+ * calibration; confirmed against the finale width in Phase 6.
+ */
+export const CAMERA_WINDOW_WIDTH = 640;
+
 /** Thin dark outline, fixed across tiers and worlds — an outline, never a fill param. */
 export const MURAL_OUTLINE = '#3a2417';
 export const MURAL_OUTLINE_WIDTH = 1;
