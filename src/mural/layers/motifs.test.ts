@@ -10,7 +10,7 @@ import type { NarratedChapter } from '../../timeline/build-timeline.js';
 import { buildMuralScene } from '../build-mural-scene.js';
 import { compactCount } from '../compact-count.js';
 import type { MuralMotif, MuralScene, PlacedEra, WorldScale } from '../mural-scene.js';
-import { GOLD_ACCENT, LANGUAGE_ACCENT, MURAL_PALETTE } from '../mural-vocabulary.js';
+import { desert } from '../worlds/desert.js';
 import { placeMotifs } from '../place-motifs.js';
 import { renderMuralSvg } from '../render-mural-svg.js';
 import { renderEraMotifs, renderMotifs } from './motifs.js';
@@ -73,7 +73,7 @@ function fakeEra(x: number, width: number): PlacedEra {
 }
 
 function renderMotif(motif: MuralMotif, worldScale: WorldScale): string {
-  return renderMotifs([{ ...fakeEra(0, 300), motifs: [motif] }], worldScale);
+  return renderMotifs([{ ...fakeEra(0, 300), motifs: [motif] }], worldScale, desert);
 }
 
 function atomGroups(svg: string): string[] {
@@ -115,17 +115,17 @@ describe('renderMotifs per-profile shapes', () => {
   it('draws a gold standout and its star plaque for a star-heavy account', () => {
     const { scene: built, strengths } = scene('star-heavy-account.json');
     const placed = placeMotifs(built.eras, strengths);
-    const svg = renderMotifs(placed, built.worldScale);
+    const svg = renderMotifs(placed, built.worldScale, desert);
 
     expect(placed.flatMap((era) => era.motifs).some((motif) => motif.standout)).toBe(true);
-    expect(svg).toContain(GOLD_ACCENT);
+    expect(svg).toContain(desert.goldAccent);
     expect(svg).toContain(`${compactCount(rawValueOf(strengths, 'stars'))} ★`);
   });
 
   it('draws exactly min(count, 6) crowd atoms for a follower-heavy account', () => {
     const strengths = makeStrengths({ followers: { tier: 2, reach: 0.6, rawValue: 40 } });
     const placed = placeMotifs([fakeEra(0, 300)], strengths);
-    const svg = renderMotifs(placed, 'town');
+    const svg = renderMotifs(placed, 'town', desert);
 
     expect(atomGroups(svg)).toHaveLength(6);
   });
@@ -133,7 +133,7 @@ describe('renderMotifs per-profile shapes', () => {
   it('draws min(distinctLanguages, 8) banner atoms for a polyglot account', () => {
     const strengths = makeStrengths({ languageBreadth: { tier: 2, reach: 0.5, rawValue: 9 } });
     const placed = placeMotifs([fakeEra(0, 300)], strengths);
-    const svg = renderMotifs(placed, 'town');
+    const svg = renderMotifs(placed, 'town', desert);
 
     expect(atomGroups(svg)).toHaveLength(8);
   });
@@ -143,7 +143,7 @@ describe('renderMotifs per-profile shapes', () => {
     const plain = renderMotif(crowdMotif(false), 'town');
 
     expect(maxScaleY(standout)).toBeGreaterThan(maxScaleY(plain));
-    expect(standout).toContain(GOLD_ACCENT);
+    expect(standout).toContain(desert.goldAccent);
   });
 });
 
@@ -153,13 +153,13 @@ describe('renderMotifs per-profile shapes', () => {
 describe('renderMotifs accent lookup', () => {
   it('colors a dominant-language banner with its language accent', () => {
     const svg = renderMotif(labelledBanner('TypeScript'), 'town');
-    expect(svg).toContain(LANGUAGE_ACCENT.TypeScript);
+    expect(svg).toContain(desert.languageAccent.TypeScript);
   });
 
   it('falls back to the neutral accent for an unknown language', () => {
     const svg = renderMotif(labelledBanner('Brainfuck'), 'town');
-    expect(svg).not.toContain(LANGUAGE_ACCENT.TypeScript);
-    expect(svg).toContain(MURAL_PALETTE.structureAccent);
+    expect(svg).not.toContain(desert.languageAccent.TypeScript);
+    expect(svg).toContain(desert.structureAccent);
   });
 });
 
@@ -167,8 +167,8 @@ describe('renderEraMotifs per-era accessor', () => {
   it('composes into renderMotifs byte-identically', () => {
     const { scene: built, strengths } = scene('rich-history-account.json');
     const placed = placeMotifs(built.eras, strengths);
-    expect(placed.map((era) => renderEraMotifs(era, built.worldScale)).join('')).toBe(
-      renderMotifs(placed, built.worldScale),
+    expect(placed.map((era) => renderEraMotifs(era, built.worldScale, desert)).join('')).toBe(
+      renderMotifs(placed, built.worldScale, desert),
     );
   });
 
@@ -176,9 +176,9 @@ describe('renderEraMotifs per-era accessor', () => {
     const { scene: built, strengths } = scene('rich-history-account.json');
     const placed = placeMotifs(built.eras, strengths);
     const era = placed.find((candidate) => candidate.motifs.length > 0)!;
-    const fragment = renderEraMotifs(era, built.worldScale);
+    const fragment = renderEraMotifs(era, built.worldScale, desert);
     expect(fragment).not.toBe('');
-    expect(renderMotifs(placed, built.worldScale)).toContain(fragment);
+    expect(renderMotifs(placed, built.worldScale, desert)).toContain(fragment);
   });
 });
 
@@ -188,9 +188,9 @@ describe('renderMotifs layer order', () => {
     const placed: MuralScene = { ...built, eras: placeMotifs(built.eras, strengths) };
     const svg = renderMuralSvg(placed);
 
-    const motifs = renderMotifs(placed.eras, placed.worldScale);
-    const structures = renderStructures(placed.eras, placed.worldScale);
-    const ribbon = renderRibbon(placed.eras, placed.width);
+    const motifs = renderMotifs(placed.eras, placed.worldScale, desert);
+    const structures = renderStructures(placed.eras, placed.worldScale, desert);
+    const ribbon = renderRibbon(placed.eras, placed.width, desert);
 
     expect(motifs).not.toBe('');
     expect(svg.indexOf(motifs)).toBeGreaterThan(svg.indexOf(structures));

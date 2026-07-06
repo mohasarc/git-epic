@@ -90,6 +90,7 @@ describe('renderMural', () => {
 describe('mural entry point', () => {
   it('exports renderMural alongside the cosmic surface', () => {
     expect(Object.keys(publicApi).sort()).toEqual([
+      'WORLD_NAMES',
       'detectChapters',
       'narrateChapter',
       'renderEpic',
@@ -97,5 +98,24 @@ describe('mural entry point', () => {
       'scoreStrengths',
     ]);
     expect(publicApi.renderMural(buildHistorySnapshot()).startsWith('<svg')).toBe(true);
+  });
+
+  it('exposes the frozen three-world name order', () => {
+    expect([...publicApi.WORLD_NAMES]).toEqual(['desert', 'river', 'mountain']);
+  });
+});
+
+describe('renderMural world selection', () => {
+  const fixture = 'rich-history-account.json';
+
+  it('defaults to the desert world', () => {
+    const snapshot = loadHistorySnapshotFixture(fixture);
+    expect(renderMural(snapshot)).toBe(renderMural(snapshot, 'desert'));
+  });
+
+  it('renders river and mountain identical to desert while they alias it', () => {
+    const desertSvg = renderMural(loadHistorySnapshotFixture(fixture), 'desert');
+    expect(renderMural(loadHistorySnapshotFixture(fixture), 'river')).toBe(desertSvg);
+    expect(renderMural(loadHistorySnapshotFixture(fixture), 'mountain')).toBe(desertSvg);
   });
 });

@@ -11,6 +11,7 @@ import { buildMuralScene } from '../build-mural-scene.js';
 import { deriveBadges } from '../derive-badges.js';
 import type { Badge, MuralScene } from '../mural-scene.js';
 import { MURAL_HEIGHT } from '../mural-vocabulary.js';
+import { desert } from '../worlds/desert.js';
 import { renderBadgeFinale } from './badge-finale.js';
 
 function narrate(snapshot: HistorySnapshot): NarratedChapter[] {
@@ -59,11 +60,11 @@ const richScene = sceneOf(loadHistorySnapshotFixture('rich-history-account.json'
 
 describe('renderBadgeFinale panel presence', () => {
   it('draws a panel for a rich profile', () => {
-    expect(renderBadgeFinale(richScene)).toMatch(PANEL_RECT);
+    expect(renderBadgeFinale(richScene, desert)).toMatch(PANEL_RECT);
   });
 
   it('draws a panel for a brand-new profile with the journey-begins badge', () => {
-    const svg = renderBadgeFinale(brandNewScene);
+    const svg = renderBadgeFinale(brandNewScene, desert);
     expect(brandNewScene.badges).toEqual([{ label: 'The Journey Begins' }]);
     expect(svg).toMatch(PANEL_RECT);
     expect(svg).toContain('The Journey Begins');
@@ -73,20 +74,20 @@ describe('renderBadgeFinale panel presence', () => {
 describe('renderBadgeFinale badge text', () => {
   it('renders every badge label and separates two badges with a middle dot', () => {
     const badges: Badge[] = [{ label: 'Star Magnet' }, { label: 'Polyglot Explorer' }];
-    const svg = renderBadgeFinale(fakeScene({ badges }));
+    const svg = renderBadgeFinale(fakeScene({ badges }), desert);
     expect(svg).toContain('Star Magnet');
     expect(svg).toContain('Polyglot Explorer');
     expect(svg).toContain('·');
   });
 
   it('renders one badge with no dangling separator', () => {
-    const svg = renderBadgeFinale(fakeScene({ badges: [{ label: 'Relentless' }] }));
+    const svg = renderBadgeFinale(fakeScene({ badges: [{ label: 'Relentless' }] }), desert);
     expect(svg).toContain('Relentless');
     expect(svg).not.toContain('·');
   });
 
   it('appends a per-badge plaque after its label', () => {
-    const svg = renderBadgeFinale(fakeScene({ badges: [{ label: 'Star Magnet', plaque: '1.2k ★' }] }));
+    const svg = renderBadgeFinale(fakeScene({ badges: [{ label: 'Star Magnet', plaque: '1.2k ★' }] }), desert);
     expect(svg).toContain('Star Magnet 1.2k ★');
   });
 });
@@ -94,13 +95,13 @@ describe('renderBadgeFinale badge text', () => {
 describe('renderBadgeFinale geometry', () => {
   it('anchors the panel in the strip right region', () => {
     const scene = fakeScene({ width: 800, badges: [{ label: 'Star Magnet' }] });
-    const panel = panelGeometry(renderBadgeFinale(scene));
+    const panel = panelGeometry(renderBadgeFinale(scene, desert));
     expect(panel.x).toBeGreaterThan(scene.width / 2);
     expect(panel.x + panel.width).toBeLessThanOrEqual(scene.width);
   });
 
   it('keeps the panel below era titles and above metropolis rooftops', () => {
-    const panel = panelGeometry(renderBadgeFinale(richScene));
+    const panel = panelGeometry(renderBadgeFinale(richScene, desert));
     expect(panel.y).toBeGreaterThan(52);
     expect(panel.y + panel.height).toBeLessThan(172);
   });
@@ -113,7 +114,7 @@ describe('renderBadgeFinale geometry', () => {
       { label: 'Relentless' },
     ];
     const scene = fakeScene({ width: 368, badges });
-    const svg = renderBadgeFinale(scene);
+    const svg = renderBadgeFinale(scene, desert);
     const panel = panelGeometry(svg);
     expect(panel.x).toBeGreaterThanOrEqual(0);
     expect(panel.x + panel.width).toBeLessThanOrEqual(scene.width);
@@ -123,9 +124,9 @@ describe('renderBadgeFinale geometry', () => {
   });
 
   it('sizes the panel to its content, not to an era', () => {
-    const narrow = panelGeometry(renderBadgeFinale(fakeScene({ badges: [{ label: 'Followed' }] })));
+    const narrow = panelGeometry(renderBadgeFinale(fakeScene({ badges: [{ label: 'Followed' }] }), desert));
     const wide = panelGeometry(
-      renderBadgeFinale(fakeScene({ badges: [{ label: 'Heavy PR Contributor' }, { label: 'Polyglot Explorer' }] })),
+      renderBadgeFinale(fakeScene({ badges: [{ label: 'Heavy PR Contributor' }, { label: 'Polyglot Explorer' }] }), desert),
     );
     expect(wide.width).toBeGreaterThan(narrow.width);
   });
@@ -133,12 +134,12 @@ describe('renderBadgeFinale geometry', () => {
 
 describe('renderBadgeFinale anchor width', () => {
   it('defaults anchorWidth to scene.width, byte-identical', () => {
-    expect(renderBadgeFinale(richScene)).toBe(renderBadgeFinale(richScene, { anchorWidth: richScene.width }));
+    expect(renderBadgeFinale(richScene, desert)).toBe(renderBadgeFinale(richScene, desert, { anchorWidth: richScene.width }));
   });
 
   it('anchors to the given width, not scene.width', () => {
     const scene = fakeScene({ width: 2000, badges: [{ label: 'Star Magnet' }] });
-    const panel = panelGeometry(renderBadgeFinale(scene, { anchorWidth: 640 }));
+    const panel = panelGeometry(renderBadgeFinale(scene, desert, { anchorWidth: 640 }));
     expect(panel.x + panel.width).toBeLessThanOrEqual(640);
   });
 });
@@ -146,6 +147,6 @@ describe('renderBadgeFinale anchor width', () => {
 describe('renderBadgeFinale escaping', () => {
   it('escapes an XML-hostile badge label and plaque', () => {
     const badges: Badge[] = [{ label: '<b>&"Legend"</b>', plaque: "9 & <> '★'" }];
-    expectEmbedSafeSvg(renderBadgeFinale(fakeScene({ badges })));
+    expectEmbedSafeSvg(renderBadgeFinale(fakeScene({ badges }), desert));
   });
 });
