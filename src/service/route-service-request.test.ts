@@ -6,6 +6,7 @@ import { routeServiceRequest } from './route-service-request.js';
 
 const NOW_ISO = '2026-07-05T12:00:00.000Z';
 const FRESH_DOCUMENT = '<svg>fresh</svg>';
+const MURAL_DOCUMENT = '<svg>mural</svg>';
 
 class UnusedTransport implements HttpTransport {
   async get(url: string): Promise<HttpResponse> {
@@ -69,6 +70,57 @@ describe('routeServiceRequest', () => {
   it('answers HEAD with the GET headers and an empty body', async () => {
     const getResponse = await routeServiceRequest({ method: 'GET', url: '/octocat.svg' }, deps(await freshCache()));
     const headResponse = await routeServiceRequest({ method: 'HEAD', url: '/octocat.svg' }, deps(await freshCache()));
+
+    expect(headResponse.status).toBe(getResponse.status);
+    expect(headResponse.headers).toEqual(getResponse.headers);
+    expect(headResponse.body).toBe('');
+  });
+
+  it('routes ?preview=mural to the mural variant cache key', async () => {
+    const cache = await freshCache();
+    await cache.set('octocat:mural', { document: MURAL_DOCUMENT, renderedAtIso: NOW_ISO });
+
+    const response = await routeServiceRequest(
+      { method: 'GET', url: '/octocat.svg?preview=mural' },
+      deps(cache),
+    );
+
+    expect(response.body).toBe(MURAL_DOCUMENT);
+  });
+
+  it('falls back to cosmic for a non-mural preview value', async () => {
+    const cache = await freshCache();
+    await cache.set('octocat:mural', { document: MURAL_DOCUMENT, renderedAtIso: NOW_ISO });
+
+    const response = await routeServiceRequest(
+      { method: 'GET', url: '/octocat.svg?preview=galaxy' },
+      deps(cache),
+    );
+
+    expect(response.body).toBe(FRESH_DOCUMENT);
+  });
+
+  it('serves cosmic for the bare url even when a mural entry exists', async () => {
+    const cache = await freshCache();
+    await cache.set('octocat:mural', { document: MURAL_DOCUMENT, renderedAtIso: NOW_ISO });
+
+    const response = await routeServiceRequest({ method: 'GET', url: '/octocat.svg' }, deps(cache));
+
+    expect(response.body).toBe(FRESH_DOCUMENT);
+  });
+
+  it('answers HEAD for a mural preview with the GET headers and an empty body', async () => {
+    const cache = await freshCache();
+    await cache.set('octocat:mural', { document: MURAL_DOCUMENT, renderedAtIso: NOW_ISO });
+
+    const getResponse = await routeServiceRequest(
+      { method: 'GET', url: '/octocat.svg?preview=mural' },
+      deps(cache),
+    );
+    const headResponse = await routeServiceRequest(
+      { method: 'HEAD', url: '/octocat.svg?preview=mural' },
+      deps(cache),
+    );
 
     expect(headResponse.status).toBe(getResponse.status);
     expect(headResponse.headers).toEqual(getResponse.headers);
