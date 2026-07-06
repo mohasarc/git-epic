@@ -92,7 +92,7 @@ function frontPlane(scene: MuralScene, track: CameraTrack, isSubWindow: boolean,
     .map((era, index) => renderEraGroup(scene, era, track.eraTimings[index], !isSubWindow, ambient, world))
     .join('');
   const body =
-    renderEraGround(scene.width, scene.eras, world) +
+    renderEraGround(0, scene.width, scene.eras, world) +
     renderRoad(scene.width, world) +
     renderRibbon(scene.eras, scene.width, world) +
     eraGroups;
