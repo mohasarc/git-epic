@@ -1,6 +1,7 @@
 import { formatSvgNumber } from '../../rendering/format-svg-number.js';
 import type { Badge, MuralScene } from '../mural-scene.js';
-import { MURAL_OUTLINE, MURAL_OUTLINE_WIDTH, MURAL_PALETTE } from '../mural-vocabulary.js';
+import { MURAL_OUTLINE, MURAL_OUTLINE_WIDTH } from '../mural-vocabulary.js';
+import type { World } from '../worlds/world.js';
 import { svgText } from './svg-text.js';
 
 const FONT_SIZE = 12;
@@ -13,7 +14,6 @@ const PANEL_TOP = 84;
 const SIDE_MARGIN = 16;
 const CORNER_RADIUS = 6;
 const SEPARATOR = ' · ';
-const PANEL_FILL = MURAL_PALETTE.skyLow;
 
 /**
  * The climax panel: a content-sized warm plaque at the present-day right region of the
@@ -25,6 +25,7 @@ const PANEL_FILL = MURAL_PALETTE.skyLow;
  */
 export function renderBadgeFinale(
   scene: MuralScene,
+  world: World,
   { anchorWidth = scene.width }: { anchorWidth?: number } = {},
 ): string {
   if (scene.badges.length === 0) return '';
@@ -36,7 +37,7 @@ export function renderBadgeFinale(
   const centerX = left + panelWidth / 2;
   const baselineY = PANEL_TOP + PANEL_HEIGHT / 2 + fontSize * 0.35;
   return (
-    panelRect(left, panelWidth) +
+    panelRect(left, panelWidth, world.panelFill) +
     svgText(line, centerX, baselineY, { fontSize, anchor: 'middle', letterSpacing: LETTER_SPACING })
   );
 }
@@ -56,10 +57,10 @@ function badgeText(badge: Badge): string {
   return badge.plaque ? `${badge.label} ${badge.plaque}` : badge.label;
 }
 
-function panelRect(left: number, width: number): string {
+function panelRect(left: number, width: number, fill: string): string {
   return (
     `<rect x="${formatSvgNumber(left)}" y="${formatSvgNumber(PANEL_TOP)}"` +
     ` width="${formatSvgNumber(width)}" height="${formatSvgNumber(PANEL_HEIGHT)}" rx="${formatSvgNumber(CORNER_RADIUS)}"` +
-    ` fill="${PANEL_FILL}" stroke="${MURAL_OUTLINE}" stroke-width="${formatSvgNumber(MURAL_OUTLINE_WIDTH)}"/>`
+    ` fill="${fill}" stroke="${MURAL_OUTLINE}" stroke-width="${formatSvgNumber(MURAL_OUTLINE_WIDTH)}"/>`
   );
 }

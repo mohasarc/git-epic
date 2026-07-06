@@ -9,6 +9,7 @@ import { renderSky } from './layers/sky.js';
 import { renderStructures } from './layers/structures.js';
 import { renderTerrain } from './layers/terrain.js';
 import { renderText } from './layers/text.js';
+import { desert } from './worlds/desert.js';
 
 /**
  * The desert strip: accessible <title>/<desc>, sky gradient, distant terrain, per-era
@@ -21,14 +22,14 @@ export function renderMuralSvg(scene: MuralScene): string {
   return (
     `<svg xmlns="http://www.w3.org/2000/svg" width="${formatSvgNumber(scene.width)}" height="${formatSvgNumber(scene.height)}" viewBox="0 0 ${formatSvgNumber(scene.width)} ${formatSvgNumber(scene.height)}" role="img">` +
     renderAccessibility(scene) +
-    renderSky(scene.width) +
-    renderTerrain(scene.width, scene.eras) +
-    renderRoad(scene.width) +
-    renderStructures(scene.eras, scene.worldScale) +
-    renderMotifs(scene.eras, scene.worldScale) +
-    renderRibbon(scene.eras, scene.width) +
+    renderSky(scene.width, desert) +
+    renderTerrain(scene.width, scene.eras, desert) +
+    renderRoad(scene.width, desert) +
+    renderStructures(scene.eras, scene.worldScale, desert) +
+    renderMotifs(scene.eras, scene.worldScale, desert) +
+    renderRibbon(scene.eras, scene.width, desert) +
     renderText(scene) +
-    renderBadgeFinale(scene) +
+    renderBadgeFinale(scene, desert) +
     `</svg>`
   );
 }

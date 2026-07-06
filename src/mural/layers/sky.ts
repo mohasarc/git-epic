@@ -1,11 +1,12 @@
 import { formatSvgNumber } from '../../rendering/format-svg-number.js';
-import { SKY_GRADIENT_STOPS, Y_BANDS } from '../mural-vocabulary.js';
+import { Y_BANDS } from '../mural-vocabulary.js';
+import type { World } from '../worlds/world.js';
 
 /** The only gradient in the mural (§6.9); every other fill is flat. */
 export const SKY_GRADIENT_ID = 'mural-sky';
 
-export function renderSky(width: number): string {
-  const stops = SKY_GRADIENT_STOPS.map(
+export function renderSky(width: number, world: World): string {
+  const stops = world.sky.map(
     (stop) => `<stop offset="${formatSvgNumber(stop.offset * 100)}%" stop-color="${stop.color}"/>`,
   ).join('');
   return (

@@ -11,7 +11,8 @@ import type { ContributionDay, HistorySnapshot } from '../../history-snapshot.js
 import type { NarratedChapter } from '../../timeline/build-timeline.js';
 import { buildMuralScene } from '../build-mural-scene.js';
 import type { MuralScene, RibbonColumn } from '../mural-scene.js';
-import { MURAL_BYTE_CEILING, RIBBON_RAMP, Y_BANDS } from '../mural-vocabulary.js';
+import { MURAL_BYTE_CEILING, Y_BANDS } from '../mural-vocabulary.js';
+import { desert } from '../worlds/desert.js';
 import { renderMuralSvg } from '../render-mural-svg.js';
 import {
   RIBBON_LEGEND_HIGH,
@@ -76,7 +77,7 @@ function columnRects(svg: string): ColumnRect[] {
 describe('renderRibbon column geometry', () => {
   it('emits one contiguous column per scene ribbon column', () => {
     const columns = sceneColumns(richScene);
-    const rects = columnRects(renderRibbon(richScene.eras, richScene.width));
+    const rects = columnRects(renderRibbon(richScene.eras, richScene.width, desert));
     expect(rects).toHaveLength(columns.length);
     expect(rects[0].x).toBeCloseTo(columns[0].x, 2);
     const last = rects[rects.length - 1];
@@ -88,7 +89,7 @@ describe('renderRibbon column geometry', () => {
 
   it('positions columns at the scene ribbon x coordinates', () => {
     const columns = sceneColumns(richScene);
-    const rects = columnRects(renderRibbon(richScene.eras, richScene.width));
+    const rects = columnRects(renderRibbon(richScene.eras, richScene.width, desert));
     for (let index = 0; index < columns.length; index++) {
       expect(rects[index].x).toBeCloseTo(columns[index].x, 2);
       expect(rects[index].width).toBeCloseTo(columns[index].width, 2);
@@ -96,7 +97,7 @@ describe('renderRibbon column geometry', () => {
   });
 
   it('grows columns up from the ribbon bottom inside the ribbon band', () => {
-    const rects = columnRects(renderRibbon(richScene.eras, richScene.width));
+    const rects = columnRects(renderRibbon(richScene.eras, richScene.width, desert));
     for (const rect of rects) {
       expect(rect.y + rect.height).toBeCloseTo(Y_BANDS.ribbonBottom, 2);
       expect(rect.y).toBeGreaterThanOrEqual(Y_BANDS.roadBaseline - 0.01);
@@ -104,20 +105,20 @@ describe('renderRibbon column geometry', () => {
   });
 
   it('makes a boom era taller and more saturated than a quiet stretch', () => {
-    const boom = columnRects(renderRibbon(boomScene.eras, boomScene.width));
-    const quiet = columnRects(renderRibbon(quietScene.eras, quietScene.width));
+    const boom = columnRects(renderRibbon(boomScene.eras, boomScene.width, desert));
+    const quiet = columnRects(renderRibbon(quietScene.eras, quietScene.width, desert));
     const tallest = (rects: ColumnRect[]) => Math.max(...rects.map((rect) => rect.height));
     expect(tallest(boom)).toBeGreaterThan(tallest(quiet));
-    expect(boom.some((rect) => rect.fill === RIBBON_RAMP[RIBBON_RAMP.length - 1])).toBe(true);
-    expect(quiet.every((rect) => rect.fill === RIBBON_RAMP[0])).toBe(true);
+    expect(boom.some((rect) => rect.fill === desert.ribbonRamp[desert.ribbonRamp.length - 1])).toBe(true);
+    expect(quiet.every((rect) => rect.fill === desert.ribbonRamp[0])).toBe(true);
   });
 });
 
 describe('renderRibbon warm ramp and legend', () => {
   it('colors every column from the warm ramp, never green', () => {
-    const svg = renderRibbon(richScene.eras, richScene.width);
+    const svg = renderRibbon(richScene.eras, richScene.width, desert);
     const rects = columnRects(svg);
-    const ramp = new Set<string>(RIBBON_RAMP);
+    const ramp = new Set<string>(desert.ribbonRamp);
     expect(rects.every((rect) => ramp.has(rect.fill))).toBe(true);
     for (const green of ['#216e39', '#30a14e', '#40c463', '#9be9a8', 'green']) {
       expect(svg).not.toContain(green);
@@ -125,7 +126,7 @@ describe('renderRibbon warm ramp and legend', () => {
   });
 
   it('renders the less/more activity legend line', () => {
-    const svg = renderRibbon(richScene.eras, richScene.width);
+    const svg = renderRibbon(richScene.eras, richScene.width, desert);
     expect(svg).toContain(RIBBON_LEGEND_LOW);
     expect(svg).toContain(RIBBON_LEGEND_HIGH);
     expect(RIBBON_LEGEND_LOW).toBe('Less activity');
@@ -136,10 +137,10 @@ describe('renderRibbon warm ramp and legend', () => {
 describe('renderRibbon honest coverage', () => {
   it('derives every column color straight from the scene density, no faked columns', () => {
     const columns = sceneColumns(richScene);
-    const rects = columnRects(renderRibbon(richScene.eras, richScene.width));
+    const rects = columnRects(renderRibbon(richScene.eras, richScene.width, desert));
     expect(rects).toHaveLength(columns.length);
     for (let index = 0; index < columns.length; index++) {
-      expect(rects[index].fill).toBe(ribbonColumnColor(columns[index].density));
+      expect(rects[index].fill).toBe(ribbonColumnColor(columns[index].density, desert));
       const expectedHeight = columns[index].density * (Y_BANDS.ribbonBottom - Y_BANDS.roadBaseline);
       expect(rects[index].height).toBeCloseTo(Number(formatSvgNumber(expectedHeight)), 2);
     }
