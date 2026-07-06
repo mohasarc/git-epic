@@ -4,10 +4,11 @@ import { GROUND_TINT, MURAL_PALETTE, SEAM_FEATHER_WIDTH, Y_BANDS } from '../mura
 
 /** Distant horizon band (full width) plus each era's ground tint at its local origin. */
 export function renderTerrain(width: number, eras: PlacedEra[]): string {
-  return distantBand(width) + eraGround(width, eras);
+  return renderDistantBand(width) + renderEraGround(width, eras);
 }
 
-function distantBand(width: number): string {
+/** Pure backdrop: the distant horizon rect spanning the full strip width. */
+export function renderDistantBand(width: number): string {
   const y = Y_BANDS.skyBottom;
   const height = Y_BANDS.horizonBottom - Y_BANDS.skyBottom;
   return `<rect x="0" y="${formatSvgNumber(y)}" width="${formatSvgNumber(width)}" height="${formatSvgNumber(height)}" fill="${MURAL_PALETTE.distantTerrain}"/>`;
@@ -17,7 +18,7 @@ function distantBand(width: number): string {
  * Per-era flat ground fill under local origins; each rect overruns into its neighbor so
  * seams never gap. The edge eras reach the strip margins so the whole band covers 0→W.
  */
-function eraGround(width: number, eras: PlacedEra[]): string {
+export function renderEraGround(width: number, eras: PlacedEra[]): string {
   const y = Y_BANDS.horizonBottom;
   const height = Y_BANDS.roadBaseline - Y_BANDS.horizonBottom;
   return eras
