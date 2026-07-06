@@ -37,7 +37,6 @@
     "capture-github-snapshot": "tsx scripts/capture-github-snapshot.ts",
     "test": "vitest run",
     "lint": "eslint src",
-    "render-fixture": "tsx scripts/render-fixture-to-svg.ts",
     "render-mural": "tsx scripts/render-mural-to-svg.ts",
     "render-github-handle": "tsx scripts/render-github-handle-to-svg.ts",
     "score-strengths": "tsx scripts/score-strengths.ts",

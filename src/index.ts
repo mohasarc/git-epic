@@ -1,4 +1,3 @@
-export { renderEpic } from './render-epic.js';
 export { renderMural } from './render-mural.js';
 export { WORLD_NAMES } from './mural/worlds/catalog.js';
 export type { WorldName } from './mural/worlds/world.js';

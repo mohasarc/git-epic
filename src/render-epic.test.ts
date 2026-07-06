@@ -101,12 +101,11 @@ describe('renderEpic', () => {
 });
 
 describe('entry point', () => {
-  it('exports exactly renderEpic, detectChapters, and narrateChapter at runtime', () => {
+  it('exports the render surface plus chapter and strengths entry points at runtime', () => {
     expect(Object.keys(publicApi).sort()).toEqual([
       'WORLD_NAMES',
       'detectChapters',
       'narrateChapter',
-      'renderEpic',
       'renderMural',
       'scoreStrengths',
     ]);
@@ -128,7 +127,7 @@ describe('entry point', () => {
     expect(chapters.map((chapter) => publicApi.narrateChapter(chapter))).toEqual([
       'The chronicle is yet unwritten, and the epic has just begun.',
     ]);
-    expect(publicApi.renderEpic(snapshot).startsWith('<svg')).toBe(true);
+    expect(publicApi.renderMural(snapshot).startsWith('<svg')).toBe(true);
   });
 
   it('exports live fetch contracts as types only', async () => {
@@ -163,7 +162,6 @@ describe('entry point', () => {
       'WORLD_NAMES',
       'detectChapters',
       'narrateChapter',
-      'renderEpic',
       'renderMural',
       'scoreStrengths',
     ]);
