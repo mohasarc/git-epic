@@ -6,9 +6,11 @@ import {
   type ModuleFill,
 } from '../mural-vocabulary.js';
 import { bannerModule } from './banner.js';
+import { boatModule } from './boat.js';
 import { bridgeModule } from './bridge.js';
 import { crowdModule } from './crowd.js';
 import { crownGateModule } from './crown-gate.js';
+import { dockHutModule } from './dock-hut.js';
 import { markerModule } from './marker.js';
 import { noticeBoardModule } from './notice-board.js';
 import { propModule } from './prop.js';
@@ -29,6 +31,8 @@ const MODULES: { name: keyof typeof MODULE_PATH_BUDGET; render: Module }[] = [
   { name: 'crowd', render: crowdModule },
   { name: 'bridge', render: bridgeModule },
   { name: 'noticeBoard', render: noticeBoardModule },
+  { name: 'dockHut', render: dockHutModule },
+  { name: 'boat', render: boatModule },
 ];
 
 const FILL_A: ModuleFill = { body: '#101010', accent: '#202020' };
