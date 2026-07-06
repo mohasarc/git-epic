@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="383" viewBox="0 0 240 382.84"><style>
+    :root {
+      --ct-fill: rgba(246,248,250,0.85);
+      --ct-path: #24292f;
+      --ct-muted: #57606a;
+      --ct-added: #1a7f37;
+      --ct-changed: #9a6700;
+      --ct-moved: #8250df;
+      --ct-removed: #cf222e;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --ct-fill: rgba(22,27,34,0.85);
+        --ct-path: #e6edf3;
+        --ct-muted: #8b949e;
+        --ct-added: #3fb950;
+        --ct-changed: #d29922;
+        --ct-moved: #bc8cff;
+        --ct-removed: #f85149;
+      }
+    }
+    text { font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace; font-size: 13.6px; }
+  </style>
+  <text x="-1" y="23.799999999999997" xml:space="preserve"><tspan fill="var(--ct-path)">.</tspan></text>
+  <text x="-1" y="43.519999999999996" xml:space="preserve"><tspan fill="var(--ct-muted)">├── </tspan><tspan fill="var(--ct-path)">examples/</tspan></text>
+  <text x="-1" y="63.239999999999995" xml:space="preserve"><tspan fill="var(--ct-muted)">│   └── </tspan><tspan fill="var(--ct-path)">stage-2-phase-6/</tspan></text>
+  <text x="-1" y="82.96" xml:space="preserve"><tspan fill="var(--ct-muted)">│       └── </tspan><tspan fill="var(--ct-added)">++</tspan><tspan fill="var(--ct-path)"> ... 3 files</tspan><tspan fill="var(--ct-muted)" x="333.56"># motif silhouette gallery (svg+png+md)</tspan></text>
+  <text x="-1" y="102.67999999999999" xml:space="preserve"><tspan fill="var(--ct-muted)">└── </tspan><tspan fill="var(--ct-path)">src/</tspan></text>
+  <text x="-1" y="122.39999999999999" xml:space="preserve"><tspan fill="var(--ct-muted)">    └── </tspan><tspan fill="var(--ct-path)">mural/</tspan></text>
+  <text x="-1" y="142.12" xml:space="preserve"><tspan fill="var(--ct-muted)">        ├── </tspan><tspan fill="var(--ct-changed)">**</tspan><tspan fill="var(--ct-path)"> mural-vocabulary.ts</tspan><tspan fill="var(--ct-muted)" x="333.56"># add 6 MODULE_PATH_BUDGET entries</tspan></text>
+  <text x="-1" y="161.84" xml:space="preserve"><tspan fill="var(--ct-muted)">        ├── </tspan><tspan fill="var(--ct-changed)">**</tspan><tspan fill="var(--ct-path)"> mural-vocabulary.test.ts</tspan><tspan fill="var(--ct-muted)" x="333.56"># pin new budget entries</tspan></text>
+  <text x="-1" y="181.56" xml:space="preserve"><tspan fill="var(--ct-muted)">        └── </tspan><tspan fill="var(--ct-path)">modules/</tspan></text>
+  <text x="-1" y="201.28" xml:space="preserve"><tspan fill="var(--ct-muted)">            ├── </tspan><tspan fill="var(--ct-added)">++</tspan><tspan fill="var(--ct-path)"> banner.ts</tspan><tspan fill="var(--ct-muted)" x="333.56"># languageBreadth banner</tspan></text>
+  <text x="-1" y="221" xml:space="preserve"><tspan fill="var(--ct-muted)">            ├── </tspan><tspan fill="var(--ct-added)">++</tspan><tspan fill="var(--ct-path)"> crown-gate.ts</tspan><tspan fill="var(--ct-muted)" x="333.56"># stars gate + crown</tspan></text>
+  <text x="-1" y="240.72" xml:space="preserve"><tspan fill="var(--ct-muted)">            ├── </tspan><tspan fill="var(--ct-added)">++</tspan><tspan fill="var(--ct-path)"> side-road.ts</tspan><tspan fill="var(--ct-muted)" x="333.56"># forks side road</tspan></text>
+  <text x="-1" y="260.44" xml:space="preserve"><tspan fill="var(--ct-muted)">            ├── </tspan><tspan fill="var(--ct-added)">++</tspan><tspan fill="var(--ct-path)"> crowd.ts</tspan><tspan fill="var(--ct-muted)" x="333.56"># followers figure</tspan></text>
+  <text x="-1" y="280.15999999999997" xml:space="preserve"><tspan fill="var(--ct-muted)">            ├── </tspan><tspan fill="var(--ct-added)">++</tspan><tspan fill="var(--ct-path)"> bridge.ts</tspan><tspan fill="var(--ct-muted)" x="333.56"># pullRequests bridge</tspan></text>
+  <text x="-1" y="299.87999999999994" xml:space="preserve"><tspan fill="var(--ct-muted)">            ├── </tspan><tspan fill="var(--ct-added)">++</tspan><tspan fill="var(--ct-path)"> notice-board.ts</tspan><tspan fill="var(--ct-muted)" x="333.56"># issues board</tspan></text>
+  <text x="-1" y="319.59999999999997" xml:space="preserve"><tspan fill="var(--ct-muted)">            └── </tspan><tspan fill="var(--ct-changed)">**</tspan><tspan fill="var(--ct-path)"> modules.test.ts</tspan><tspan fill="var(--ct-muted)" x="333.56"># extend describe.each with 6 modules</tspan></text>
+  <text x="-1" y="339.32" xml:space="preserve"></text>
+  <text x="-1" y="368.9"><tspan fill="var(--ct-added)">++</tspan><tspan fill="var(--ct-muted)"> added   </tspan><tspan fill="var(--ct-changed)">**</tspan><tspan fill="var(--ct-muted)"> changed   </tspan><tspan fill="var(--ct-moved)">~~</tspan><tspan fill="var(--ct-muted)"> moved   </tspan><tspan fill="var(--ct-removed)">--</tspan><tspan fill="var(--ct-muted)"> removed</tspan></text></svg>
