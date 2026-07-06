@@ -1,4 +1,5 @@
 import { desert } from './desert.js';
+import { mountain } from './mountain.js';
 import { river } from './river.js';
 import type { World, WorldName } from './world.js';
 
@@ -8,12 +9,9 @@ import type { World, WorldName } from './world.js';
  */
 export const WORLD_NAMES: readonly WorldName[] = ['desert', 'river', 'mountain'];
 
-/**
- * The three worlds. `mountain` is still an explicit desert alias — a named placeholder the real
- * mountain overwrites in its phase, so every resolvable name already hits a real entry.
- */
+/** The three worlds, each its own real bundle. */
 export const worlds: Record<WorldName, World> = {
   desert,
   river,
-  mountain: desert,
+  mountain,
 };
