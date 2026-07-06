@@ -13,7 +13,7 @@ import type { MuralMotif, MuralScene, PlacedEra, WorldScale } from '../mural-sce
 import { GOLD_ACCENT, LANGUAGE_ACCENT, MURAL_PALETTE } from '../mural-vocabulary.js';
 import { placeMotifs } from '../place-motifs.js';
 import { renderMuralSvg } from '../render-mural-svg.js';
-import { renderMotifs } from './motifs.js';
+import { renderEraMotifs, renderMotifs } from './motifs.js';
 import { renderRibbon } from './ribbon.js';
 import { renderStructures } from './structures.js';
 
@@ -160,6 +160,25 @@ describe('renderMotifs accent lookup', () => {
     const svg = renderMotif(labelledBanner('Brainfuck'), 'town');
     expect(svg).not.toContain(LANGUAGE_ACCENT.TypeScript);
     expect(svg).toContain(MURAL_PALETTE.structureAccent);
+  });
+});
+
+describe('renderEraMotifs per-era accessor', () => {
+  it('composes into renderMotifs byte-identically', () => {
+    const { scene: built, strengths } = scene('rich-history-account.json');
+    const placed = placeMotifs(built.eras, strengths);
+    expect(placed.map((era) => renderEraMotifs(era, built.worldScale)).join('')).toBe(
+      renderMotifs(placed, built.worldScale),
+    );
+  });
+
+  it('renders one motif-bearing era as a substring of the full layer', () => {
+    const { scene: built, strengths } = scene('rich-history-account.json');
+    const placed = placeMotifs(built.eras, strengths);
+    const era = placed.find((candidate) => candidate.motifs.length > 0)!;
+    const fragment = renderEraMotifs(era, built.worldScale);
+    expect(fragment).not.toBe('');
+    expect(renderMotifs(placed, built.worldScale)).toContain(fragment);
   });
 });
 

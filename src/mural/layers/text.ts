@@ -29,7 +29,7 @@ export function renderSubtitle(scene: MuralScene): string {
   });
 }
 
-function eraTitleText(era: PlacedEra): string {
+export function eraTitleText(era: PlacedEra): string {
   return svgText(era.title, era.x + era.width / 2, ERA_TITLE_Y, {
     fontSize: 14,
     anchor: 'middle',
