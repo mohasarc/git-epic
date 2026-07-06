@@ -6,12 +6,8 @@ import { crownGateModule } from '../modules/crown-gate.js';
 import { noticeBoardModule } from '../modules/notice-board.js';
 import { sideRoadModule } from '../modules/side-road.js';
 import type { MuralMotif, MuralMotifKind, PlacedEra, WorldScale } from '../mural-scene.js';
-import {
-  GOLD_ACCENT,
-  LANGUAGE_ACCENT,
-  MURAL_PALETTE,
-  type ModuleFill,
-} from '../mural-vocabulary.js';
+import { type ModuleFill } from '../mural-vocabulary.js';
+import type { World } from '../worlds/world.js';
 import { svgText } from './svg-text.js';
 
 /** Height a single-atom motif stands at tier 0, by world scale; tier lifts it from here. */
@@ -43,18 +39,18 @@ const COUNT_ATOM_KINDS = new Set<MuralMotifKind>(['crowd', 'banner']);
  * the neutral accent for an unknown language. Count-atom kinds repeat left-to-right within
  * their lane; scale-driven kinds grow one atom by tier. Plaques ride above each motif.
  */
-export function renderMotifs(eras: PlacedEra[], worldScale: WorldScale): string {
-  return eras.map((era) => renderEraMotifs(era, worldScale)).join('');
+export function renderMotifs(eras: PlacedEra[], worldScale: WorldScale, world: World): string {
+  return eras.map((era) => renderEraMotifs(era, worldScale, world)).join('');
 }
 
-export function renderEraMotifs(era: PlacedEra, worldScale: WorldScale): string {
-  return era.motifs.map((motif) => renderMotif(motif, worldScale)).join('');
+export function renderEraMotifs(era: PlacedEra, worldScale: WorldScale, world: World): string {
+  return era.motifs.map((motif) => renderMotif(motif, worldScale, world)).join('');
 }
 
-export function renderMotif(motif: MuralMotif, worldScale: WorldScale): string {
+export function renderMotif(motif: MuralMotif, worldScale: WorldScale, world: World): string {
   const height = motifHeight(motif, worldScale);
   const module = MODULE_BY_KIND[motif.kind];
-  const fill = motifFill(motif);
+  const fill = motifFill(motif, world);
   const shapes = COUNT_ATOM_KINDS.has(motif.kind)
     ? renderAtoms(motif, height, module, fill)
     : renderAtom(module, motif.x, motif.width, motif.baselineY, height, fill);
@@ -103,16 +99,16 @@ function renderPlaque(motif: MuralMotif, height: number): string {
   });
 }
 
-function motifFill(motif: MuralMotif): ModuleFill {
+function motifFill(motif: MuralMotif, world: World): ModuleFill {
   if (motif.standout || motif.kind === 'crownGate') {
-    return { body: GOLD_ACCENT, accent: MURAL_PALETTE.structureAccent };
+    return { body: world.goldAccent, accent: world.structureAccent };
   }
   if (motif.kind === 'banner') {
     // A labelled banner is the recurring dominant-language banner; its language name is
     // attached to eras upstream when Phase 9 wires placeMotifs into the scene. Until then
     // (like every motif here) it only reaches the render through a manual placeMotifs call.
-    const body = (motif.label && LANGUAGE_ACCENT[motif.label]) ?? MURAL_PALETTE.structureAccent;
-    return { body, accent: MURAL_PALETTE.structureAccent };
+    const body = (motif.label && world.languageAccent[motif.label]) ?? world.languageAccentFallback;
+    return { body, accent: world.structureAccent };
   }
-  return { body: MURAL_PALETTE.structureBody, accent: MURAL_PALETTE.structureAccent };
+  return { body: world.structureBody, accent: world.structureAccent };
 }
