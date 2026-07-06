@@ -5,6 +5,8 @@ import {
   GROUND_TINT,
   LANGUAGE_ACCENT,
   MODULE_PATH_BUDGET,
+  MURAL_ANIMATED_BYTE_CEILING,
+  MURAL_BYTE_CEILING,
   MURAL_HEIGHT,
   MURAL_OUTLINE,
   MURAL_OUTLINE_WIDTH,
@@ -119,6 +121,11 @@ describe('mural vocabulary', () => {
   it('frames the camera on a window narrower than the finale anchor is wide', () => {
     expect(CAMERA_WINDOW_WIDTH).toBeGreaterThan(0);
     expect(Number.isInteger(CAMERA_WINDOW_WIDTH)).toBe(true);
+  });
+
+  it('reserves a separate animated ceiling above the static one', () => {
+    expect(Number.isInteger(MURAL_ANIMATED_BYTE_CEILING)).toBe(true);
+    expect(MURAL_ANIMATED_BYTE_CEILING).toBeGreaterThan(MURAL_BYTE_CEILING);
   });
 
   it('declares a thin outline width and per-module path budgets', () => {

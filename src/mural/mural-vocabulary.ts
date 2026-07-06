@@ -104,6 +104,15 @@ export const LANGUAGE_ACCENT: Record<string, string> = {
  */
 export const MURAL_BYTE_CEILING = 72900;
 
+/**
+ * Animated whole-file ceiling, calibrated just above the measured worst-case dense animated
+ * render: fifteen-year overflow at metropolis — 3 plane translates, six dwell beats, the finale
+ * fade, and the rest-window ambient loops on top of the static strip — 75371 bytes. ~480 bytes of
+ * guard catch SMIL bloat while the file stays GitHub-safe. Separate from the static ceiling; the
+ * static render never carries this weight.
+ */
+export const MURAL_ANIMATED_BYTE_CEILING = 75850;
+
 /** Literal §6.9 per-module element cap (path/rect/circle/polygon). */
 export const MODULE_PATH_BUDGET = {
   structure: 5,
