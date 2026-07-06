@@ -150,6 +150,8 @@ Not accepted: POST requests, handle lists, org handles, repo paths (`owner/repo`
 
 ## 6. Visual Grammar
 
+> Superseded by plans/008 (2026-07-06) — the cosmic/starfield look is retired; see the visual-system spec. This section is kept as a historical record.
+
 The art style (leading candidate: a universe forming from the first commit) is selected from rendered prototypes and documented as an amendment here; the structure below is style-independent and fixed. The chosen style is recorded in [Amendment 1](#amendment-1--art-style-provisional-until-the-prototypes-pr-is-approved).
 
 **Canvas**: 830 × 415, dark background. Scales down proportionally when the README column is narrower.
@@ -254,6 +256,8 @@ Then came the Dark Age: one hundred and forty days, and not a single commit.
 ## 10. Amendments
 
 ### Amendment 1 — Art style (provisional until the prototypes PR is approved)
+
+> Superseded by plans/008 (2026-07-06) — the cosmic/starfield look is retired; see the visual-system spec. This amendment is kept as a historical record.
 
 **Style**: universe-from-first-commit. The epic is a universe forming from the first commit: the origin renders as a golden spark whose expanding rings, orbiting bodies, and nebula glow accumulate into the present-day cosmos.
 
